@@ -9,6 +9,7 @@
 class USphereComponent;
 class USceneComponent;
 class USplineComponent;
+class USpringArmComponent;
 
 UCLASS()
 class GALAXYQUEST_API AC_NormalPlanetPawn : public APawn
@@ -30,9 +31,28 @@ public:
 		UStaticMeshComponent* PlanetMesh;
 	UPROPERTY(VisibleAnyWhere)
 		USceneComponent* SceneCom;
-	UPROPERTY(VisibleAnyWhere,BlueprintReadWrite,Category = "Components")
-		USplineComponent* SplineCom;
 public:
 	UPROPERTY(EditAnyWhere,CateGory = "Speed")
 		float SelfRotation;
+	UPROPERTY(EditAnyWhere, CateGory = "Speed")
+		float Revolution;
+	UPROPERTY(EditAnyWhere, CateGory = "Speed")
+		float CloseDis;
+	UPROPERTY(EditAnyWhere, CateGory = "Speed")
+		float FarDis;
+	UPROPERTY(EditAnyWhere, CateGory = "Speed")
+		float Tilt;
+	UPROPERTY(EditAnyWhere, CateGory = "Speed")
+		float CurDegree;
+
+	UPROPERTY()
+		float OvalA;
+	UPROPERTY()
+		float OvalB;
+	UPROPERTY()
+		float OvalC;
+	UPROPERTY()
+		float OvalA2;
+	UPROPERTY()
+		float OvalB2;
 };

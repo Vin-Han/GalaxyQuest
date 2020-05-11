@@ -5,5 +5,3 @@ D:\unity\UE_4.24\Engine\Source\Runtime\Engine\Classes\Components/SphereComponent
 D:\unity\UE_4.24\Engine\Source\Runtime\Engine\Classes\Components/ShapeComponent.h
 D:\unity\UE_4.24\Engine\Intermediate\Build\Win64\UE4Editor\Inc\Engine\ShapeComponent.generated.h
 D:\unity\UE_4.24\Engine\Intermediate\Build\Win64\UE4Editor\Inc\Engine\SphereComponent.generated.h
-D:\unity\UE_4.24\Engine\Source\Runtime\Engine\Classes\Components/SplineComponent.h
-D:\unity\UE_4.24\Engine\Intermediate\Build\Win64\UE4Editor\Inc\Engine\SplineComponent.generated.h

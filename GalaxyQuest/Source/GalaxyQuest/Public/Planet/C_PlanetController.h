@@ -27,5 +27,7 @@ public:
 		AC_NormalPlanetPawn* Planet;
 
 public:
-	float SelfRotation;
+	float RotationOnce;
+	float RevolutionOnce;
+	float CurRevolution;
 };

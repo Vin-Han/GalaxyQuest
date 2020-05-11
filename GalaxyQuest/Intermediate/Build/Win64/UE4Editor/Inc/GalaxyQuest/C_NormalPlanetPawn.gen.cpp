@@ -17,7 +17,6 @@ void EmptyLinkFunctionForGeneratedCodeC_NormalPlanetPawn() {}
 	GALAXYQUEST_API UClass* Z_Construct_UClass_AC_NormalPlanetPawn();
 	ENGINE_API UClass* Z_Construct_UClass_APawn();
 	UPackage* Z_Construct_UPackage__Script_GalaxyQuest();
-	ENGINE_API UClass* Z_Construct_UClass_USplineComponent_NoRegister();
 	ENGINE_API UClass* Z_Construct_UClass_USceneComponent_NoRegister();
 	ENGINE_API UClass* Z_Construct_UClass_UStaticMeshComponent_NoRegister();
 	ENGINE_API UClass* Z_Construct_UClass_USphereComponent_NoRegister();
@@ -36,13 +35,49 @@ void EmptyLinkFunctionForGeneratedCodeC_NormalPlanetPawn() {}
 		static const UE4CodeGen_Private::FMetaDataPairParam Class_MetaDataParams[];
 #endif
 #if WITH_METADATA
+		static const UE4CodeGen_Private::FMetaDataPairParam NewProp_OvalB2_MetaData[];
+#endif
+		static const UE4CodeGen_Private::FFloatPropertyParams NewProp_OvalB2;
+#if WITH_METADATA
+		static const UE4CodeGen_Private::FMetaDataPairParam NewProp_OvalA2_MetaData[];
+#endif
+		static const UE4CodeGen_Private::FFloatPropertyParams NewProp_OvalA2;
+#if WITH_METADATA
+		static const UE4CodeGen_Private::FMetaDataPairParam NewProp_OvalC_MetaData[];
+#endif
+		static const UE4CodeGen_Private::FFloatPropertyParams NewProp_OvalC;
+#if WITH_METADATA
+		static const UE4CodeGen_Private::FMetaDataPairParam NewProp_OvalB_MetaData[];
+#endif
+		static const UE4CodeGen_Private::FFloatPropertyParams NewProp_OvalB;
+#if WITH_METADATA
+		static const UE4CodeGen_Private::FMetaDataPairParam NewProp_OvalA_MetaData[];
+#endif
+		static const UE4CodeGen_Private::FFloatPropertyParams NewProp_OvalA;
+#if WITH_METADATA
+		static const UE4CodeGen_Private::FMetaDataPairParam NewProp_CurDegree_MetaData[];
+#endif
+		static const UE4CodeGen_Private::FFloatPropertyParams NewProp_CurDegree;
+#if WITH_METADATA
+		static const UE4CodeGen_Private::FMetaDataPairParam NewProp_Tilt_MetaData[];
+#endif
+		static const UE4CodeGen_Private::FFloatPropertyParams NewProp_Tilt;
+#if WITH_METADATA
+		static const UE4CodeGen_Private::FMetaDataPairParam NewProp_FarDis_MetaData[];
+#endif
+		static const UE4CodeGen_Private::FFloatPropertyParams NewProp_FarDis;
+#if WITH_METADATA
+		static const UE4CodeGen_Private::FMetaDataPairParam NewProp_CloseDis_MetaData[];
+#endif
+		static const UE4CodeGen_Private::FFloatPropertyParams NewProp_CloseDis;
+#if WITH_METADATA
+		static const UE4CodeGen_Private::FMetaDataPairParam NewProp_Revolution_MetaData[];
+#endif
+		static const UE4CodeGen_Private::FFloatPropertyParams NewProp_Revolution;
+#if WITH_METADATA
 		static const UE4CodeGen_Private::FMetaDataPairParam NewProp_SelfRotation_MetaData[];
 #endif
 		static const UE4CodeGen_Private::FFloatPropertyParams NewProp_SelfRotation;
-#if WITH_METADATA
-		static const UE4CodeGen_Private::FMetaDataPairParam NewProp_SplineCom_MetaData[];
-#endif
-		static const UE4CodeGen_Private::FObjectPropertyParams NewProp_SplineCom;
 #if WITH_METADATA
 		static const UE4CodeGen_Private::FMetaDataPairParam NewProp_SceneCom_MetaData[];
 #endif
@@ -71,20 +106,77 @@ void EmptyLinkFunctionForGeneratedCodeC_NormalPlanetPawn() {}
 	};
 #endif
 #if WITH_METADATA
+	const UE4CodeGen_Private::FMetaDataPairParam Z_Construct_UClass_AC_NormalPlanetPawn_Statics::NewProp_OvalB2_MetaData[] = {
+		{ "ModuleRelativePath", "Public/Planet/C_NormalPlanetPawn.h" },
+	};
+#endif
+	const UE4CodeGen_Private::FFloatPropertyParams Z_Construct_UClass_AC_NormalPlanetPawn_Statics::NewProp_OvalB2 = { "OvalB2", nullptr, (EPropertyFlags)0x0010000000000000, UE4CodeGen_Private::EPropertyGenFlags::Float, RF_Public|RF_Transient|RF_MarkAsNative, 1, STRUCT_OFFSET(AC_NormalPlanetPawn, OvalB2), METADATA_PARAMS(Z_Construct_UClass_AC_NormalPlanetPawn_Statics::NewProp_OvalB2_MetaData, UE_ARRAY_COUNT(Z_Construct_UClass_AC_NormalPlanetPawn_Statics::NewProp_OvalB2_MetaData)) };
+#if WITH_METADATA
+	const UE4CodeGen_Private::FMetaDataPairParam Z_Construct_UClass_AC_NormalPlanetPawn_Statics::NewProp_OvalA2_MetaData[] = {
+		{ "ModuleRelativePath", "Public/Planet/C_NormalPlanetPawn.h" },
+	};
+#endif
+	const UE4CodeGen_Private::FFloatPropertyParams Z_Construct_UClass_AC_NormalPlanetPawn_Statics::NewProp_OvalA2 = { "OvalA2", nullptr, (EPropertyFlags)0x0010000000000000, UE4CodeGen_Private::EPropertyGenFlags::Float, RF_Public|RF_Transient|RF_MarkAsNative, 1, STRUCT_OFFSET(AC_NormalPlanetPawn, OvalA2), METADATA_PARAMS(Z_Construct_UClass_AC_NormalPlanetPawn_Statics::NewProp_OvalA2_MetaData, UE_ARRAY_COUNT(Z_Construct_UClass_AC_NormalPlanetPawn_Statics::NewProp_OvalA2_MetaData)) };
+#if WITH_METADATA
+	const UE4CodeGen_Private::FMetaDataPairParam Z_Construct_UClass_AC_NormalPlanetPawn_Statics::NewProp_OvalC_MetaData[] = {
+		{ "ModuleRelativePath", "Public/Planet/C_NormalPlanetPawn.h" },
+	};
+#endif
+	const UE4CodeGen_Private::FFloatPropertyParams Z_Construct_UClass_AC_NormalPlanetPawn_Statics::NewProp_OvalC = { "OvalC", nullptr, (EPropertyFlags)0x0010000000000000, UE4CodeGen_Private::EPropertyGenFlags::Float, RF_Public|RF_Transient|RF_MarkAsNative, 1, STRUCT_OFFSET(AC_NormalPlanetPawn, OvalC), METADATA_PARAMS(Z_Construct_UClass_AC_NormalPlanetPawn_Statics::NewProp_OvalC_MetaData, UE_ARRAY_COUNT(Z_Construct_UClass_AC_NormalPlanetPawn_Statics::NewProp_OvalC_MetaData)) };
+#if WITH_METADATA
+	const UE4CodeGen_Private::FMetaDataPairParam Z_Construct_UClass_AC_NormalPlanetPawn_Statics::NewProp_OvalB_MetaData[] = {
+		{ "ModuleRelativePath", "Public/Planet/C_NormalPlanetPawn.h" },
+	};
+#endif
+	const UE4CodeGen_Private::FFloatPropertyParams Z_Construct_UClass_AC_NormalPlanetPawn_Statics::NewProp_OvalB = { "OvalB", nullptr, (EPropertyFlags)0x0010000000000000, UE4CodeGen_Private::EPropertyGenFlags::Float, RF_Public|RF_Transient|RF_MarkAsNative, 1, STRUCT_OFFSET(AC_NormalPlanetPawn, OvalB), METADATA_PARAMS(Z_Construct_UClass_AC_NormalPlanetPawn_Statics::NewProp_OvalB_MetaData, UE_ARRAY_COUNT(Z_Construct_UClass_AC_NormalPlanetPawn_Statics::NewProp_OvalB_MetaData)) };
+#if WITH_METADATA
+	const UE4CodeGen_Private::FMetaDataPairParam Z_Construct_UClass_AC_NormalPlanetPawn_Statics::NewProp_OvalA_MetaData[] = {
+		{ "ModuleRelativePath", "Public/Planet/C_NormalPlanetPawn.h" },
+	};
+#endif
+	const UE4CodeGen_Private::FFloatPropertyParams Z_Construct_UClass_AC_NormalPlanetPawn_Statics::NewProp_OvalA = { "OvalA", nullptr, (EPropertyFlags)0x0010000000000000, UE4CodeGen_Private::EPropertyGenFlags::Float, RF_Public|RF_Transient|RF_MarkAsNative, 1, STRUCT_OFFSET(AC_NormalPlanetPawn, OvalA), METADATA_PARAMS(Z_Construct_UClass_AC_NormalPlanetPawn_Statics::NewProp_OvalA_MetaData, UE_ARRAY_COUNT(Z_Construct_UClass_AC_NormalPlanetPawn_Statics::NewProp_OvalA_MetaData)) };
+#if WITH_METADATA
+	const UE4CodeGen_Private::FMetaDataPairParam Z_Construct_UClass_AC_NormalPlanetPawn_Statics::NewProp_CurDegree_MetaData[] = {
+		{ "Category", "Speed" },
+		{ "ModuleRelativePath", "Public/Planet/C_NormalPlanetPawn.h" },
+	};
+#endif
+	const UE4CodeGen_Private::FFloatPropertyParams Z_Construct_UClass_AC_NormalPlanetPawn_Statics::NewProp_CurDegree = { "CurDegree", nullptr, (EPropertyFlags)0x0010000000000001, UE4CodeGen_Private::EPropertyGenFlags::Float, RF_Public|RF_Transient|RF_MarkAsNative, 1, STRUCT_OFFSET(AC_NormalPlanetPawn, CurDegree), METADATA_PARAMS(Z_Construct_UClass_AC_NormalPlanetPawn_Statics::NewProp_CurDegree_MetaData, UE_ARRAY_COUNT(Z_Construct_UClass_AC_NormalPlanetPawn_Statics::NewProp_CurDegree_MetaData)) };
+#if WITH_METADATA
+	const UE4CodeGen_Private::FMetaDataPairParam Z_Construct_UClass_AC_NormalPlanetPawn_Statics::NewProp_Tilt_MetaData[] = {
+		{ "Category", "Speed" },
+		{ "ModuleRelativePath", "Public/Planet/C_NormalPlanetPawn.h" },
+	};
+#endif
+	const UE4CodeGen_Private::FFloatPropertyParams Z_Construct_UClass_AC_NormalPlanetPawn_Statics::NewProp_Tilt = { "Tilt", nullptr, (EPropertyFlags)0x0010000000000001, UE4CodeGen_Private::EPropertyGenFlags::Float, RF_Public|RF_Transient|RF_MarkAsNative, 1, STRUCT_OFFSET(AC_NormalPlanetPawn, Tilt), METADATA_PARAMS(Z_Construct_UClass_AC_NormalPlanetPawn_Statics::NewProp_Tilt_MetaData, UE_ARRAY_COUNT(Z_Construct_UClass_AC_NormalPlanetPawn_Statics::NewProp_Tilt_MetaData)) };
+#if WITH_METADATA
+	const UE4CodeGen_Private::FMetaDataPairParam Z_Construct_UClass_AC_NormalPlanetPawn_Statics::NewProp_FarDis_MetaData[] = {
+		{ "Category", "Speed" },
+		{ "ModuleRelativePath", "Public/Planet/C_NormalPlanetPawn.h" },
+	};
+#endif
+	const UE4CodeGen_Private::FFloatPropertyParams Z_Construct_UClass_AC_NormalPlanetPawn_Statics::NewProp_FarDis = { "FarDis", nullptr, (EPropertyFlags)0x0010000000000001, UE4CodeGen_Private::EPropertyGenFlags::Float, RF_Public|RF_Transient|RF_MarkAsNative, 1, STRUCT_OFFSET(AC_NormalPlanetPawn, FarDis), METADATA_PARAMS(Z_Construct_UClass_AC_NormalPlanetPawn_Statics::NewProp_FarDis_MetaData, UE_ARRAY_COUNT(Z_Construct_UClass_AC_NormalPlanetPawn_Statics::NewProp_FarDis_MetaData)) };
+#if WITH_METADATA
+	const UE4CodeGen_Private::FMetaDataPairParam Z_Construct_UClass_AC_NormalPlanetPawn_Statics::NewProp_CloseDis_MetaData[] = {
+		{ "Category", "Speed" },
+		{ "ModuleRelativePath", "Public/Planet/C_NormalPlanetPawn.h" },
+	};
+#endif
+	const UE4CodeGen_Private::FFloatPropertyParams Z_Construct_UClass_AC_NormalPlanetPawn_Statics::NewProp_CloseDis = { "CloseDis", nullptr, (EPropertyFlags)0x0010000000000001, UE4CodeGen_Private::EPropertyGenFlags::Float, RF_Public|RF_Transient|RF_MarkAsNative, 1, STRUCT_OFFSET(AC_NormalPlanetPawn, CloseDis), METADATA_PARAMS(Z_Construct_UClass_AC_NormalPlanetPawn_Statics::NewProp_CloseDis_MetaData, UE_ARRAY_COUNT(Z_Construct_UClass_AC_NormalPlanetPawn_Statics::NewProp_CloseDis_MetaData)) };
+#if WITH_METADATA
+	const UE4CodeGen_Private::FMetaDataPairParam Z_Construct_UClass_AC_NormalPlanetPawn_Statics::NewProp_Revolution_MetaData[] = {
+		{ "Category", "Speed" },
+		{ "ModuleRelativePath", "Public/Planet/C_NormalPlanetPawn.h" },
+	};
+#endif
+	const UE4CodeGen_Private::FFloatPropertyParams Z_Construct_UClass_AC_NormalPlanetPawn_Statics::NewProp_Revolution = { "Revolution", nullptr, (EPropertyFlags)0x0010000000000001, UE4CodeGen_Private::EPropertyGenFlags::Float, RF_Public|RF_Transient|RF_MarkAsNative, 1, STRUCT_OFFSET(AC_NormalPlanetPawn, Revolution), METADATA_PARAMS(Z_Construct_UClass_AC_NormalPlanetPawn_Statics::NewProp_Revolution_MetaData, UE_ARRAY_COUNT(Z_Construct_UClass_AC_NormalPlanetPawn_Statics::NewProp_Revolution_MetaData)) };
+#if WITH_METADATA
 	const UE4CodeGen_Private::FMetaDataPairParam Z_Construct_UClass_AC_NormalPlanetPawn_Statics::NewProp_SelfRotation_MetaData[] = {
 		{ "Category", "Speed" },
 		{ "ModuleRelativePath", "Public/Planet/C_NormalPlanetPawn.h" },
 	};
 #endif
 	const UE4CodeGen_Private::FFloatPropertyParams Z_Construct_UClass_AC_NormalPlanetPawn_Statics::NewProp_SelfRotation = { "SelfRotation", nullptr, (EPropertyFlags)0x0010000000000001, UE4CodeGen_Private::EPropertyGenFlags::Float, RF_Public|RF_Transient|RF_MarkAsNative, 1, STRUCT_OFFSET(AC_NormalPlanetPawn, SelfRotation), METADATA_PARAMS(Z_Construct_UClass_AC_NormalPlanetPawn_Statics::NewProp_SelfRotation_MetaData, UE_ARRAY_COUNT(Z_Construct_UClass_AC_NormalPlanetPawn_Statics::NewProp_SelfRotation_MetaData)) };
-#if WITH_METADATA
-	const UE4CodeGen_Private::FMetaDataPairParam Z_Construct_UClass_AC_NormalPlanetPawn_Statics::NewProp_SplineCom_MetaData[] = {
-		{ "Category", "Components" },
-		{ "EditInline", "true" },
-		{ "ModuleRelativePath", "Public/Planet/C_NormalPlanetPawn.h" },
-	};
-#endif
-	const UE4CodeGen_Private::FObjectPropertyParams Z_Construct_UClass_AC_NormalPlanetPawn_Statics::NewProp_SplineCom = { "SplineCom", nullptr, (EPropertyFlags)0x00100000000a000d, UE4CodeGen_Private::EPropertyGenFlags::Object, RF_Public|RF_Transient|RF_MarkAsNative, 1, STRUCT_OFFSET(AC_NormalPlanetPawn, SplineCom), Z_Construct_UClass_USplineComponent_NoRegister, METADATA_PARAMS(Z_Construct_UClass_AC_NormalPlanetPawn_Statics::NewProp_SplineCom_MetaData, UE_ARRAY_COUNT(Z_Construct_UClass_AC_NormalPlanetPawn_Statics::NewProp_SplineCom_MetaData)) };
 #if WITH_METADATA
 	const UE4CodeGen_Private::FMetaDataPairParam Z_Construct_UClass_AC_NormalPlanetPawn_Statics::NewProp_SceneCom_MetaData[] = {
 		{ "Category", "C_NormalPlanetPawn" },
@@ -110,8 +202,17 @@ void EmptyLinkFunctionForGeneratedCodeC_NormalPlanetPawn() {}
 #endif
 	const UE4CodeGen_Private::FObjectPropertyParams Z_Construct_UClass_AC_NormalPlanetPawn_Statics::NewProp_CollisionCom = { "CollisionCom", nullptr, (EPropertyFlags)0x00100000000a0009, UE4CodeGen_Private::EPropertyGenFlags::Object, RF_Public|RF_Transient|RF_MarkAsNative, 1, STRUCT_OFFSET(AC_NormalPlanetPawn, CollisionCom), Z_Construct_UClass_USphereComponent_NoRegister, METADATA_PARAMS(Z_Construct_UClass_AC_NormalPlanetPawn_Statics::NewProp_CollisionCom_MetaData, UE_ARRAY_COUNT(Z_Construct_UClass_AC_NormalPlanetPawn_Statics::NewProp_CollisionCom_MetaData)) };
 	const UE4CodeGen_Private::FPropertyParamsBase* const Z_Construct_UClass_AC_NormalPlanetPawn_Statics::PropPointers[] = {
+		(const UE4CodeGen_Private::FPropertyParamsBase*)&Z_Construct_UClass_AC_NormalPlanetPawn_Statics::NewProp_OvalB2,
+		(const UE4CodeGen_Private::FPropertyParamsBase*)&Z_Construct_UClass_AC_NormalPlanetPawn_Statics::NewProp_OvalA2,
+		(const UE4CodeGen_Private::FPropertyParamsBase*)&Z_Construct_UClass_AC_NormalPlanetPawn_Statics::NewProp_OvalC,
+		(const UE4CodeGen_Private::FPropertyParamsBase*)&Z_Construct_UClass_AC_NormalPlanetPawn_Statics::NewProp_OvalB,
+		(const UE4CodeGen_Private::FPropertyParamsBase*)&Z_Construct_UClass_AC_NormalPlanetPawn_Statics::NewProp_OvalA,
+		(const UE4CodeGen_Private::FPropertyParamsBase*)&Z_Construct_UClass_AC_NormalPlanetPawn_Statics::NewProp_CurDegree,
+		(const UE4CodeGen_Private::FPropertyParamsBase*)&Z_Construct_UClass_AC_NormalPlanetPawn_Statics::NewProp_Tilt,
+		(const UE4CodeGen_Private::FPropertyParamsBase*)&Z_Construct_UClass_AC_NormalPlanetPawn_Statics::NewProp_FarDis,
+		(const UE4CodeGen_Private::FPropertyParamsBase*)&Z_Construct_UClass_AC_NormalPlanetPawn_Statics::NewProp_CloseDis,
+		(const UE4CodeGen_Private::FPropertyParamsBase*)&Z_Construct_UClass_AC_NormalPlanetPawn_Statics::NewProp_Revolution,
 		(const UE4CodeGen_Private::FPropertyParamsBase*)&Z_Construct_UClass_AC_NormalPlanetPawn_Statics::NewProp_SelfRotation,
-		(const UE4CodeGen_Private::FPropertyParamsBase*)&Z_Construct_UClass_AC_NormalPlanetPawn_Statics::NewProp_SplineCom,
 		(const UE4CodeGen_Private::FPropertyParamsBase*)&Z_Construct_UClass_AC_NormalPlanetPawn_Statics::NewProp_SceneCom,
 		(const UE4CodeGen_Private::FPropertyParamsBase*)&Z_Construct_UClass_AC_NormalPlanetPawn_Statics::NewProp_PlanetMesh,
 		(const UE4CodeGen_Private::FPropertyParamsBase*)&Z_Construct_UClass_AC_NormalPlanetPawn_Statics::NewProp_CollisionCom,
@@ -143,7 +244,7 @@ void EmptyLinkFunctionForGeneratedCodeC_NormalPlanetPawn() {}
 		}
 		return OuterClass;
 	}
-	IMPLEMENT_CLASS(AC_NormalPlanetPawn, 1327112550);
+	IMPLEMENT_CLASS(AC_NormalPlanetPawn, 1283759765);
 	template<> GALAXYQUEST_API UClass* StaticClass<AC_NormalPlanetPawn>()
 	{
 		return AC_NormalPlanetPawn::StaticClass();

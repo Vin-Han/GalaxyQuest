@@ -21,7 +21,7 @@ void EmptyLinkFunctionForGeneratedCodeGalaxyQuest_init() {}
 				nullptr,
 				0,
 				PKG_CompiledIn | 0x00000000,
-				0xED881FCC,
+				0x89ACE72B,
 				0x76C184A8,
 				METADATA_PARAMS(nullptr, 0)
 			};
