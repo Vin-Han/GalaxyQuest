@@ -1,0 +1,5 @@
+C:\Users\Dell\Desktop\GalaxyQuest\GalaxyQuest\Intermediate\Build\Win64\UE4Editor\Development\GalaxyQuest\Definitions.GalaxyQuest.h
+D:\unity\UE_4.24\Engine\Source\Runtime\CoreUObject\Public\UObject/GeneratedCppIncludes.h
+D:\unity\UE_4.24\Engine\Source\Runtime\CoreUObject\Public\UObject/MetaData.h
+C:\Users\Dell\Desktop\GalaxyQuest\GalaxyQuest\Source\GalaxyQuest/Public/Planet/C_NormalPlanetPawn.h
+C:\Users\Dell\Desktop\GalaxyQuest\GalaxyQuest\Intermediate\Build\Win64\UE4Editor\Inc\GalaxyQuest\C_NormalPlanetPawn.generated.h

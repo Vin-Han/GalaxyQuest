@@ -1,0 +1,14 @@
+{
+	"Targets": [
+		{
+			"Name": "GalaxyQuest",
+			"Path": "C:\\Users\\Dell\\Desktop\\GalaxyQuest\\GalaxyQuest\\Source\\GalaxyQuest.Target.cs",
+			"Type": "Game"
+		},
+		{
+			"Name": "GalaxyQuestEditor",
+			"Path": "C:\\Users\\Dell\\Desktop\\GalaxyQuest\\GalaxyQuest\\Source\\GalaxyQuestEditor.Target.cs",
+			"Type": "Editor"
+		}
+	]
+}

@@ -1,0 +1,11 @@
+﻿  Using 'git status' to determine working set for adaptive non-unity build (C:\Users\Dell\Desktop\GalaxyQuest).
+  Building GalaxyQuestEditor...
+  Using Visual Studio 2019 14.24.28316 toolchain (C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.24.28314) and Windows 10.0.18362.0 SDK (C:\Program Files (x86)\Windows Kits\10).
+  Building 3 actions with 12 processes...
+    [1/3] UE4Editor-GalaxyQuest-0006.lib
+      ���ڴ����� C:\Users\Dell\Desktop\GalaxyQuest\GalaxyQuest\Intermediate\Build\Win64\UE4Editor\Development\GalaxyQuest\UE4Editor-GalaxyQuest-0006.lib �Ͷ��� C:\Users\Dell\Desktop\GalaxyQuest\GalaxyQuest\Intermediate\Build\Win64\UE4Editor\Development\GalaxyQuest\UE4Editor-GalaxyQuest-0006.exp
+    [2/3] UE4Editor-GalaxyQuest-0006.dll
+      ���ڴ����� C:\Users\Dell\Desktop\GalaxyQuest\GalaxyQuest\Intermediate\Build\Win64\UE4Editor\Development\GalaxyQuest\UE4Editor-GalaxyQuest-0006.suppressed.lib �Ͷ��� C:\Users\Dell\Desktop\GalaxyQuest\GalaxyQuest\Intermediate\Build\Win64\UE4Editor\Development\GalaxyQuest\UE4Editor-GalaxyQuest-0006.suppressed.exp
+    [3/3] GalaxyQuestEditor.target
+  Total time in Parallel executor: 0.98 seconds
+  Total execution time: 1.71 seconds

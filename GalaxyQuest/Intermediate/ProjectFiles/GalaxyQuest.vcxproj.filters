@@ -1,0 +1,87 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <None Include="..\..\GalaxyQuest.uproject" />
+    <Filter Include="Source">
+      <UniqueIdentifier>{111526D9-B741-4385-A36B-CCB5E433B434}</UniqueIdentifier>
+    </Filter>
+    <None Include="..\..\Source\GalaxyQuest.Target.cs">
+      <Filter>Source</Filter>
+    </None>
+    <None Include="..\..\Source\GalaxyQuestEditor.Target.cs">
+      <Filter>Source</Filter>
+    </None>
+    <Filter Include="Config">
+      <UniqueIdentifier>{E9DC781A-AA21-438A-A5DA-5F1B4F5B6935}</UniqueIdentifier>
+    </Filter>
+    <None Include="..\..\Config\DefaultEditor.ini">
+      <Filter>Config</Filter>
+    </None>
+    <None Include="..\..\Config\DefaultEngine.ini">
+      <Filter>Config</Filter>
+    </None>
+    <None Include="..\..\Config\DefaultGame.ini">
+      <Filter>Config</Filter>
+    </None>
+    <Filter Include="Source\GalaxyQuest">
+      <UniqueIdentifier>{E5D0E08C-4656-4E6A-A17F-5B5C3ADF67C6}</UniqueIdentifier>
+    </Filter>
+    <None Include="..\..\Source\GalaxyQuest\GalaxyQuest.Build.cs">
+      <Filter>Source\GalaxyQuest</Filter>
+    </None>
+    <ClCompile Include="..\..\Source\GalaxyQuest\GalaxyQuest.cpp">
+      <Filter>Source\GalaxyQuest</Filter>
+    </ClCompile>
+    <ClInclude Include="..\..\Source\GalaxyQuest\GalaxyQuest.h">
+      <Filter>Source\GalaxyQuest</Filter>
+    </ClInclude>
+    <Filter Include="Source\GalaxyQuest\Private">
+      <UniqueIdentifier>{7C25AD9D-BBA4-4020-8446-E7648A3B5C9F}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source\GalaxyQuest\Private\GameMode">
+      <UniqueIdentifier>{5B89834E-432F-4EFE-81F2-1BBDAE51D094}</UniqueIdentifier>
+    </Filter>
+    <ClCompile Include="..\..\Source\GalaxyQuest\Private\GameMode\C_SinglePlanetGameMode.cpp">
+      <Filter>Source\GalaxyQuest\Private\GameMode</Filter>
+    </ClCompile>
+    <Filter Include="Source\GalaxyQuest\Public">
+      <UniqueIdentifier>{FFCB8E88-1798-4BC1-B6D9-B062F63C223D}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source\GalaxyQuest\Public\GameMode">
+      <UniqueIdentifier>{31A1A6B6-1C29-45CB-8F93-B9749FD2EA11}</UniqueIdentifier>
+    </Filter>
+    <ClInclude Include="..\..\Source\GalaxyQuest\Public\GameMode\C_SinglePlanetGameMode.h">
+      <Filter>Source\GalaxyQuest\Public\GameMode</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\Source\GalaxyQuest\Public\GameMode\C_SolarSystemGameMode.h">
+      <Filter>Source\GalaxyQuest\Public\GameMode</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\GalaxyQuest\Public\Planet\C_NormalPlanetPawn.h">
+      <Filter>Source\GalaxyQuest\Public\Planet</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\GalaxyQuest\Public\Planet\C_PlanetController.h">
+      <Filter>Source\GalaxyQuest\Public\Planet</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\Source\GalaxyQuest\Private\GameMode\C_SolarSystemGameMode.cpp">
+      <Filter>Source\GalaxyQuest\Private\GameMode</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\GalaxyQuest\Private\Planet\C_NormalPlanetPawn.cpp">
+      <Filter>Source\GalaxyQuest\Private\Planet</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\GalaxyQuest\Private\Planet\C_PlanetController.cpp">
+      <Filter>Source\GalaxyQuest\Private\Planet</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="Source\GalaxyQuest\Public\Planet">
+      <UniqueIdentifier>{e18f6d5d-f37d-40d3-8360-26a693b020a4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source\GalaxyQuest\Private\Planet">
+      <UniqueIdentifier>{5a49463b-6c98-41a5-b507-d7721097a380}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>

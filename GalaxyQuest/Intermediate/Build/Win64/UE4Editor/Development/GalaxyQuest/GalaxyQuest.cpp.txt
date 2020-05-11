@@ -1,0 +1,2 @@
+C:\Users\Dell\Desktop\GalaxyQuest\GalaxyQuest\Intermediate\Build\Win64\UE4Editor\Development\GalaxyQuest\Definitions.GalaxyQuest.h
+C:\Users\Dell\Desktop\GalaxyQuest\GalaxyQuest\Source\GalaxyQuest\GalaxyQuest.h

@@ -30,3 +30,7 @@
 *.exe
 *.out
 *.app
+GalaxyQuest/Saved/
+TempSource/
+GalaxyQuest/Binaries/
+GalaxyQuest/.vs/

@@ -1,0 +1,9 @@
+C:\Users\Dell\Desktop\GalaxyQuest\GalaxyQuest\Intermediate\Build\Win64\UE4Editor\Development\GalaxyQuest\Definitions.GalaxyQuest.h
+C:\Users\Dell\Desktop\GalaxyQuest\GalaxyQuest\Source\GalaxyQuest\Private\../Public/Planet/C_NormalPlanetPawn.h
+C:\Users\Dell\Desktop\GalaxyQuest\GalaxyQuest\Intermediate\Build\Win64\UE4Editor\Inc\GalaxyQuest\C_NormalPlanetPawn.generated.h
+D:\unity\UE_4.24\Engine\Source\Runtime\Engine\Classes\Components/SphereComponent.h
+D:\unity\UE_4.24\Engine\Source\Runtime\Engine\Classes\Components/ShapeComponent.h
+D:\unity\UE_4.24\Engine\Intermediate\Build\Win64\UE4Editor\Inc\Engine\ShapeComponent.generated.h
+D:\unity\UE_4.24\Engine\Intermediate\Build\Win64\UE4Editor\Inc\Engine\SphereComponent.generated.h
+D:\unity\UE_4.24\Engine\Source\Runtime\Engine\Classes\Components/SplineComponent.h
+D:\unity\UE_4.24\Engine\Intermediate\Build\Win64\UE4Editor\Inc\Engine\SplineComponent.generated.h
