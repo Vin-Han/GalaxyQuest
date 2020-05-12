@@ -64,6 +64,9 @@
     <ClInclude Include="..\..\Source\GalaxyQuest\Public\Planet\C_PlanetController.h">
       <Filter>Source\GalaxyQuest\Public\Planet</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\Source\GalaxyQuest\Public\Planet\C_TrackPlanetPawn.h">
+      <Filter>Source\GalaxyQuest\Public\Planet</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\Source\GalaxyQuest\Private\GameMode\C_SolarSystemGameMode.cpp">
@@ -73,6 +76,9 @@
       <Filter>Source\GalaxyQuest\Private\Planet</Filter>
     </ClCompile>
     <ClCompile Include="..\..\Source\GalaxyQuest\Private\Planet\C_PlanetController.cpp">
+      <Filter>Source\GalaxyQuest\Private\Planet</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\GalaxyQuest\Private\Planet\C_TrackPlanetPawn.cpp">
       <Filter>Source\GalaxyQuest\Private\Planet</Filter>
     </ClCompile>
   </ItemGroup>

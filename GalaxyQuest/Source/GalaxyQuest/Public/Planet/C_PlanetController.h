@@ -6,11 +6,8 @@
 #include "AIController.h"
 #include "C_PlanetController.generated.h"
 
-/**
- * 
- */
-
 class AC_NormalPlanetPawn;
+class AC_TrackPlanetPawn;
 
 UCLASS()
 class GALAXYQUEST_API AC_PlanetController : public AAIController
@@ -18,16 +15,13 @@ class GALAXYQUEST_API AC_PlanetController : public AAIController
 	GENERATED_BODY()
 	
 public:
-	virtual void Tick(float DeltaTime) override;
-
 	virtual void OnPossess(APawn* InPawn) override;
+
+	void InitializePlanetOval();
 	
 public:
 	UPROPERTY()
 		AC_NormalPlanetPawn* Planet;
-
-public:
-	float RotationOnce;
-	float RevolutionOnce;
-	float CurRevolution;
+	UPROPERTY()
+		AC_TrackPlanetPawn* Orbit;
 };

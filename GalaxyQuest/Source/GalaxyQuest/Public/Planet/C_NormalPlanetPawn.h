@@ -9,7 +9,7 @@
 class USphereComponent;
 class USceneComponent;
 class USplineComponent;
-class USpringArmComponent;
+class AC_TrackPlanetPawn;
 
 UCLASS()
 class GALAXYQUEST_API AC_NormalPlanetPawn : public APawn
@@ -17,42 +17,59 @@ class GALAXYQUEST_API AC_NormalPlanetPawn : public APawn
 	GENERATED_BODY()
 
 public:
-	// Sets default values for this pawn's properties
 	AC_NormalPlanetPawn();
 
-protected:
-	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
+	virtual void Tick(float DeltaTime) override;
 public:
+	/*
+	CollisionCom is for gameplay
+	SceneCom is for the changeable tilt of itself
+	PlanetMesh is for self rotation
+	*/
 	UPROPERTY(VisibleAnyWhere)
 		USphereComponent* CollisionCom;
+
 	UPROPERTY(VisibleAnyWhere)
 		UStaticMeshComponent* PlanetMesh;
+
 	UPROPERTY(VisibleAnyWhere)
 		USceneComponent* SceneCom;
+
 public:
 	UPROPERTY(EditAnyWhere,CateGory = "Speed")
-		float SelfRotation;
+		float RotationHour;
 	UPROPERTY(EditAnyWhere, CateGory = "Speed")
-		float Revolution;
-	UPROPERTY(EditAnyWhere, CateGory = "Speed")
-		float CloseDis;
-	UPROPERTY(EditAnyWhere, CateGory = "Speed")
-		float FarDis;
+		float RevolutionDay;
 	UPROPERTY(EditAnyWhere, CateGory = "Speed")
 		float Tilt;
 	UPROPERTY(EditAnyWhere, CateGory = "Speed")
-		float CurDegree;
+		float CurTilt;
+	UPROPERTY(EditAnyWhere, CateGory = "Speed")
+		bool bIsTiltClockWise;
 
-	UPROPERTY()
-		float OvalA;
-	UPROPERTY()
-		float OvalB;
-	UPROPERTY()
-		float OvalC;
-	UPROPERTY()
-		float OvalA2;
-	UPROPERTY()
-		float OvalB2;
+	UPROPERTY(EditAnyWhere, CateGory = "Revolution")
+		AActor* Target;
+	UPROPERTY(EditAnyWhere, CateGory = "Revolution")
+		TSubclassOf<AC_TrackPlanetPawn> OrbitType;
+	UPROPERTY(EditAnyWhere, CateGory = "Revolution")
+		float CloseDistance;
+	UPROPERTY(EditAnyWhere, CateGory = "Revolution")
+		float FarDistance;
+	UPROPERTY(EditAnyWhere, CateGory = "Revolution")
+		float CurDegree;
+	UPROPERTY(EditAnyWhere, CateGory = "Revolution")
+		float SunTilt;
+
+public:
+	float RotationDay;
+	float TiltDay;
+	FVector TargetPosition;
+
+	float OvalA;
+	float OvalB;
+	float OvalC;
+	float OvalA2;
+	float OvalB2;
 };

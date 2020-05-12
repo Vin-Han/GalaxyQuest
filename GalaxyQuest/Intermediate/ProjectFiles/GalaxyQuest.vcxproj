@@ -367,9 +367,11 @@
     <ClCompile Include="..\..\Source\GalaxyQuest\Private\GameMode\C_SolarSystemGameMode.cpp" />
     <ClCompile Include="..\..\Source\GalaxyQuest\Private\Planet\C_NormalPlanetPawn.cpp" />
     <ClCompile Include="..\..\Source\GalaxyQuest\Private\Planet\C_PlanetController.cpp" />
+    <ClCompile Include="..\..\Source\GalaxyQuest\Private\Planet\C_TrackPlanetPawn.cpp" />
     <ClInclude Include="..\..\Source\GalaxyQuest\Public\GameMode\C_SolarSystemGameMode.h" />
     <ClInclude Include="..\..\Source\GalaxyQuest\Public\Planet\C_NormalPlanetPawn.h" />
     <ClInclude Include="..\..\Source\GalaxyQuest\Public\Planet\C_PlanetController.h" />
+    <ClInclude Include="..\..\Source\GalaxyQuest\Public\Planet\C_TrackPlanetPawn.h" />
     <None Include="..\..\GalaxyQuest.uproject" />
     <None Include="..\..\Source\GalaxyQuest.Target.cs" />
     <None Include="..\..\Source\GalaxyQuestEditor.Target.cs" />
