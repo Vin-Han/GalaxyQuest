@@ -21,8 +21,8 @@ void EmptyLinkFunctionForGeneratedCodeGalaxyQuest_init() {}
 				nullptr,
 				0,
 				PKG_CompiledIn | 0x00000000,
-				0xE79A37EA,
-				0x79084BC1,
+				0x8C7956A9,
+				0xFA40FE06,
 				METADATA_PARAMS(nullptr, 0)
 			};
 			UE4CodeGen_Private::ConstructUPackage(ReturnPackage, PackageParams);

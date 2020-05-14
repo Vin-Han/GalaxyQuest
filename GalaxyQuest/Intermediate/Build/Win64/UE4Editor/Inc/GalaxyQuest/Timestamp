@@ -1,5 +1,8 @@
+C:\Users\Dell\Desktop\GalaxyQuest\GalaxyQuest\Source\GalaxyQuest\Public\Character\C_SystemCharacter.h
 C:\Users\Dell\Desktop\GalaxyQuest\GalaxyQuest\Source\GalaxyQuest\Public\GameMode\C_SinglePlanetGameMode.h
 C:\Users\Dell\Desktop\GalaxyQuest\GalaxyQuest\Source\GalaxyQuest\Public\Planet\C_PlanetController.h
-C:\Users\Dell\Desktop\GalaxyQuest\GalaxyQuest\Source\GalaxyQuest\Public\GameMode\C_SolarSystemGameMode.h
+C:\Users\Dell\Desktop\GalaxyQuest\GalaxyQuest\Source\GalaxyQuest\Public\Character\C_SystemCharacterController.h
+C:\Users\Dell\Desktop\GalaxyQuest\GalaxyQuest\Source\GalaxyQuest\Public\Planet\C_SubordinatePlanet.h
 C:\Users\Dell\Desktop\GalaxyQuest\GalaxyQuest\Source\GalaxyQuest\Public\Planet\C_NormalPlanetPawn.h
-C:\Users\Dell\Desktop\GalaxyQuest\GalaxyQuest\Source\GalaxyQuest\Public\Planet\C_TrackPlanetPawn.h
+C:\Users\Dell\Desktop\GalaxyQuest\GalaxyQuest\Source\GalaxyQuest\Public\GameMode\C_SolarSystemGameMode.h
+C:\Users\Dell\Desktop\GalaxyQuest\GalaxyQuest\Source\GalaxyQuest\Public\Character\C_SystemCharacterState.h

@@ -364,14 +364,20 @@
     <NMakeOutput>..\..\Binaries\Android\GalaxyQuest-Android-Shipping.so</NMakeOutput>
   </PropertyGroup>
   <ItemGroup>
+    <ClCompile Include="..\..\Source\GalaxyQuest\Private\Character\C_SystemCharacter.cpp" />
+    <ClCompile Include="..\..\Source\GalaxyQuest\Private\Character\C_SystemCharacterController.cpp" />
+    <ClCompile Include="..\..\Source\GalaxyQuest\Private\Character\C_SystemCharacterState.cpp" />
     <ClCompile Include="..\..\Source\GalaxyQuest\Private\GameMode\C_SolarSystemGameMode.cpp" />
     <ClCompile Include="..\..\Source\GalaxyQuest\Private\Planet\C_NormalPlanetPawn.cpp" />
     <ClCompile Include="..\..\Source\GalaxyQuest\Private\Planet\C_PlanetController.cpp" />
-    <ClCompile Include="..\..\Source\GalaxyQuest\Private\Planet\C_TrackPlanetPawn.cpp" />
+    <ClCompile Include="..\..\Source\GalaxyQuest\Private\Planet\C_SubordinatePlanet.cpp" />
+    <ClInclude Include="..\..\Source\GalaxyQuest\Public\Character\C_SystemCharacter.h" />
+    <ClInclude Include="..\..\Source\GalaxyQuest\Public\Character\C_SystemCharacterController.h" />
+    <ClInclude Include="..\..\Source\GalaxyQuest\Public\Character\C_SystemCharacterState.h" />
     <ClInclude Include="..\..\Source\GalaxyQuest\Public\GameMode\C_SolarSystemGameMode.h" />
     <ClInclude Include="..\..\Source\GalaxyQuest\Public\Planet\C_NormalPlanetPawn.h" />
     <ClInclude Include="..\..\Source\GalaxyQuest\Public\Planet\C_PlanetController.h" />
-    <ClInclude Include="..\..\Source\GalaxyQuest\Public\Planet\C_TrackPlanetPawn.h" />
+    <ClInclude Include="..\..\Source\GalaxyQuest\Public\Planet\C_SubordinatePlanet.h" />
     <None Include="..\..\GalaxyQuest.uproject" />
     <None Include="..\..\Source\GalaxyQuest.Target.cs" />
     <None Include="..\..\Source\GalaxyQuestEditor.Target.cs" />

@@ -8,8 +8,6 @@
 
 class USphereComponent;
 class USceneComponent;
-class USplineComponent;
-class AC_TrackPlanetPawn;
 
 UCLASS()
 class GALAXYQUEST_API AC_NormalPlanetPawn : public APawn
@@ -18,10 +16,6 @@ class GALAXYQUEST_API AC_NormalPlanetPawn : public APawn
 
 public:
 	AC_NormalPlanetPawn();
-
-	virtual void BeginPlay() override;
-
-	virtual void Tick(float DeltaTime) override;
 public:
 	/*
 	CollisionCom is for gameplay
@@ -37,39 +31,34 @@ public:
 	UPROPERTY(VisibleAnyWhere)
 		USceneComponent* SceneCom;
 
+	UPROPERTY(VisibleAnyWhere)
+		UStaticMeshComponent* OrbitMesh;
+
 public:
-	UPROPERTY(EditAnyWhere,CateGory = "Speed")
+	/*Self Rotation*/
+	UPROPERTY(EditAnyWhere, CateGory = "AA_Self_Rotaion")
 		float RotationHour;
-	UPROPERTY(EditAnyWhere, CateGory = "Speed")
+	UPROPERTY(EditAnyWhere, CateGory = "AA_Self_Rotaion")
+		float RotationTilt;
+	UPROPERTY(EditAnyWhere, CateGory = "AA_Self_Rotaion")
+		float RotationCurrentTilt;
+	UPROPERTY(EditAnyWhere, CateGory = "AA_Self_Rotaion")
+		float RotationSlowTimes;
+	UPROPERTY(EditAnyWhere, CateGory = "AA_Self_Rotaion")
+		bool  IsTiltClockWise;
+
+	/*Relative Revolution*/
+	UPROPERTY(EditAnyWhere, CateGory = "AB_Relative_Recolution")
+		AC_NormalPlanetPawn* RevolutionTarget;
+	UPROPERTY(EditAnyWhere, CateGory = "AB_Relative_Recolution")
 		float RevolutionDay;
-	UPROPERTY(EditAnyWhere, CateGory = "Speed")
-		float Tilt;
-	UPROPERTY(EditAnyWhere, CateGory = "Speed")
-		float CurTilt;
-	UPROPERTY(EditAnyWhere, CateGory = "Speed")
-		bool bIsTiltClockWise;
-
-	UPROPERTY(EditAnyWhere, CateGory = "Revolution")
-		AActor* Target;
-	UPROPERTY(EditAnyWhere, CateGory = "Revolution")
-		TSubclassOf<AC_TrackPlanetPawn> OrbitType;
-	UPROPERTY(EditAnyWhere, CateGory = "Revolution")
+	UPROPERTY(EditAnyWhere, CateGory = "AB_Relative_Recolution")
 		float CloseDistance;
-	UPROPERTY(EditAnyWhere, CateGory = "Revolution")
+	UPROPERTY(EditAnyWhere, CateGory = "AB_Relative_Recolution")
 		float FarDistance;
-	UPROPERTY(EditAnyWhere, CateGory = "Revolution")
-		float CurDegree;
-	UPROPERTY(EditAnyWhere, CateGory = "Revolution")
-		float SunTilt;
+	UPROPERTY(EditAnyWhere, CateGory = "AB_Relative_Recolution")
+		float RevolutionTilt;
+	UPROPERTY(EditAnyWhere, CateGory = "AB_Relative_Recolution")
+		float RevolutionCurrentDegree;
 
-public:
-	float RotationDay;
-	float TiltDay;
-	FVector TargetPosition;
-
-	float OvalA;
-	float OvalB;
-	float OvalC;
-	float OvalA2;
-	float OvalB2;
 };

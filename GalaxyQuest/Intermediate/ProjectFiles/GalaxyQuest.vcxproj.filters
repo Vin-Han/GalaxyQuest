@@ -64,8 +64,17 @@
     <ClInclude Include="..\..\Source\GalaxyQuest\Public\Planet\C_PlanetController.h">
       <Filter>Source\GalaxyQuest\Public\Planet</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Source\GalaxyQuest\Public\Planet\C_TrackPlanetPawn.h">
+    <ClInclude Include="..\..\Source\GalaxyQuest\Public\Planet\C_SubordinatePlanet.h">
       <Filter>Source\GalaxyQuest\Public\Planet</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\GalaxyQuest\Public\Character\C_SystemCharacter.h">
+      <Filter>Source\GalaxyQuest\Public\Character</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\GalaxyQuest\Public\Character\C_SystemCharacterController.h">
+      <Filter>Source\GalaxyQuest\Public\Character</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\GalaxyQuest\Public\Character\C_SystemCharacterState.h">
+      <Filter>Source\GalaxyQuest\Public\Character</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -78,8 +87,17 @@
     <ClCompile Include="..\..\Source\GalaxyQuest\Private\Planet\C_PlanetController.cpp">
       <Filter>Source\GalaxyQuest\Private\Planet</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\Source\GalaxyQuest\Private\Planet\C_TrackPlanetPawn.cpp">
+    <ClCompile Include="..\..\Source\GalaxyQuest\Private\Planet\C_SubordinatePlanet.cpp">
       <Filter>Source\GalaxyQuest\Private\Planet</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\GalaxyQuest\Private\Character\C_SystemCharacter.cpp">
+      <Filter>Source\GalaxyQuest\Private\Character</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\GalaxyQuest\Private\Character\C_SystemCharacterController.cpp">
+      <Filter>Source\GalaxyQuest\Private\Character</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\GalaxyQuest\Private\Character\C_SystemCharacterState.cpp">
+      <Filter>Source\GalaxyQuest\Private\Character</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -88,6 +106,12 @@
     </Filter>
     <Filter Include="Source\GalaxyQuest\Private\Planet">
       <UniqueIdentifier>{5a49463b-6c98-41a5-b507-d7721097a380}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source\GalaxyQuest\Public\Character">
+      <UniqueIdentifier>{a4bfea85-acbb-4f87-a780-c9cf17a1cf46}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source\GalaxyQuest\Private\Character">
+      <UniqueIdentifier>{8dd8ad5c-1365-4fdf-93a3-f309203fffcd}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

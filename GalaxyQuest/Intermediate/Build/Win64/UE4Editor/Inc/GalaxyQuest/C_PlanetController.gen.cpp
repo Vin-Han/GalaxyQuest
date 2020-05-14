@@ -17,7 +17,7 @@ void EmptyLinkFunctionForGeneratedCodeC_PlanetController() {}
 	GALAXYQUEST_API UClass* Z_Construct_UClass_AC_PlanetController();
 	AIMODULE_API UClass* Z_Construct_UClass_AAIController();
 	UPackage* Z_Construct_UPackage__Script_GalaxyQuest();
-	GALAXYQUEST_API UClass* Z_Construct_UClass_AC_TrackPlanetPawn_NoRegister();
+	COREUOBJECT_API UScriptStruct* Z_Construct_UScriptStruct_FVector();
 	GALAXYQUEST_API UClass* Z_Construct_UClass_AC_NormalPlanetPawn_NoRegister();
 // End Cross Module References
 	void AC_PlanetController::StaticRegisterNativesAC_PlanetController()
@@ -34,9 +34,33 @@ void EmptyLinkFunctionForGeneratedCodeC_PlanetController() {}
 		static const UE4CodeGen_Private::FMetaDataPairParam Class_MetaDataParams[];
 #endif
 #if WITH_METADATA
-		static const UE4CodeGen_Private::FMetaDataPairParam NewProp_Orbit_MetaData[];
+		static const UE4CodeGen_Private::FMetaDataPairParam NewProp_OvalLocation_MetaData[];
 #endif
-		static const UE4CodeGen_Private::FObjectPropertyParams NewProp_Orbit;
+		static const UE4CodeGen_Private::FStructPropertyParams NewProp_OvalLocation;
+#if WITH_METADATA
+		static const UE4CodeGen_Private::FMetaDataPairParam NewProp_CurrentRevolution_MetaData[];
+#endif
+		static const UE4CodeGen_Private::FFloatPropertyParams NewProp_CurrentRevolution;
+#if WITH_METADATA
+		static const UE4CodeGen_Private::FMetaDataPairParam NewProp_RelativeRevolution_MetaData[];
+#endif
+		static const UE4CodeGen_Private::FFloatPropertyParams NewProp_RelativeRevolution;
+#if WITH_METADATA
+		static const UE4CodeGen_Private::FMetaDataPairParam NewProp_bIsClockWise_MetaData[];
+#endif
+		static const UE4CodeGen_Private::FFloatPropertyParams NewProp_bIsClockWise;
+#if WITH_METADATA
+		static const UE4CodeGen_Private::FMetaDataPairParam NewProp_TotalSelfTilt_MetaData[];
+#endif
+		static const UE4CodeGen_Private::FFloatPropertyParams NewProp_TotalSelfTilt;
+#if WITH_METADATA
+		static const UE4CodeGen_Private::FMetaDataPairParam NewProp_SelfTilt_MetaData[];
+#endif
+		static const UE4CodeGen_Private::FFloatPropertyParams NewProp_SelfTilt;
+#if WITH_METADATA
+		static const UE4CodeGen_Private::FMetaDataPairParam NewProp_SelfRotaion_MetaData[];
+#endif
+		static const UE4CodeGen_Private::FFloatPropertyParams NewProp_SelfRotaion;
 #if WITH_METADATA
 		static const UE4CodeGen_Private::FMetaDataPairParam NewProp_Planet_MetaData[];
 #endif
@@ -57,11 +81,57 @@ void EmptyLinkFunctionForGeneratedCodeC_PlanetController() {}
 	};
 #endif
 #if WITH_METADATA
-	const UE4CodeGen_Private::FMetaDataPairParam Z_Construct_UClass_AC_PlanetController_Statics::NewProp_Orbit_MetaData[] = {
+	const UE4CodeGen_Private::FMetaDataPairParam Z_Construct_UClass_AC_PlanetController_Statics::NewProp_OvalLocation_MetaData[] = {
+		{ "Comment", "//Current\n" },
+		{ "ModuleRelativePath", "Public/Planet/C_PlanetController.h" },
+		{ "ToolTip", "Current" },
+	};
+#endif
+	const UE4CodeGen_Private::FStructPropertyParams Z_Construct_UClass_AC_PlanetController_Statics::NewProp_OvalLocation = { "OvalLocation", nullptr, (EPropertyFlags)0x0010000000000000, UE4CodeGen_Private::EPropertyGenFlags::Struct, RF_Public|RF_Transient|RF_MarkAsNative, 1, STRUCT_OFFSET(AC_PlanetController, OvalLocation), Z_Construct_UScriptStruct_FVector, METADATA_PARAMS(Z_Construct_UClass_AC_PlanetController_Statics::NewProp_OvalLocation_MetaData, UE_ARRAY_COUNT(Z_Construct_UClass_AC_PlanetController_Statics::NewProp_OvalLocation_MetaData)) };
+#if WITH_METADATA
+	const UE4CodeGen_Private::FMetaDataPairParam Z_Construct_UClass_AC_PlanetController_Statics::NewProp_CurrentRevolution_MetaData[] = {
+		{ "Comment", "//Everyday\n" },
+		{ "ModuleRelativePath", "Public/Planet/C_PlanetController.h" },
+		{ "ToolTip", "Everyday" },
+	};
+#endif
+	const UE4CodeGen_Private::FFloatPropertyParams Z_Construct_UClass_AC_PlanetController_Statics::NewProp_CurrentRevolution = { "CurrentRevolution", nullptr, (EPropertyFlags)0x0010000000000000, UE4CodeGen_Private::EPropertyGenFlags::Float, RF_Public|RF_Transient|RF_MarkAsNative, 1, STRUCT_OFFSET(AC_PlanetController, CurrentRevolution), METADATA_PARAMS(Z_Construct_UClass_AC_PlanetController_Statics::NewProp_CurrentRevolution_MetaData, UE_ARRAY_COUNT(Z_Construct_UClass_AC_PlanetController_Statics::NewProp_CurrentRevolution_MetaData)) };
+#if WITH_METADATA
+	const UE4CodeGen_Private::FMetaDataPairParam Z_Construct_UClass_AC_PlanetController_Statics::NewProp_RelativeRevolution_MetaData[] = {
 		{ "ModuleRelativePath", "Public/Planet/C_PlanetController.h" },
 	};
 #endif
-	const UE4CodeGen_Private::FObjectPropertyParams Z_Construct_UClass_AC_PlanetController_Statics::NewProp_Orbit = { "Orbit", nullptr, (EPropertyFlags)0x0010000000000000, UE4CodeGen_Private::EPropertyGenFlags::Object, RF_Public|RF_Transient|RF_MarkAsNative, 1, STRUCT_OFFSET(AC_PlanetController, Orbit), Z_Construct_UClass_AC_TrackPlanetPawn_NoRegister, METADATA_PARAMS(Z_Construct_UClass_AC_PlanetController_Statics::NewProp_Orbit_MetaData, UE_ARRAY_COUNT(Z_Construct_UClass_AC_PlanetController_Statics::NewProp_Orbit_MetaData)) };
+	const UE4CodeGen_Private::FFloatPropertyParams Z_Construct_UClass_AC_PlanetController_Statics::NewProp_RelativeRevolution = { "RelativeRevolution", nullptr, (EPropertyFlags)0x0010000000000000, UE4CodeGen_Private::EPropertyGenFlags::Float, RF_Public|RF_Transient|RF_MarkAsNative, 1, STRUCT_OFFSET(AC_PlanetController, RelativeRevolution), METADATA_PARAMS(Z_Construct_UClass_AC_PlanetController_Statics::NewProp_RelativeRevolution_MetaData, UE_ARRAY_COUNT(Z_Construct_UClass_AC_PlanetController_Statics::NewProp_RelativeRevolution_MetaData)) };
+#if WITH_METADATA
+	const UE4CodeGen_Private::FMetaDataPairParam Z_Construct_UClass_AC_PlanetController_Statics::NewProp_bIsClockWise_MetaData[] = {
+		{ "Comment", "//Total\n" },
+		{ "ModuleRelativePath", "Public/Planet/C_PlanetController.h" },
+		{ "ToolTip", "Total" },
+	};
+#endif
+	const UE4CodeGen_Private::FFloatPropertyParams Z_Construct_UClass_AC_PlanetController_Statics::NewProp_bIsClockWise = { "bIsClockWise", nullptr, (EPropertyFlags)0x0010000000000000, UE4CodeGen_Private::EPropertyGenFlags::Float, RF_Public|RF_Transient|RF_MarkAsNative, 1, STRUCT_OFFSET(AC_PlanetController, bIsClockWise), METADATA_PARAMS(Z_Construct_UClass_AC_PlanetController_Statics::NewProp_bIsClockWise_MetaData, UE_ARRAY_COUNT(Z_Construct_UClass_AC_PlanetController_Statics::NewProp_bIsClockWise_MetaData)) };
+#if WITH_METADATA
+	const UE4CodeGen_Private::FMetaDataPairParam Z_Construct_UClass_AC_PlanetController_Statics::NewProp_TotalSelfTilt_MetaData[] = {
+		{ "Comment", "//Everyday\n" },
+		{ "ModuleRelativePath", "Public/Planet/C_PlanetController.h" },
+		{ "ToolTip", "Everyday" },
+	};
+#endif
+	const UE4CodeGen_Private::FFloatPropertyParams Z_Construct_UClass_AC_PlanetController_Statics::NewProp_TotalSelfTilt = { "TotalSelfTilt", nullptr, (EPropertyFlags)0x0010000000000000, UE4CodeGen_Private::EPropertyGenFlags::Float, RF_Public|RF_Transient|RF_MarkAsNative, 1, STRUCT_OFFSET(AC_PlanetController, TotalSelfTilt), METADATA_PARAMS(Z_Construct_UClass_AC_PlanetController_Statics::NewProp_TotalSelfTilt_MetaData, UE_ARRAY_COUNT(Z_Construct_UClass_AC_PlanetController_Statics::NewProp_TotalSelfTilt_MetaData)) };
+#if WITH_METADATA
+	const UE4CodeGen_Private::FMetaDataPairParam Z_Construct_UClass_AC_PlanetController_Statics::NewProp_SelfTilt_MetaData[] = {
+		{ "Comment", "//Everyday\n" },
+		{ "ModuleRelativePath", "Public/Planet/C_PlanetController.h" },
+		{ "ToolTip", "Everyday" },
+	};
+#endif
+	const UE4CodeGen_Private::FFloatPropertyParams Z_Construct_UClass_AC_PlanetController_Statics::NewProp_SelfTilt = { "SelfTilt", nullptr, (EPropertyFlags)0x0010000000000000, UE4CodeGen_Private::EPropertyGenFlags::Float, RF_Public|RF_Transient|RF_MarkAsNative, 1, STRUCT_OFFSET(AC_PlanetController, SelfTilt), METADATA_PARAMS(Z_Construct_UClass_AC_PlanetController_Statics::NewProp_SelfTilt_MetaData, UE_ARRAY_COUNT(Z_Construct_UClass_AC_PlanetController_Statics::NewProp_SelfTilt_MetaData)) };
+#if WITH_METADATA
+	const UE4CodeGen_Private::FMetaDataPairParam Z_Construct_UClass_AC_PlanetController_Statics::NewProp_SelfRotaion_MetaData[] = {
+		{ "ModuleRelativePath", "Public/Planet/C_PlanetController.h" },
+	};
+#endif
+	const UE4CodeGen_Private::FFloatPropertyParams Z_Construct_UClass_AC_PlanetController_Statics::NewProp_SelfRotaion = { "SelfRotaion", nullptr, (EPropertyFlags)0x0010000000000000, UE4CodeGen_Private::EPropertyGenFlags::Float, RF_Public|RF_Transient|RF_MarkAsNative, 1, STRUCT_OFFSET(AC_PlanetController, SelfRotaion), METADATA_PARAMS(Z_Construct_UClass_AC_PlanetController_Statics::NewProp_SelfRotaion_MetaData, UE_ARRAY_COUNT(Z_Construct_UClass_AC_PlanetController_Statics::NewProp_SelfRotaion_MetaData)) };
 #if WITH_METADATA
 	const UE4CodeGen_Private::FMetaDataPairParam Z_Construct_UClass_AC_PlanetController_Statics::NewProp_Planet_MetaData[] = {
 		{ "ModuleRelativePath", "Public/Planet/C_PlanetController.h" },
@@ -69,7 +139,13 @@ void EmptyLinkFunctionForGeneratedCodeC_PlanetController() {}
 #endif
 	const UE4CodeGen_Private::FObjectPropertyParams Z_Construct_UClass_AC_PlanetController_Statics::NewProp_Planet = { "Planet", nullptr, (EPropertyFlags)0x0010000000000000, UE4CodeGen_Private::EPropertyGenFlags::Object, RF_Public|RF_Transient|RF_MarkAsNative, 1, STRUCT_OFFSET(AC_PlanetController, Planet), Z_Construct_UClass_AC_NormalPlanetPawn_NoRegister, METADATA_PARAMS(Z_Construct_UClass_AC_PlanetController_Statics::NewProp_Planet_MetaData, UE_ARRAY_COUNT(Z_Construct_UClass_AC_PlanetController_Statics::NewProp_Planet_MetaData)) };
 	const UE4CodeGen_Private::FPropertyParamsBase* const Z_Construct_UClass_AC_PlanetController_Statics::PropPointers[] = {
-		(const UE4CodeGen_Private::FPropertyParamsBase*)&Z_Construct_UClass_AC_PlanetController_Statics::NewProp_Orbit,
+		(const UE4CodeGen_Private::FPropertyParamsBase*)&Z_Construct_UClass_AC_PlanetController_Statics::NewProp_OvalLocation,
+		(const UE4CodeGen_Private::FPropertyParamsBase*)&Z_Construct_UClass_AC_PlanetController_Statics::NewProp_CurrentRevolution,
+		(const UE4CodeGen_Private::FPropertyParamsBase*)&Z_Construct_UClass_AC_PlanetController_Statics::NewProp_RelativeRevolution,
+		(const UE4CodeGen_Private::FPropertyParamsBase*)&Z_Construct_UClass_AC_PlanetController_Statics::NewProp_bIsClockWise,
+		(const UE4CodeGen_Private::FPropertyParamsBase*)&Z_Construct_UClass_AC_PlanetController_Statics::NewProp_TotalSelfTilt,
+		(const UE4CodeGen_Private::FPropertyParamsBase*)&Z_Construct_UClass_AC_PlanetController_Statics::NewProp_SelfTilt,
+		(const UE4CodeGen_Private::FPropertyParamsBase*)&Z_Construct_UClass_AC_PlanetController_Statics::NewProp_SelfRotaion,
 		(const UE4CodeGen_Private::FPropertyParamsBase*)&Z_Construct_UClass_AC_PlanetController_Statics::NewProp_Planet,
 	};
 	const FCppClassTypeInfoStatic Z_Construct_UClass_AC_PlanetController_Statics::StaticCppClassTypeInfo = {
@@ -99,7 +175,7 @@ void EmptyLinkFunctionForGeneratedCodeC_PlanetController() {}
 		}
 		return OuterClass;
 	}
-	IMPLEMENT_CLASS(AC_PlanetController, 3927629418);
+	IMPLEMENT_CLASS(AC_PlanetController, 2671569467);
 	template<> GALAXYQUEST_API UClass* StaticClass<AC_PlanetController>()
 	{
 		return AC_PlanetController::StaticClass();

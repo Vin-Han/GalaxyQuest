@@ -17,11 +17,38 @@ class GALAXYQUEST_API AC_PlanetController : public AAIController
 public:
 	virtual void OnPossess(APawn* InPawn) override;
 
-	void InitializePlanetOval();
+	virtual void Tick(float DeltaTime) override;
+
+	void InitializeOval();
+	void InitializeOffsetLocation();
+	void InitializeOrbit();
+	void InittializePlanet();
 	
 public:
 	UPROPERTY()
 		AC_NormalPlanetPawn* Planet;
+
+public:
+
 	UPROPERTY()
-		AC_TrackPlanetPawn* Orbit;
+		float SelfRotaion;//Everyday
+	UPROPERTY()
+		float SelfTilt;//Everyday
+	UPROPERTY()
+		float TotalSelfTilt;//Total
+	UPROPERTY()
+		float bIsClockWise;
+	UPROPERTY()
+		float RelativeRevolution;//Everyday
+	UPROPERTY()
+		float CurrentRevolution;//Current
+	UPROPERTY()
+		FVector OvalLocation;//Circle Point
+
+	/*Oval Related*/
+	float OvalA;
+	float OvalB;
+	float OvalC;
+	float OvalA2;
+	float OvalB2;
 };
