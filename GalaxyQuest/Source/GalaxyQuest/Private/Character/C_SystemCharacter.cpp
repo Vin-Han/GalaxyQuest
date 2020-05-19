@@ -7,6 +7,7 @@
 #include "GameFramework/SpringArmComponent.h"
 
 #include "Kismet/KismetMathLibrary.h"
+#include "Engine/Engine.h"
 
 AC_SystemCharacter::AC_SystemCharacter() {
 	PrimaryActorTick.bCanEverTick = true;
@@ -33,10 +34,18 @@ AC_SystemCharacter::AC_SystemCharacter() {
 void AC_SystemCharacter::BeginPlay()
 {
 	Super::BeginPlay();
-
 }
 
 #pragma region Move Control Relate
+void AC_SystemCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent){
+	Super::SetupPlayerInputComponent(PlayerInputComponent);
+	PlayerInputComponent->BindAxis("UpDown", this, &AC_SystemCharacter::MouseUpDown);
+	PlayerInputComponent->BindAxis("RightLeft", this, &AC_SystemCharacter::MouseRightLeft);
+	PlayerInputComponent->BindAxis("MoveForward", this, &AC_SystemCharacter::MoveForward);
+	PlayerInputComponent->BindAxis("MoveTurn", this, &AC_SystemCharacter::MoveTurn);
+	PlayerInputComponent->BindAxis("MoveUpDown", this, &AC_SystemCharacter::MoveUpDown);
+}
+
 void AC_SystemCharacter::MouseUpDown(float value) {
 	if (CameraSpeed < 1) AddControllerYawInput(value);
 	else AddControllerYawInput(value * CameraSpeed);
@@ -81,13 +90,4 @@ void AC_SystemCharacter::Tick(float DeltaTime)
 	UpdateCurrentSpeed(DeltaTime);
 }
 
-void AC_SystemCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
-{
-	Super::SetupPlayerInputComponent(PlayerInputComponent);
-	PlayerInputComponent->BindAxis("UpDown", this, &AC_SystemCharacter::MouseUpDown);
-	PlayerInputComponent->BindAxis("RightLeft", this, &AC_SystemCharacter::MouseRightLeft);
-	PlayerInputComponent->BindAxis("MoveForward", this, &AC_SystemCharacter::MoveForward);
-	PlayerInputComponent->BindAxis("MoveTurn", this, &AC_SystemCharacter::MoveTurn);
-	PlayerInputComponent->BindAxis("MoveUpDown", this, &AC_SystemCharacter::MoveUpDown);
-}
 

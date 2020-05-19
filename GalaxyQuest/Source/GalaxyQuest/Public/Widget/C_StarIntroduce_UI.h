@@ -1,5 +1,3 @@
-// Fill out your copyright notice in the Description page of Project Settings.
-
 #pragma once
 
 #include "CoreMinimal.h"
@@ -14,15 +12,21 @@ UCLASS()
 class GALAXYQUEST_API UC_StarIntroduce_UI : public UUserWidget
 {
 	GENERATED_BODY()
+
 public:
-	UPROPERTY(Meta = (BindWidget))
+	virtual bool Initialize() override;
+	
+public:
+	
+	UPROPERTY()
 		UButton* Button_Close;
-	UPROPERTY(Meta = (BindWidget))
+	UPROPERTY()
 		UButton* Button_Explore;
-	UPROPERTY(Meta = (BindWidget))
+	UPROPERTY()
 		UTextBlock* TextBlock_Name;
-	UPROPERTY(Meta = (BindWidget))
+	UPROPERTY()
 		UTextBlock* TextBlock_Intro;
-	UPROPERTY(Meta = (BindWidget))
+	UPROPERTY()
 		UImage* Image_Pic;
+	
 };

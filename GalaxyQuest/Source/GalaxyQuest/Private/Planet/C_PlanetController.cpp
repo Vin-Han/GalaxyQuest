@@ -5,24 +5,21 @@
 
 #include "Components/StaticMeshComponent.h"
 #include "Components/SphereComponent.h"
-#include "Components/Button.h"
-#include "Components/TextBlock.h"
-#include "Components/Image.h"
-
-#include "Kismet/GameplayStatics.h"
-#include "Engine/Level.h"
-#include "Engine/Engine.h"
 
 void AC_PlanetController::OnPossess(APawn* InPawn) {
 	Super::OnPossess(InPawn);
-	Planet = Cast<AC_NormalPlanetPawn>(InPawn);
+
+}
+
+void AC_PlanetController::BeginPlay(){
+	Super::BeginPlay();
+	Planet = Cast<AC_NormalPlanetPawn>(GetPawn());
 	if (Planet == NULL) { UE_LOG(LogTemp, Warning, TEXT("Planet Exchange Failed")) }
 	else {
 		InitializeOval();
 		InitializeOffsetLocation();
 		InitializeOrbit();
 		InitializePlanet();
-		//InitializeStarIntro();
 	}
 }
 
@@ -102,28 +99,5 @@ void AC_PlanetController::InitializePlanet() {
 
 	bIsClockWise = Planet->IsTiltClockWise;
 }
-/*
-void AC_PlanetController::InitializeStarIntro(){
-	StarInfor = CreateWidget<UC_StarIntroduce_UI>(GetGameInstance(),LoadClass<UC_StarIntroduce_UI>(nullptr,TEXT("WidgetBlueprint'/Game/UI/SolarSystemUI/UI_StarIntroduce.UI_StarIntroduce_c'")));
-	if (StarInfor) {
-		StarInfor->TextBlock_Name->SetText(FText::FromString(Planet->StarName));
-		StarInfor->TextBlock_Intro->SetText(FText::FromString(Planet->StarIntrodoce));
-		//StarInfor->Image_Pic->SetBrushFromTexture(Planet->StarPicture);
-		StarInfor->Button_Close->OnClicked.AddDynamic(this,&AC_PlanetController::StarCloseBtnOnClicked);
-		StarInfor->Button_Explore->OnClicked.AddDynamic(this, &AC_PlanetController::StarExploreBtnOnClicked);
-	}
-}
 
-void AC_PlanetController::StarCloseBtnOnClicked()
-{
-	UGameplayStatics::SetGamePaused(this,false);
-	//StarInfor->RemoveFromViewport();
-}
-
-void AC_PlanetController::StarExploreBtnOnClicked()
-{
-	UE_LOG(LogTemp,Warning,TEXT("OpenNewLevel"));
-	//UGameplayStatics::OpenLevel(GetWorld(), *(Planet->StarMap));
-}
-*/
 
