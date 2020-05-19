@@ -14,8 +14,8 @@ UCLASS()
 class GALAXYQUEST_API AC_SubordinatePlanet : public AActor
 {
 	GENERATED_BODY()
-	
-public:	
+
+public:
 
 	AC_SubordinatePlanet();
 
@@ -44,5 +44,5 @@ public:
 		float RotationDistance;
 	UPROPERTY(EditAnyWhere, CateGory = "AA_Self_Rotaion")
 		float RotationHour;
-		float RotationFrame;
+	float RotationFrame;
 };

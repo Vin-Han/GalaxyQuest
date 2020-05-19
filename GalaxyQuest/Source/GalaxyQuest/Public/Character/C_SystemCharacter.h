@@ -12,18 +12,50 @@ class GALAXYQUEST_API AC_SystemCharacter : public APawn
 	GENERATED_BODY()
 
 public:
-	// Sets default values for this pawn's properties
 	AC_SystemCharacter();
 
+	UPROPERTY(VisibleAnyWhere)
+		class USpringArmComponent* SpringArmCom;
+	UPROPERTY(VisibleAnyWhere)
+		class UCameraComponent* CameraCom;
+	UPROPERTY(VisibleAnyWhere)
+		class USkeletalMeshComponent* ShipMesh;
+	UPROPERTY(VisibleAnyWhere)
+		class UBoxComponent* CollisionCom;
+public:
+	UPROPERTY(EditAnyWhere, Category = "Speed")
+		float CameraSpeed;
+	UPROPERTY(EditAnyWhere, Category = "Speed")
+		float MoveSpeed;
+	UPROPERTY(EditAnyWhere, Category = "Speed")
+		float RotateSpeed;
+	UPROPERTY(EditAnyWhere, Category = "Speed")
+		float AttenuationSpeed;
+	UPROPERTY(EditAnyWhere, Category = "Speed")
+		float StopSpeed;
+private:
+	FVector CurrentSpeed;
+
 protected:
-	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
-public:	
-	// Called every frame
+public:
+	UFUNCTION()
+		void MouseUpDown(float value);
+	UFUNCTION()
+		void MouseRightLeft(float value);
+	UFUNCTION()
+		void MoveForward(float value);
+	UFUNCTION()
+		void MoveTurn(float value);
+	UFUNCTION()
+		void MoveUpDown(float value);
+	UFUNCTION()
+		void UpdateCurrentSpeed(float value);
+
+public:
 	virtual void Tick(float DeltaTime) override;
 
-	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
 };

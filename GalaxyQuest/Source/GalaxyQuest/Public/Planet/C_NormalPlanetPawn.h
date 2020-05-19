@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Pawn.h"
+#include "Engine/Texture2D.h"
 #include "C_NormalPlanetPawn.generated.h"
 
 class USphereComponent;
@@ -17,11 +18,6 @@ class GALAXYQUEST_API AC_NormalPlanetPawn : public APawn
 public:
 	AC_NormalPlanetPawn();
 public:
-	/*
-	CollisionCom is for gameplay
-	SceneCom is for the changeable tilt of itself
-	PlanetMesh is for self rotation
-	*/
 	UPROPERTY(VisibleAnyWhere)
 		USphereComponent* CollisionCom;
 
@@ -60,5 +56,15 @@ public:
 		float RevolutionTilt;
 	UPROPERTY(EditAnyWhere, CateGory = "AB_Relative_Recolution")
 		float RevolutionCurrentDegree;
-
+	/*
+public:
+	UPROPERTY(EditAnyWhere, CateGory = "Star_Infor")
+		FString StarName;
+	UPROPERTY(EditAnyWhere, CateGory = "Star_Infor")
+		FString StarIntrodoce;
+	UPROPERTY(EditAnyWhere, CateGory = "Star_Infor")
+		FString StarMap;
+	UPROPERTY(EditAnyWhere, CateGory = "Star_Infor")
+		UTexture2D StarPicture;
+	*/
 };

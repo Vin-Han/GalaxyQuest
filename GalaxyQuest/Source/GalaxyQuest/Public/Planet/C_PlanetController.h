@@ -8,28 +8,30 @@
 
 class AC_NormalPlanetPawn;
 class AC_TrackPlanetPawn;
+class UC_StarIntroduce_UI;
 
 UCLASS()
 class GALAXYQUEST_API AC_PlanetController : public AAIController
 {
 	GENERATED_BODY()
-	
+
 public:
 	virtual void OnPossess(APawn* InPawn) override;
+
+	//virtual void BeginPlay() override;
 
 	virtual void Tick(float DeltaTime) override;
 
 	void InitializeOval();
 	void InitializeOffsetLocation();
 	void InitializeOrbit();
-	void InittializePlanet();
-	
+	void InitializePlanet();
+	//void InitializeStarIntro();
 public:
 	UPROPERTY()
 		AC_NormalPlanetPawn* Planet;
 
 public:
-
 	UPROPERTY()
 		float SelfRotaion;//Everyday
 	UPROPERTY()
@@ -51,4 +53,14 @@ public:
 	float OvalC;
 	float OvalA2;
 	float OvalB2;
+	/*
+protected:
+	UPROPERTY()
+		UC_StarIntroduce_UI* StarInfor;
+public:
+	UFUNCTION()
+		void StarCloseBtnOnClicked();
+	UFUNCTION()
+		void StarExploreBtnOnClicked();
+	*/
 };
