@@ -56,7 +56,7 @@ public:
 		float RevolutionTilt;
 	UPROPERTY(EditAnyWhere, CateGory = "AB_Relative_Recolution")
 		float RevolutionCurrentDegree;
-	/*
+	
 public:
 	UPROPERTY(EditAnyWhere, CateGory = "Star_Infor")
 		FString StarName;
@@ -65,6 +65,5 @@ public:
 	UPROPERTY(EditAnyWhere, CateGory = "Star_Infor")
 		FString StarMap;
 	UPROPERTY(EditAnyWhere, CateGory = "Star_Infor")
-		UTexture2D StarPicture;
-	*/
+		UTexture2D* StarPicture;
 };

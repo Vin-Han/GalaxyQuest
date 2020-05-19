@@ -1,7 +1,7 @@
 #include "../Public/Planet/C_PlanetController.h"
 
 #include "../Public/Planet/C_NormalPlanetPawn.h"
-//#include "../Public/Widget/C_StarIntroduce_UI.h"
+#include "../Public/Widget/C_StarIntroduce_UI.h"
 
 #include "Components/StaticMeshComponent.h"
 #include "Components/SphereComponent.h"
@@ -37,11 +37,11 @@ void AC_PlanetController::Tick(float DeltaTime) {
 	FRotator TiltRotation = bIsClockWise ? FRotator(SelfTilt * DeltaTime, 0, 0) : FRotator(-SelfTilt * DeltaTime, 0, 0);
 	Planet->PlanetMesh->AddRelativeRotation(TiltRotation);
 
-	//
+	//Self Rotation
 	FRotator SelfRotation = FRotator(0, SelfRotaion * DeltaTime, 0);
 	Planet->PlanetMesh->AddLocalRotation(SelfRotation);
 
-	//Self Circle Rotation
+	//Relative Oval Revulotion
 	FVector NewPosition = FVector::ZeroVector;
 	CurrentRevolution += RelativeRevolution * DeltaTime;
 	if (CurrentRevolution >= 360) CurrentRevolution = 0;
