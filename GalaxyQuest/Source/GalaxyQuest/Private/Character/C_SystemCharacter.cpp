@@ -25,10 +25,12 @@ AC_SystemCharacter::AC_SystemCharacter() {
 	/*Move Control Relate*/
 	SpringArmCom->bUsePawnControlRotation = true;
 	CameraSpeed = 1;
-	RotateSpeed = 1;
+	RotateSpeed = 1.5;
 	MoveSpeed = 5;
 	AttenuationSpeed = 1;
 	StopSpeed = 10;
+	SpeedUpRate = 500;
+
 }
 
 void AC_SystemCharacter::BeginPlay()
@@ -65,12 +67,12 @@ void AC_SystemCharacter::MoveUpDown(float value) {
 	FRotator temp = FRotator::ZeroRotator;
 	float rSpeed = (CurrentSpeed.Size() / 100) * (RotateSpeed * value / 30);
 	temp.Pitch = rSpeed;
-	CollisionCom->AddRelativeRotation(temp);
+	AddActorLocalRotation(temp);
 }
 
 void AC_SystemCharacter::MoveForward(float value) {
 	FVector temp = GetActorRotation().Vector();
-	CollisionCom->AddImpulse(1000 * temp * MoveSpeed * value);
+	CollisionCom->AddImpulse(SpeedUpRate * temp * MoveSpeed * value);
 }
 void AC_SystemCharacter::UpdateCurrentSpeed(float value)
 {

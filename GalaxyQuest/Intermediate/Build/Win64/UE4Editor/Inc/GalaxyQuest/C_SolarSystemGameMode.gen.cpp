@@ -31,6 +31,15 @@ void EmptyLinkFunctionForGeneratedCodeC_SolarSystemGameMode() {}
 #if WITH_METADATA
 		static const UE4CodeGen_Private::FMetaDataPairParam Class_MetaDataParams[];
 #endif
+#if WITH_METADATA
+		static const UE4CodeGen_Private::FMetaDataPairParam NewProp_RadiusLimit_MetaData[];
+#endif
+		static const UE4CodeGen_Private::FFloatPropertyParams NewProp_RadiusLimit;
+#if WITH_METADATA
+		static const UE4CodeGen_Private::FMetaDataPairParam NewProp_HeightLimit_MetaData[];
+#endif
+		static const UE4CodeGen_Private::FFloatPropertyParams NewProp_HeightLimit;
+		static const UE4CodeGen_Private::FPropertyParamsBase* const PropPointers[];
 		static const FCppClassTypeInfoStatic StaticCppClassTypeInfo;
 		static const UE4CodeGen_Private::FClassParams ClassParams;
 	};
@@ -47,6 +56,24 @@ void EmptyLinkFunctionForGeneratedCodeC_SolarSystemGameMode() {}
 		{ "ShowCategories", "Input|MouseInput Input|TouchInput" },
 	};
 #endif
+#if WITH_METADATA
+	const UE4CodeGen_Private::FMetaDataPairParam Z_Construct_UClass_AC_SolarSystemGameMode_Statics::NewProp_RadiusLimit_MetaData[] = {
+		{ "Category", "C_SolarSystemGameMode" },
+		{ "ModuleRelativePath", "Public/GameMode/C_SolarSystemGameMode.h" },
+	};
+#endif
+	const UE4CodeGen_Private::FFloatPropertyParams Z_Construct_UClass_AC_SolarSystemGameMode_Statics::NewProp_RadiusLimit = { "RadiusLimit", nullptr, (EPropertyFlags)0x0010000000000001, UE4CodeGen_Private::EPropertyGenFlags::Float, RF_Public|RF_Transient|RF_MarkAsNative, 1, STRUCT_OFFSET(AC_SolarSystemGameMode, RadiusLimit), METADATA_PARAMS(Z_Construct_UClass_AC_SolarSystemGameMode_Statics::NewProp_RadiusLimit_MetaData, UE_ARRAY_COUNT(Z_Construct_UClass_AC_SolarSystemGameMode_Statics::NewProp_RadiusLimit_MetaData)) };
+#if WITH_METADATA
+	const UE4CodeGen_Private::FMetaDataPairParam Z_Construct_UClass_AC_SolarSystemGameMode_Statics::NewProp_HeightLimit_MetaData[] = {
+		{ "Category", "C_SolarSystemGameMode" },
+		{ "ModuleRelativePath", "Public/GameMode/C_SolarSystemGameMode.h" },
+	};
+#endif
+	const UE4CodeGen_Private::FFloatPropertyParams Z_Construct_UClass_AC_SolarSystemGameMode_Statics::NewProp_HeightLimit = { "HeightLimit", nullptr, (EPropertyFlags)0x0010000000000001, UE4CodeGen_Private::EPropertyGenFlags::Float, RF_Public|RF_Transient|RF_MarkAsNative, 1, STRUCT_OFFSET(AC_SolarSystemGameMode, HeightLimit), METADATA_PARAMS(Z_Construct_UClass_AC_SolarSystemGameMode_Statics::NewProp_HeightLimit_MetaData, UE_ARRAY_COUNT(Z_Construct_UClass_AC_SolarSystemGameMode_Statics::NewProp_HeightLimit_MetaData)) };
+	const UE4CodeGen_Private::FPropertyParamsBase* const Z_Construct_UClass_AC_SolarSystemGameMode_Statics::PropPointers[] = {
+		(const UE4CodeGen_Private::FPropertyParamsBase*)&Z_Construct_UClass_AC_SolarSystemGameMode_Statics::NewProp_RadiusLimit,
+		(const UE4CodeGen_Private::FPropertyParamsBase*)&Z_Construct_UClass_AC_SolarSystemGameMode_Statics::NewProp_HeightLimit,
+	};
 	const FCppClassTypeInfoStatic Z_Construct_UClass_AC_SolarSystemGameMode_Statics::StaticCppClassTypeInfo = {
 		TCppClassTypeTraits<AC_SolarSystemGameMode>::IsAbstract,
 	};
@@ -56,11 +83,11 @@ void EmptyLinkFunctionForGeneratedCodeC_SolarSystemGameMode() {}
 		&StaticCppClassTypeInfo,
 		DependentSingletons,
 		nullptr,
-		nullptr,
+		Z_Construct_UClass_AC_SolarSystemGameMode_Statics::PropPointers,
 		nullptr,
 		UE_ARRAY_COUNT(DependentSingletons),
 		0,
-		0,
+		UE_ARRAY_COUNT(Z_Construct_UClass_AC_SolarSystemGameMode_Statics::PropPointers),
 		0,
 		0x009002ACu,
 		METADATA_PARAMS(Z_Construct_UClass_AC_SolarSystemGameMode_Statics::Class_MetaDataParams, UE_ARRAY_COUNT(Z_Construct_UClass_AC_SolarSystemGameMode_Statics::Class_MetaDataParams))
@@ -74,7 +101,7 @@ void EmptyLinkFunctionForGeneratedCodeC_SolarSystemGameMode() {}
 		}
 		return OuterClass;
 	}
-	IMPLEMENT_CLASS(AC_SolarSystemGameMode, 191470870);
+	IMPLEMENT_CLASS(AC_SolarSystemGameMode, 854452564);
 	template<> GALAXYQUEST_API UClass* StaticClass<AC_SolarSystemGameMode>()
 	{
 		return AC_SolarSystemGameMode::StaticClass();

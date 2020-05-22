@@ -14,6 +14,14 @@ class GALAXYQUEST_API AC_SystemCharacter : public APawn
 public:
 	AC_SystemCharacter();
 
+	virtual void Tick(float DeltaTime) override;
+
+	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
+
+protected:
+	virtual void BeginPlay() override;
+
+public:
 	UPROPERTY(VisibleAnyWhere)
 		class USpringArmComponent* SpringArmCom;
 	UPROPERTY(VisibleAnyWhere)
@@ -22,6 +30,8 @@ public:
 		class USkeletalMeshComponent* ShipMesh;
 	UPROPERTY(VisibleAnyWhere)
 		class UBoxComponent* CollisionCom;
+
+#pragma region Move Related
 public:
 	UPROPERTY(EditAnyWhere, Category = "Speed")
 		float CameraSpeed;
@@ -33,11 +43,10 @@ public:
 		float AttenuationSpeed;
 	UPROPERTY(EditAnyWhere, Category = "Speed")
 		float StopSpeed;
+	float SpeedUpRate;
+
 private:
 	FVector CurrentSpeed;
-
-protected:
-	virtual void BeginPlay() override;
 
 public:
 	UFUNCTION()
@@ -52,10 +61,5 @@ public:
 		void MoveUpDown(float value);
 	UFUNCTION()
 		void UpdateCurrentSpeed(float value);
-
-public:
-	virtual void Tick(float DeltaTime) override;
-
-	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
-
+#pragma endregion
 };

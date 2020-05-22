@@ -19,7 +19,7 @@ AC_NormalPlanetPawn::AC_NormalPlanetPawn()
 	PlanetMesh->SetupAttachment(CollisionCom);
 	OrbitMesh->SetupAttachment(SceneCom);
 	
-	StarMap = "/Game/Blueprint/BP_Map/BP_SingleStar_Map.BP_SingleStar_Map'";
+	StarMap = "/Game/Blueprint/BP_Map/BP_Test_Map";
 	StarName = "NoNameNow";
 	StarIntrodoce = "NoIntroduceNow";
 	
