@@ -14,6 +14,7 @@
 
 #include "Camera/CameraComponent.h"
 #include "GameFramework/SpringArmComponent.h"
+#include "GameFramework/FloatingPawnMovement.h"
 
 #include "Kismet/GameplayStatics.h"
 #include "Engine/Engine.h"
@@ -24,21 +25,48 @@ void AC_SystemCharacterController::BeginPlay(){
 	InitializeShip();
 	InitializeStarWidget();
 	InitializeShipWidget();
-	InitializeDistanceLimit();
+
 	TargetMapName = "/Game/Blueprint/BP_Map/BP_Test_Map";
-	ArmChangeRate = 120;
-	CameraChangeRate = 20;
-
-	SpeedUptime = 4;
-	CurSpeedUpTime = SpeedUptime;
-
+	GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Red, TEXT("Hello,StartGameMode"));
 }
 
+void AC_SystemCharacterController::Tick(float DeltaSeconds){
+	Super::Tick(DeltaSeconds);
+	UpdateSpeedState(DeltaSeconds);
+}
 
+#pragma region Initialize Controller
 void AC_SystemCharacterController::InitializeShip(){
 	ShipCharacter = Cast<AC_SystemCharacter>(GetPawn());
 	if (ShipCharacter){
 		ShipCharacter->CollisionCom->OnComponentBeginOverlap.AddDynamic(this,&AC_SystemCharacterController::OverlapStar);
+		
+		SpeedGap = ShipCharacter->MaxSpeed * ShipCharacter->MaxSpeedRate;
+		CurSpeed = 0;
+
+		ShipCharacter->CameraSpeed		= FMath::Clamp(ShipCharacter->CameraSpeed, 0.01f, 5.0f);
+		ShipCharacter->RotateSpeed		= FMath::Clamp(ShipCharacter->RotateSpeed, 0.1f, 2.0f);
+		ShipCharacter->MaxSpeedRate		= FMath::Max(ShipCharacter->MaxSpeedRate, 0.1f);
+		ShipCharacter->AccelerationRate = FMath::Max(ShipCharacter->AccelerationRate, 0.1f);
+
+		ShipCharacter->ShipMovement->MaxSpeed	  = ShipCharacter->MaxSpeed;
+		ShipCharacter->ShipMovement->Acceleration = ShipCharacter->Acceleration;
+		ShipCharacter->ShipMovement->Deceleration = ShipCharacter->DecayRate;
+
+		ArmBaseLength = ShipCharacter->SpringArmCom->TargetArmLength;
+		ArmMinLength = FMath::Max(ArmBaseLength * ShipCharacter->ArmChangeRatio, 0.0f);
+		ArmLenChangeRate = FMath::Abs(ArmBaseLength - ArmMinLength) / ShipCharacter->ChangeDuration;
+
+		CamBaseField  = ShipCharacter->CameraCom->FieldOfView;
+		CamMaxField = FMath::Max(CamBaseField * ShipCharacter->CameraChangeRatio, 0.0f);
+		CamAngChangeRate = FMath::Abs(CamBaseField - CamMaxField) / ShipCharacter->ChangeDuration;
+
+		RushLeft = ShipCharacter->MaxRushTime;
+		RushRevertRate = ShipCharacter->MaxRushTime / ShipCharacter->RushTimeRevertTime;
+		RushLestAlarm = ShipCharacter->MaxRushTime * ShipCharacter->RushLeftAlarmRate;
+
+		bIsSpeedUpMode = false;
+		bIsRevertMode = false;
 	}
 }
 
@@ -57,104 +85,123 @@ void AC_SystemCharacterController::InitializeShipWidget()
 											LoadClass<UC_SolarUserFace>(nullptr, TEXT("WidgetBlueprint'/Game/UI/SolarSystemUI/BP_SolarUserFace.BP_SolarUserFace_c'")));
 	if (ShipUI){
 		ShipUI->AddToViewport();
-		if (ShipUI->Bar_Speed)ShipUI->Bar_Speed->SetPercent(1.f);
-		if (ShipUI->Bar_Vertical)ShipUI->Bar_Vertical->SetPercent(1.f);
+		if (ShipUI->Bar_SpeedUp)   ShipUI->Bar_SpeedUp	 ->SetPercent(1.f);
+		if (ShipUI->Bar_Speed)	   ShipUI->Bar_Speed	 ->SetPercent(0.f);
+		if (ShipUI->Bar_ExtraSpeed)ShipUI->Bar_ExtraSpeed->SetPercent(0.f);
 		if (ShipUI->Bar_Horizontal)ShipUI->Bar_Horizontal->SetPercent(1.f);
 	}
 }
 
-void AC_SystemCharacterController::InitializeDistanceLimit(){
-	AC_SolarSystemGameMode* GameMode = Cast<AC_SolarSystemGameMode>(UGameplayStatics::GetGameMode(this));
-	if (GameMode){
-		VerDisLim = GameMode->RadiusLimit;
-		HorDisLim = GameMode->HeightLimit;
-	}
-	else {
-		VerDisLim = 0;
-		HorDisLim = 0;
-	}
-	CurVer = 0;
-	CurHor = 0;
-	PlayerStartPoint = ShipCharacter->GetActorLocation();
-}
+#pragma endregion
 
-void AC_SystemCharacterController::ResetPlayer(){
-	if (ShipCharacter){
-		ShipCharacter->SetActorLocation(PlayerStartPoint);
-		ShipCharacter->CollisionCom->SetPhysicsLinearVelocity(FVector::ZeroVector);
-		ShipCharacter->SetActorRotation(FRotator::ZeroRotator);
-	}
-}
-
-bool AC_SystemCharacterController::DistanceCheck(){
-	if (VerDisLim == 0 || HorDisLim == 0){
-		return false;
-	}
-	FVector CurPosition = ShipCharacter->GetActorLocation();
-	CurHor = abs(CurPosition.Z);
-	CurPosition.Z = 0;
-	CurVer = CurPosition.Size();
-
-	if (CurHor > HorDisLim || CurVer > VerDisLim)
-		return true;
-	if (ShipUI) {
-		if (ShipUI->Bar_Vertical)ShipUI->Bar_Vertical->SetPercent(CurVer/VerDisLim);
-		if (ShipUI->Bar_Horizontal)ShipUI->Bar_Horizontal->SetPercent(CurHor/HorDisLim);
-	}
-	return false;
-}
-
+#pragma region Ship Move Relatived
 void AC_SystemCharacterController::SetupInputComponent() {
 	Super::SetupInputComponent();
 
-	InputComponent->BindAxis("ShipSpeedUp",this, &AC_SystemCharacterController::ShipSpeedUp);
+	InputComponent->BindAxis("UpDown",		this,	 &AC_SystemCharacterController::MouseUpDown);
+	InputComponent->BindAxis("RightLeft",	this,	 &AC_SystemCharacterController::MouseRightLeft);
+	InputComponent->BindAxis("MoveForward", this,	 &AC_SystemCharacterController::MoveForward);
+	InputComponent->BindAxis("MoveTurn",	this,	 &AC_SystemCharacterController::MoveTurn);
+	InputComponent->BindAxis("MoveUpDown",	this,	 &AC_SystemCharacterController::MoveUpDown);
+
+	InputComponent->BindAction("ShipSpeedUpEnd", EInputEvent::IE_Pressed ,	this, &AC_SystemCharacterController::ShipSpeedUp);
+	InputComponent->BindAction("ShipSpeedUpEnd", EInputEvent::IE_Released,  this, &AC_SystemCharacterController::ShipSpeedEnd);
 }
 
-void AC_SystemCharacterController::ShipSpeedUp(float value){
-	if (ShipCharacter){
-		double Deltatime = FApp::GetDeltaTime();
-		if (value == 0) {
-			if (ShipCharacter->SpringArmCom->TargetArmLength > 300)
-				ShipCharacter->SpringArmCom->TargetArmLength -= ArmChangeRate * Deltatime;
-			if (ShipCharacter->CameraCom->FieldOfView < 90)
-				ShipCharacter->CameraCom->FieldOfView += CameraChangeRate * Deltatime;
+void AC_SystemCharacterController::MouseUpDown(float value) {
+	AddYawInput(value * ShipCharacter->CameraSpeed);
+}
 
-			if (CurSpeedUpTime < SpeedUptime)
-				CurSpeedUpTime += Deltatime;
-			else if (CurSpeedUpTime > SpeedUptime)
-				CurSpeedUpTime = SpeedUptime;
+void AC_SystemCharacterController::MouseRightLeft(float value) {
+	AddPitchInput(value * ShipCharacter->CameraSpeed);
+}
 
-			ShipCharacter->SpeedUpRate = 500;
+void AC_SystemCharacterController::MoveTurn(float value) {
+	FRotator temp = FRotator::ZeroRotator;
+	float rSpeedLimit = CurSpeed
+					  / ShipCharacter->ShipMovement->MaxSpeed;
+	temp.Yaw = rSpeedLimit * (ShipCharacter->RotateSpeed * value);
+	ShipCharacter->AddActorWorldRotation(temp);
+}
 
-		}
-		else if ( CurSpeedUpTime < 0.01){
-			if (ShipCharacter->SpringArmCom->TargetArmLength > 300)
-				ShipCharacter->SpringArmCom->TargetArmLength -= ArmChangeRate * Deltatime;
-			if (ShipCharacter->CameraCom->FieldOfView < 90)
-				ShipCharacter->CameraCom->FieldOfView += CameraChangeRate * Deltatime;
-			ShipCharacter->SpeedUpRate = 700;
-		}
-		else if ( CurSpeedUpTime > 0){
-			if (ShipCharacter->SpringArmCom->TargetArmLength < 420)
-				ShipCharacter->SpringArmCom->TargetArmLength += ArmChangeRate * Deltatime;
-			if (ShipCharacter->CameraCom->FieldOfView > 70)
-				ShipCharacter->CameraCom->FieldOfView -= CameraChangeRate * Deltatime;
+void AC_SystemCharacterController::MoveUpDown(float value) {
+	FRotator temp = FRotator::ZeroRotator;
+	float rSpeedLimit = CurSpeed
+		/ ShipCharacter->ShipMovement->MaxSpeed;
+	temp.Pitch = rSpeedLimit * (ShipCharacter->RotateSpeed * value);
+	ShipCharacter->AddActorLocalRotation(temp);
+}
 
-			if (CurSpeedUpTime > 0)
-				CurSpeedUpTime -= Deltatime;
-			else if (CurSpeedUpTime < 0)
-				CurSpeedUpTime = 0;
-
-			ShipCharacter->SpeedUpRate = 1000;
-		}
-
-		if (ShipUI && ShipUI->Bar_Speed)
-			ShipUI->Bar_Speed->SetPercent(CurSpeedUpTime / SpeedUptime);
-	}
-	if (DistanceCheck()){
-		ResetPlayer();
+void AC_SystemCharacterController::MoveForward(float value) {
+	FVector temp = ShipCharacter->GetActorForwardVector();
+	if (CurSpeed < ShipCharacter->ShipMovement->MaxSpeed){
+		ShipCharacter->AddMovementInput(temp, value);
 	}
 }
+
+void AC_SystemCharacterController::ShipSpeedUp(){
+	if (!bIsRevertMode){
+		bIsSpeedUpMode = true;
+		ShipCharacter->ShipMovement->MaxSpeed = ShipCharacter->MaxSpeed + SpeedGap;
+		ShipCharacter->ShipMovement->Acceleration = ShipCharacter->Acceleration * ShipCharacter->AccelerationRate;
+	}
+}
+
+void AC_SystemCharacterController::ShipSpeedEnd(){
+	bIsSpeedUpMode = false;
+	ShipCharacter->ShipMovement->MaxSpeed = ShipCharacter->MaxSpeed;
+	ShipCharacter->ShipMovement->Acceleration = ShipCharacter->Acceleration;
+}
+
+void AC_SystemCharacterController::UpdateSpeedState(float DeltaSeconds){
+	CurSpeed = ShipCharacter->GetVelocity().Size();
+
+	if ( RushLeft <= 0 ){
+		bIsRevertMode = true;
+		ShipSpeedEnd();
+	}
+	else if (bIsRevertMode && RushLeft > RushLestAlarm){
+		bIsRevertMode = false;
+	}
+
+	RushLeft += !bIsSpeedUpMode ? ( RushRevertRate * DeltaSeconds ):( -RushRevertRate * DeltaSeconds );
+	RushLeft = FMath::Min(RushLeft, ShipCharacter->MaxRushTime);
+	if (ShipUI && ShipUI->Bar_SpeedUp) {
+		if (RushLeft < RushLestAlarm)
+			ShipUI->Bar_SpeedUp->SetFillColorAndOpacity(FLinearColor(FColor::Red));
+		else 
+			ShipUI->Bar_SpeedUp->SetFillColorAndOpacity(FLinearColor(FColor::Green));
+		ShipUI->Bar_SpeedUp->SetPercent(RushLeft / ShipCharacter->MaxRushTime);
+	}
+	if (ShipUI && ShipUI->Bar_Speed) {
+		float temp = FMath::Min(CurSpeed / ShipCharacter->MaxSpeed , 1.0f);
+		ShipUI->Bar_Speed->SetPercent(temp);
+		if (ShipUI->Bar_ExtraSpeed && temp == 1){
+			float extra = (CurSpeed - ShipCharacter->MaxSpeed) / (SpeedGap);
+			ShipUI->Bar_ExtraSpeed->SetPercent(extra);
+		}
+	}
+
+	if (bIsSpeedUpMode){
+		if (ShipCharacter->SpringArmCom->TargetArmLength > ArmMinLength){
+			ShipCharacter->SpringArmCom->TargetArmLength -= ArmLenChangeRate * DeltaSeconds;
+		}
+		if (ShipCharacter->CameraCom->FieldOfView < CamMaxField) {
+			ShipCharacter->CameraCom->FieldOfView += CamAngChangeRate * DeltaSeconds;
+		}
+	}
+	else{
+		if (ShipCharacter->SpringArmCom->TargetArmLength < ArmBaseLength) {
+			ShipCharacter->SpringArmCom->TargetArmLength += ArmLenChangeRate * DeltaSeconds;
+		}
+		if (ShipCharacter->CameraCom->FieldOfView > CamBaseField) {
+			ShipCharacter->CameraCom->FieldOfView -= CamAngChangeRate * DeltaSeconds;
+		}
+	}
+
+}
+
+#pragma endregion
 
 #pragma region Widget about Overlap With Star
 void AC_SystemCharacterController::OverlapStar(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComponent, int32 BodyIndex, bool FromSweep, const FHitResult& HitRusult)

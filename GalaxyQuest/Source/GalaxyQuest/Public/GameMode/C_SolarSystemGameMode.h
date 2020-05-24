@@ -13,9 +13,4 @@ UCLASS()
 class GALAXYQUEST_API AC_SolarSystemGameMode : public AGameModeBase
 {
 	GENERATED_BODY()
-public:
-    UPROPERTY(EditAnyWhere)
-        float HeightLimit;
-    UPROPERTY(EditAnyWhere)
-        float RadiusLimit;
 };

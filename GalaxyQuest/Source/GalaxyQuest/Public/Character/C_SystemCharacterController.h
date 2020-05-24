@@ -14,23 +14,13 @@ class GALAXYQUEST_API AC_SystemCharacterController : public APlayerController
 public:
 	virtual void BeginPlay() override;
 
+	virtual void Tick(float DeltaSeconds) override;
+
+#pragma region Initialize Controller
+public:
 	void InitializeShip();
 	void InitializeStarWidget();
 	void InitializeShipWidget();
-	void InitializeDistanceLimit();
-
-#pragma region Distance Limit Related
-public:
-	void ResetPlayer();
-	bool DistanceCheck();
-public:
-	float VerDisLim;
-	float HorDisLim;
-	float CurVer;
-	float CurHor;
-	FVector PlayerStartPoint;
-#pragma endregion
-
 
 public:
 	UPROPERTY()
@@ -42,17 +32,49 @@ public:
 	UPROPERTY()
 		class UC_SolarUserFace* ShipUI;
 
-#pragma region Speed Up Related
+#pragma endregion
+
+#pragma region Ship Move Relatived
 public:
 	virtual void SetupInputComponent() override;
+
 	UFUNCTION()
-		void ShipSpeedUp(float value);
+		void MouseUpDown(float value);
+	UFUNCTION()
+		void MouseRightLeft(float value);
+	UFUNCTION()
+		void MoveForward(float value);
+	UFUNCTION()
+		void MoveTurn(float value);
+	UFUNCTION()
+		void MoveUpDown(float value);
+
+	UFUNCTION()
+		void ShipSpeedUp();
+	UFUNCTION()
+		void ShipSpeedEnd();
+	UFUNCTION()
+		void UpdateSpeedState(float DeltaSeconds);
 
 public:
-	float ArmChangeRate;
-	float CameraChangeRate;
-	float CurSpeedUpTime;
-	float SpeedUptime;
+	bool  bIsSpeedUpMode;
+	bool  bIsRevertMode;
+
+	float SpeedGap;
+	float CurSpeed;
+
+	float ArmBaseLength;
+	float ArmMinLength;
+	float ArmLenChangeRate;
+
+	float CamBaseField;
+	float CamMaxField;
+	float CamAngChangeRate;
+
+	float RushLeft;
+	float RushRevertRate;
+	float RushLestAlarm;
+
 #pragma endregion
 
 #pragma region Widget about Overlap With Star
@@ -63,5 +85,6 @@ public:
 		void StarCloseBtnOnClicked();
 	UFUNCTION()
 		void StarExploreBtnOnClicked();
+
 #pragma endregion
 };

@@ -10,8 +10,9 @@ bool UC_SolarUserFace::Initialize()
 	if(!Super::Initialize())
 		return false;
 
-	Bar_Speed = Cast<UProgressBar>(GetWidgetFromName(TEXT("ProgressBar_SpeedUp")));
-	Bar_Vertical = Cast<UProgressBar>(GetWidgetFromName(TEXT("ProgressBar_Vertical")));
+	Bar_SpeedUp = Cast<UProgressBar>(GetWidgetFromName(TEXT("ProgressBar_SpeedUp")));
+	Bar_Speed = Cast<UProgressBar>(GetWidgetFromName(TEXT("ProgressBar_Speed")));
+	Bar_ExtraSpeed = Cast<UProgressBar>(GetWidgetFromName(TEXT("ProgressBar_ExtraSpeed")));
 	Bar_Horizontal = Cast<UProgressBar>(GetWidgetFromName(TEXT("ProgressBar_Horizontal")));
 
 	return true;

@@ -11,55 +11,56 @@ class GALAXYQUEST_API AC_SystemCharacter : public APawn
 {
 	GENERATED_BODY()
 
+#pragma region Initialize Components
 public:
 	AC_SystemCharacter();
-
-	virtual void Tick(float DeltaTime) override;
-
-	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
-
-protected:
-	virtual void BeginPlay() override;
-
 public:
 	UPROPERTY(VisibleAnyWhere)
-		class USpringArmComponent* SpringArmCom;
+		class USpringArmComponent*	 SpringArmCom;
 	UPROPERTY(VisibleAnyWhere)
-		class UCameraComponent* CameraCom;
+		class UCameraComponent*		 CameraCom;
 	UPROPERTY(VisibleAnyWhere)
-		class USkeletalMeshComponent* ShipMesh;
+		class UStaticMeshComponent*	 ShipMesh;
 	UPROPERTY(VisibleAnyWhere)
-		class UBoxComponent* CollisionCom;
+		class UBoxComponent*		 CollisionCom;
+	UPROPERTY(VisibleAnyWhere)
+		class UFloatingPawnMovement* ShipMovement;
+
+#pragma endregion
 
 #pragma region Move Related
 public:
 	UPROPERTY(EditAnyWhere, Category = "Speed")
 		float CameraSpeed;
 	UPROPERTY(EditAnyWhere, Category = "Speed")
-		float MoveSpeed;
-	UPROPERTY(EditAnyWhere, Category = "Speed")
 		float RotateSpeed;
 	UPROPERTY(EditAnyWhere, Category = "Speed")
-		float AttenuationSpeed;
+		float MaxSpeed;
 	UPROPERTY(EditAnyWhere, Category = "Speed")
-		float StopSpeed;
-	float SpeedUpRate;
+		float DecayRate;
+	UPROPERTY(EditAnyWhere, Category = "Speed")
+		float Acceleration;
 
-private:
-	FVector CurrentSpeed;
-
-public:
-	UFUNCTION()
-		void MouseUpDown(float value);
-	UFUNCTION()
-		void MouseRightLeft(float value);
-	UFUNCTION()
-		void MoveForward(float value);
-	UFUNCTION()
-		void MoveTurn(float value);
-	UFUNCTION()
-		void MoveUpDown(float value);
-	UFUNCTION()
-		void UpdateCurrentSpeed(float value);
 #pragma endregion
+
+#pragma region Speed Rush Related
+public:
+	UPROPERTY(EditAnyWhere, Category = "RushHour")
+		float MaxSpeedRate;
+	UPROPERTY(EditAnyWhere, Category = "RushHour")
+		float AccelerationRate;
+	UPROPERTY(EditAnyWhere, Category = "RushHour")
+		float ArmChangeRatio;
+	UPROPERTY(EditAnyWhere, Category = "RushHour")
+		float CameraChangeRatio;
+	UPROPERTY(EditAnyWhere, Category = "RushHour")
+		float ChangeDuration;
+	UPROPERTY(EditAnyWhere, Category = "RushHour")
+		float MaxRushTime;
+	UPROPERTY(EditAnyWhere, Category = "RushHour")
+		float RushTimeRevertTime;
+	UPROPERTY(EditAnyWhere, Category = "RushHour")
+		float RushLeftAlarmRate;
+#pragma endregion
+
 };

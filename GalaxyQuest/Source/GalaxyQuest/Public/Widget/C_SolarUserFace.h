@@ -13,9 +13,11 @@ class GALAXYQUEST_API UC_SolarUserFace : public UUserWidget
 	GENERATED_BODY()
 public:
 	UPROPERTY()
-		class UProgressBar* Bar_Speed;
+		class UProgressBar* Bar_SpeedUp;
 	UPROPERTY()
-		UProgressBar* Bar_Vertical;
+		UProgressBar* Bar_Speed;
+	UPROPERTY()
+		UProgressBar* Bar_ExtraSpeed;
 	UPROPERTY()
 		UProgressBar* Bar_Horizontal;
 
