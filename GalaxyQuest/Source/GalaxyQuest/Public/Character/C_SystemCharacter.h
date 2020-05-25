@@ -63,4 +63,7 @@ public:
 		float RushLeftAlarmRate;
 #pragma endregion
 
+public:
+	UPROPERTY(EditAnyWhere, Category = "WarMode")
+		bool bIsInWarMode;
 };

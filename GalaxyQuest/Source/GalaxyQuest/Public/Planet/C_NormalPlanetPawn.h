@@ -30,6 +30,9 @@ public:
 	UPROPERTY(VisibleAnyWhere)
 		UStaticMeshComponent* OrbitMesh;
 
+	UPROPERTY(VisibleAnyWhere)
+		USphereComponent* BlockCom;
+
 public:
 	/*Self Rotation*/
 	UPROPERTY(EditAnyWhere, CateGory = "AA_Self_Rotaion")

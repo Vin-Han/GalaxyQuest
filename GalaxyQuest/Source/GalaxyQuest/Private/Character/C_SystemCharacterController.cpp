@@ -206,6 +206,9 @@ void AC_SystemCharacterController::UpdateSpeedState(float DeltaSeconds){
 #pragma region Widget about Overlap With Star
 void AC_SystemCharacterController::OverlapStar(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComponent, int32 BodyIndex, bool FromSweep, const FHitResult& HitRusult)
 {
+	if (ShipCharacter->bIsInWarMode){
+		return;
+	}
 	AC_NormalPlanetPawn* tempStar = Cast<AC_NormalPlanetPawn>(OtherActor);
 	if (tempStar) {
 		if (StarInfor) {

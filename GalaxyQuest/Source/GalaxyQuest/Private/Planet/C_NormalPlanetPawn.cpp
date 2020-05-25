@@ -13,11 +13,13 @@ AC_NormalPlanetPawn::AC_NormalPlanetPawn()
 	CollisionCom	= CreateDefaultSubobject<USphereComponent>(TEXT("CollisionComponent"));
 	PlanetMesh		= CreateDefaultSubobject<UStaticMeshComponent>(TEXT("PlanetMesh"));
 	OrbitMesh		= CreateDefaultSubobject<UStaticMeshComponent>(TEXT("OrbitMesh"));
+	BlockCom		= CreateDefaultSubobject<USphereComponent>(TEXT("BlockComponent"));
 
 	RootComponent = SceneCom;
 	CollisionCom->SetupAttachment(SceneCom);
 	PlanetMesh->SetupAttachment(CollisionCom);
 	OrbitMesh->SetupAttachment(SceneCom);
+	BlockCom->SetupAttachment(SceneCom);
 	
 	StarMap = "/Game/Blueprint/BP_Map/BP_Test_Map";
 	StarName = "NoNameNow";

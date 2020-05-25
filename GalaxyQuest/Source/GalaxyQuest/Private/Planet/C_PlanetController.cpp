@@ -59,6 +59,7 @@ void AC_PlanetController::Tick(float DeltaTime) {
 	}
 	Planet->CollisionCom->SetRelativeRotation(FRotator(0, CurrentRevolution, 0));
 	Planet->CollisionCom->SetRelativeLocation(NewPosition);
+	Planet->BlockCom->SetRelativeLocation(NewPosition);
 }
 
 void AC_PlanetController::InitializeOval() {
