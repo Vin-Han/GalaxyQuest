@@ -4,6 +4,8 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Pawn.h"
+#include "../Public/SpaceEnemy/C_SpaceEnemy_State.h"
+#include "BehaviorTree/BehaviorTree.h"
 #include "C_SpaceEnemy.generated.h"
 
 UCLASS()
@@ -27,4 +29,34 @@ public:
 
 public:
 	class AC_SpaceEnemySpawner* ParentSpawner;
+
+public:
+	UPROPERTY(EditAnyWhere, Category = "AIEnemy")
+		UBehaviorTree* BehaviorTree;
+	UPROPERTY(EditAnyWhere,Category = "AIEnemy")
+		EnemyState CurrentState;
+
+public:
+	UPROPERTY(EditAnyWhere, Category = "PartolState")
+		float PartolSpeed;
+	UPROPERTY(EditAnyWhere, Category = "PartolState")
+		float RotateMaxDegree;
+	UPROPERTY(EditAnyWhere, Category = "PartolState")
+		float RotateCostTime;
+	UPROPERTY(EditAnyWhere, Category = "PartolState")
+		float ReloadMaxTime;
+
+public:
+	UPROPERTY(EditAnyWhere, Category = "TrackState")
+		float TrackSpeed;
+	UPROPERTY(EditAnyWhere, Category = "TrackState")
+		float TrackCostTime;
+	UPROPERTY(EditAnyWhere, Category = "TrackState")
+		float AllowDistance;
+
+public:
+	UPROPERTY(EditAnyWhere, Category = "AroundState")
+		float AroundSpeed;
+	UPROPERTY(EditAnyWhere, Category = "AroundState")
+		float AroundCostTime;
 };

@@ -40,9 +40,10 @@ bool AC_SpaceEnemySpawner::SpawnEnemy(){
 	AC_SpaceEnemy* NewEnemy = GetWorld()->SpawnActor<AC_SpaceEnemy>(Enemy, 
 							SpawnTransform.GetLocation(), 
 							SpawnTransform.GetRotation().Rotator());
-	if (NewEnemy)
+	if (NewEnemy) {
 		NewEnemy->ParentSpawner = this;
 		return true;
+	}
 	return false;
 }
 

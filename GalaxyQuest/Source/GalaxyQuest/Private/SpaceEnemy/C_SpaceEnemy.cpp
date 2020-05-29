@@ -15,6 +15,20 @@ AC_SpaceEnemy::AC_SpaceEnemy(){
 
 	RootComponent = CollisionCom;
 	EnemyMesh->SetupAttachment(CollisionCom);
+
+	CurrentState = EnemyState::AROUND;
+
+	PartolSpeed = 10;
+	RotateMaxDegree = 60;
+	RotateCostTime = 2;
+	ReloadMaxTime = 2;
+
+	TrackSpeed = 10;
+	TrackCostTime = 1;
+	AllowDistance = 300;
+
+	AroundCostTime = 1;
+	AroundSpeed = 12;
 }
 
 void AC_SpaceEnemy::OnDestory(){
