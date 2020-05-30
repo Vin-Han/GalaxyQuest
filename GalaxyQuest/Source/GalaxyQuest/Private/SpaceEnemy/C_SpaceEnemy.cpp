@@ -13,10 +13,14 @@ AC_SpaceEnemy::AC_SpaceEnemy(){
 	CollisionCom = CreateDefaultSubobject<UBoxComponent>(TEXT("CollisionComponent"));
 	EnemyMovement = CreateDefaultSubobject<UFloatingPawnMovement>(TEXT("EnemyMovement"));
 
+	TriggerCom = CreateDefaultSubobject<UBoxComponent>(TEXT("TriggerComponent"));
+
 	RootComponent = CollisionCom;
 	EnemyMesh->SetupAttachment(CollisionCom);
 
-	CurrentState = EnemyState::AROUND;
+	TriggerCom->SetupAttachment(CollisionCom);
+
+	CurrentState = EnemyState::PATROL;
 
 	PartolSpeed = 10;
 	RotateMaxDegree = 60;

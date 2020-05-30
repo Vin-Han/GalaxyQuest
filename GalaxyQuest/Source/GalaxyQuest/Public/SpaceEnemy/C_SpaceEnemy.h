@@ -22,6 +22,8 @@ public:
 	UPROPERTY(VisibleAnyWhere)
 		class UBoxComponent* CollisionCom;
 	UPROPERTY(VisibleAnyWhere)
+		class UBoxComponent* TriggerCom;
+	UPROPERTY(VisibleAnyWhere)
 		class UFloatingPawnMovement* EnemyMovement;
 
 public:
