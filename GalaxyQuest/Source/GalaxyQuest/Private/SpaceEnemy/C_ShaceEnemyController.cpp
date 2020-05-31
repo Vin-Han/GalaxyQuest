@@ -23,10 +23,12 @@ AC_ShaceEnemyController::AC_ShaceEnemyController() {
 void AC_ShaceEnemyController::BeginPlay()
 {
 	Super::BeginPlay();
+	/*
 	if (EnemyShip){
 		EnemyShip->CollisionCom->OnComponentBeginOverlap.AddDynamic(this,&AC_ShaceEnemyController::EnemyBlock);
 		EnemyShip->TriggerCom->OnComponentBeginOverlap.AddDynamic(this, &AC_ShaceEnemyController::TriggerOverlap);
 	}
+	*/
 }
 
 void AC_ShaceEnemyController::OnPossess(APawn* InPawn){
@@ -64,6 +66,13 @@ void AC_ShaceEnemyController::OnPossess(APawn* InPawn){
 	if (EnemyShip && EnemyShip->BehaviorTree){
 		BBCom->InitializeBlackboard(*(EnemyShip->BehaviorTree->BlackboardAsset));
 		BTCom->StartTree(*(EnemyShip->BehaviorTree));
+	}
+
+	if (EnemyShip) {
+		if (EnemyShip->CollisionCom)
+			EnemyShip->CollisionCom->OnComponentBeginOverlap.AddDynamic(this, &AC_ShaceEnemyController::EnemyBlock);
+		if (EnemyShip->TriggerCom)
+			EnemyShip->TriggerCom->OnComponentBeginOverlap.AddDynamic(this, &AC_ShaceEnemyController::TriggerOverlap);
 	}
 }
 
