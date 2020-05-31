@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Pawn.h"
 #include "../Public/SpaceEnemy/C_SpaceEnemy_State.h"
+#include "../Public/SpaceEnemy/C_SpaceEnemySpawner.h"
 #include "BehaviorTree/BehaviorTree.h"
 #include "C_SpaceEnemy.generated.h"
 
@@ -30,8 +31,8 @@ public:
 	void OnDestory();
 
 public:
-	class AC_SpaceEnemySpawner* ParentSpawner;
-
+	AC_SpaceEnemySpawner* ParentSpawner;
+	FVector SpawnerLocation;
 public:
 	UPROPERTY(EditAnyWhere, Category = "AIEnemy")
 		UBehaviorTree* BehaviorTree;

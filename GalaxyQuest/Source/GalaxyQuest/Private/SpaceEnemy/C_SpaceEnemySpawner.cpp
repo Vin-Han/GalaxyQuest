@@ -42,6 +42,7 @@ bool AC_SpaceEnemySpawner::SpawnEnemy(){
 							SpawnTransform.GetRotation().Rotator());
 	if (NewEnemy) {
 		NewEnemy->ParentSpawner = this;
+		NewEnemy->SpawnerLocation = this->GetActorLocation();
 		return true;
 	}
 	return false;

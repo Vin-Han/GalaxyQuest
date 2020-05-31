@@ -8,5 +8,6 @@ UENUM(BluePrintType)
 enum class EnemyState :uint8{
     AROUND UMETA(Displayname = "Around"),
     TRACK UMETA(Displayname = "Track"),
-    PATROL UMETA(Displayname = "Patrol")
+    PATROL UMETA(Displayname = "Patrol"),
+    RETURN UMETA(Displayname = "Return")
 };

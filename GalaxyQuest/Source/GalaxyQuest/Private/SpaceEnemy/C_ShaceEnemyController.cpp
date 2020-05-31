@@ -1,5 +1,6 @@
 #include "../Public/SpaceEnemy/C_ShaceEnemyController.h"
 #include "../Public/SpaceEnemy/C_SpaceEnemy.h"
+#include "../Public/SpaceEnemy/C_SpaceEnemySpawner.h"
 
 #include "BehaviorTree/BehaviorTreeComponent.h"
 #include "BehaviorTree/BlackboardComponent.h"
@@ -12,6 +13,7 @@
 #include "TimerManager.h"
 
 #include "Kismet/KismetMathLibrary.h"
+#include "Kismet/GameplayStatics.h"
 
 AC_ShaceEnemyController::AC_ShaceEnemyController() {
 	BTCom = CreateDefaultSubobject<UBehaviorTreeComponent>(TEXT("BehaviorTree"));
@@ -55,6 +57,10 @@ void AC_ShaceEnemyController::OnPossess(APawn* InPawn){
 		InitializeAround();
 	}
 
+	if (EnemyShip){
+		ReturnSpeed = 15;
+	}
+
 	if (EnemyShip && EnemyShip->BehaviorTree){
 		BBCom->InitializeBlackboard(*(EnemyShip->BehaviorTree->BlackboardAsset));
 		BTCom->StartTree(*(EnemyShip->BehaviorTree));
@@ -62,7 +68,6 @@ void AC_ShaceEnemyController::OnPossess(APawn* InPawn){
 }
 
 void AC_ShaceEnemyController::Tick(float DeltaSeconds){
-
 	if (EnemyShip->CurrentState == EnemyState::AROUND)
 		ShipAroundMove(DeltaSeconds);
 
@@ -72,6 +77,8 @@ void AC_ShaceEnemyController::Tick(float DeltaSeconds){
 	if (EnemyShip->CurrentState == EnemyState::TRACK)
 		ShipTrackMove(DeltaSeconds);
 
+	if (EnemyShip->CurrentState == EnemyState::RETURN)
+		ShipReturnMove(DeltaSeconds);
 }
 
 void AC_ShaceEnemyController::ShipPartolMove(float DeltaSeconds){
@@ -102,15 +109,28 @@ void AC_ShaceEnemyController::ShipAroundMove(float DeltaSeconds){
 		EnemyShip->AroundSpeed * DeltaSeconds );
 }
 
+void AC_ShaceEnemyController::ChangeToReturnMode(){
+	
+	if (EnemyShip->CurrentState != EnemyState::AROUND){
+		EnemyShip->CurrentState = EnemyState::RETURN;
+		EnemyShip->SetActorRotation(UKismetMathLibrary::FindLookAtRotation
+		(EnemyShip->GetActorLocation(), EnemyShip->SpawnerLocation)
+		);
+	}
+	
+}
+
+void AC_ShaceEnemyController::ShipReturnMove(float DeltaSeconds){
+	EnemyShip->AddMovementInput(EnemyShip->GetActorForwardVector(),
+		ReturnSpeed * DeltaSeconds);
+}
+
 void AC_ShaceEnemyController::EnemyBlock(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComponent, int32 BodyIndex, bool FromSweep, const FHitResult& HitRusult)
 {
-
 	if (Cast<AC_NormalPlanetPawn>(OtherActor)){
-		UE_LOG(LogTemp, Warning, TEXT("EnemyBlockPlanet"));
 		BlockWithPlanet();
 	}
 	if (Cast<AC_SystemCharacter>(OtherActor)) {
-		UE_LOG(LogTemp, Warning, TEXT("EnemyBlockPlayer"));
 		BlockWithShip();
 	}
 }
@@ -118,11 +138,9 @@ void AC_ShaceEnemyController::EnemyBlock(UPrimitiveComponent* OverlappedComponen
 void AC_ShaceEnemyController::TriggerOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComponent, int32 BodyIndex, bool FromSweep, const FHitResult& HitRusult)
 {
 	if (Cast<AC_NormalPlanetPawn>(OtherActor)) {
-		UE_LOG(LogTemp, Warning, TEXT("EnemyOverlapPlanet"));
 		OverlapWithPlanet();
 	}
 	if (Cast<AC_SystemCharacter>(OtherActor)) {
-		UE_LOG(LogTemp, Warning, TEXT("EnemyOverlapPlayer"));
 		OverlapWithShip();
 	}
 }
@@ -145,6 +163,7 @@ void AC_ShaceEnemyController::OverlapWithShip(){
 }
 
 void AC_ShaceEnemyController::OverlapWithPlanet(){
+	//UE_LOG(LogTemp, Warning, TEXT("Overlap"));
 	EnemyShip->CurrentState = EnemyState::AROUND;
 	InitializeAround();
 	GetWorld()->GetTimerManager().SetTimer(TH_StateReverse, this, &AC_ShaceEnemyController::BackToOriginState, 1,
@@ -161,7 +180,10 @@ void AC_ShaceEnemyController::BackToOriginState(){
 		EnemyShip->CurrentState = EnemyState::PATROL;
 		InilializePatrol();
 	}
-	
+	else if (OriginalState == EnemyState::RETURN) {
+		EnemyShip->CurrentState = EnemyState::RETURN;
+		ChangeToReturnMode();
+	}
 }
 
 void AC_ShaceEnemyController::InitializeTrack(){

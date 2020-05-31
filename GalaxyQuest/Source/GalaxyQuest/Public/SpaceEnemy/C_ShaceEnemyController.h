@@ -68,6 +68,17 @@ public:
 
 #pragma endregion
 
+#pragma region Return State
+public:
+	float ReturnSpeed;
+
+public:
+	UFUNCTION()
+		void ChangeToReturnMode();
+	void ShipReturnMove(float DeltaSeconds);
+#pragma endregion
+
+
 #pragma region State Update
 	UFUNCTION()
 		void EnemyBlock(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComponent, int32 BodyIndex, bool FromSweep, const FHitResult& HitRusult);
