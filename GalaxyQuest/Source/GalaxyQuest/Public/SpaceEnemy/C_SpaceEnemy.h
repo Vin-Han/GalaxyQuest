@@ -17,6 +17,8 @@ class GALAXYQUEST_API AC_SpaceEnemy : public APawn
 public:
 	AC_SpaceEnemy();
 
+	virtual void BeginPlay() override;
+
 public:
 	UPROPERTY(VisibleAnyWhere)
 		class UStaticMeshComponent* EnemyMesh;
@@ -26,6 +28,9 @@ public:
 		class UBoxComponent* TriggerCom;
 	UPROPERTY(VisibleAnyWhere)
 		class UFloatingPawnMovement* EnemyMovement;
+
+	UPROPERTY(VisibleAnyWhere)
+		class UWidgetComponent* EnemyBlood;
 
 public:
 	void OnDestory();
@@ -62,4 +67,13 @@ public:
 		float AroundSpeed;
 	UPROPERTY(EditAnyWhere, Category = "AroundState")
 		float AroundCostTime;
+
+public:
+	void InitializeBloodUI();
+
+public:
+	UPROPERTY()
+		class UProgressBar* EnemyBloodBar;
+public:
+	float EnemyTolHP;
 };

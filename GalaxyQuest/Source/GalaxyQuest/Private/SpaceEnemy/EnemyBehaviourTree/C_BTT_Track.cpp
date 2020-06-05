@@ -16,7 +16,7 @@ EBTNodeResult::Type UC_BTT_Track::ExecuteTask(UBehaviorTreeComponent& OwnerComp,
 			Controller->TargetDirection = UKismetMathLibrary::FindLookAtRotation(Enemy->GetActorLocation(), PlayerLocation);
 
 			float Distance = FVector(Enemy->GetActorLocation() - PlayerLocation).Size();
-			Controller->bCanMove = Distance < Enemy->AllowDistance ? 0:1;
+			Controller->SetTrackCanMove(Distance < Enemy->AllowDistance ? 0 : 1);
 		}
 	}
 	return EBTNodeResult::Succeeded;

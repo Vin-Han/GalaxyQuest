@@ -7,7 +7,7 @@
 bool UC_BTD_PartolRotateConfirm::CalculateRawConditionValue(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory) const{
 	AC_ShaceEnemyController* Controller = Cast<AC_ShaceEnemyController>(OwnerComp.GetAIOwner());
 	if (Controller){
-		return Controller->bCanReset;
+		return Controller->CanPartolStateReset();
 	}
 	return false;
 }

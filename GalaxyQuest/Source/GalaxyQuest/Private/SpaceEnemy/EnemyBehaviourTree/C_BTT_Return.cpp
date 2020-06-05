@@ -5,7 +5,6 @@
 
 #include "../Public/SpaceEnemy/C_ShaceEnemyController.h"
 #include "../Public/SpaceEnemy/C_SpaceEnemy.h"
-#include "../Public/SpaceEnemy/C_SpaceEnemy_State.h"
 
 EBTNodeResult::Type UC_BTT_Return::ExecuteTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory) {
 	
@@ -17,8 +16,7 @@ EBTNodeResult::Type UC_BTT_Return::ExecuteTask(UBehaviorTreeComponent& OwnerComp
 			FVector CurLocation = Enemy->GetActorLocation();
 			float CurDistacne = (OriginLocation - CurLocation).Size();
 			if (CurDistacne < AllowDostance) {
-				Enemy->CurrentState = EnemyState::PATROL;
-				Controller->InilializePatrol();
+				Controller->TurnToPartolState();
 			}
 		}
 	}

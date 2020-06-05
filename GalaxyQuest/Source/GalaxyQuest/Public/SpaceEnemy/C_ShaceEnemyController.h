@@ -7,9 +7,6 @@
 #include "../Public/SpaceEnemy/C_SpaceEnemy_State.h"
 #include "C_ShaceEnemyController.generated.h"
 
-/**
- * 
- */
 UCLASS()
 class GALAXYQUEST_API AC_ShaceEnemyController : public AAIController
 {
@@ -17,8 +14,6 @@ class GALAXYQUEST_API AC_ShaceEnemyController : public AAIController
 
 public:
 	AC_ShaceEnemyController();
-
-	virtual void BeginPlay() override;
 
 	virtual void OnPossess(APawn* InPawn) override;
 
@@ -32,29 +27,94 @@ public:
 	UPROPERTY()
 		class AC_SpaceEnemy* EnemyShip;
 
-#pragma region Partol State
+
+#pragma region Update Movement
+private:
+	void UpdateMovement(float DeltaTime);
+
+	void ShipPartolMove(float DeltaSeconds);
+	void ShipTrackMove(float DeltaSeconds);
+	void ShipAroundMove(float DeltaSeconds);
+	void ShipReturnMove(float DeltaSeconds);
+
+#pragma endregion
+
+#pragma region Overlap Event
+private:
+	UFUNCTION()
+		void EnemyBlock(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComponent, int32 BodyIndex, bool FromSweep, const FHitResult& HitRusult);
+	UFUNCTION()
+		void TriggerOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComponent, int32 BodyIndex, bool FromSweep, const FHitResult& HitRusult);
+
+	void BlockWithShip();
+	void BlockWithPlanet();
+	void OverlapWithShip();
+	void OverlapWithPlanet();
+
+#pragma endregion
+
+#pragma region Initialize State
+private:
+	void InitializeEnemyData();
+	void InitializeEvent();
+	void InitializeControllerData();
+	void InitializeEnemyHealth();
+
+private:
+	void InitializeTrack();
+	void InitializeAround();
+	void InilializePatrol();
+	void IniilalizeReturn();
+
+#pragma endregion
+
+#pragma region State Change
+public:
+	UFUNCTION()
+		void BackToOriginState();
+	UFUNCTION()
+		void TurnToAroundState();
+	UFUNCTION()
+		void TurnToReturnState();
+	UFUNCTION()
+		void TurnToPartolState();
+	UFUNCTION()
+		void TurnToTrackState();
+
+#pragma endregion
+
+#pragma region Checking Functions
+public:
+	bool CanPartolStateReset() { return bCanReset; }
+	void SetPartolStateReset(bool newState) { bCanReset = newState; }
+
+	bool IsAroundNeedAngle() { return bNeedAngle; }
+	void SetAroundNeedAngle(bool newState){ bNeedAngle = newState;}
+
+	bool IsAroundbKeepAround() { return bKeepAround; }
+	void SetKeepAround(bool newState) { bKeepAround = newState; }
+
+	bool IsTrackCanMove() { return bCanMove; }
+	void SetTrackCanMove(bool newState) { bCanMove = newState; }
+
+	void ReSetPartolInfor(float newReloadTime, FRotator newRotator, bool isCurTimeReset = true);
+
+#pragma endregion
+
+#pragma region Data Instance
+	/*Partol State*/
 public:
 	bool bCanReset;
 	FRotator GapDirection;
-
 	float ReloadingTime;
 	float CurLoadingTime;
 
-public:
-	void ShipPartolMove(float DeltaSeconds);
-
-#pragma endregion
-
-#pragma region Track State
+	/*Track State*/
 public:
 	bool bCanMove;
 	FRotator TargetDirection;
-public:
-	void ShipTrackMove(float DeltaSeconds);
 
-#pragma endregion
-
-#pragma region Around State
+	/*Around State*/
 public:
 	bool bKeepAround;
 	bool bNeedAngle;
@@ -63,55 +123,19 @@ public:
 	float AroudSpeed;
 	float CurAroundTime;
 	EnemyState OriginalState;
-public:
-	void ShipAroundMove(float DeltaSeconds);
+	FTimerHandle TH_StateReverse;
 
-#pragma endregion
-
-#pragma region Return State
+	/*Return State*/
 public:
 	float ReturnSpeed;
 
-public:
-	UFUNCTION()
-		void ChangeToReturnMode();
-	void ShipReturnMove(float DeltaSeconds);
 #pragma endregion
 
-
-#pragma region State Update
-	UFUNCTION()
-		void EnemyBlock(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComponent, int32 BodyIndex, bool FromSweep, const FHitResult& HitRusult);
-	UFUNCTION()
-		void TriggerOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComponent, int32 BodyIndex, bool FromSweep, const FHitResult& HitRusult);
-	 
-	UFUNCTION()
-		void BlockWithShip();
-
-	UFUNCTION()
-		void BlockWithPlanet();
-
-	UFUNCTION()
-		void OverlapWithShip();
-
-	UFUNCTION()
-		void OverlapWithPlanet();
-
-	UFUNCTION()
-		void BackToOriginState();
-
-	UFUNCTION()
-		void InitializeTrack();
-
-	UFUNCTION()
-		void InitializeAround();
-		FTimerHandle TH_StateReverse;
-
-	UFUNCTION()
-		void InilializePatrol();
-
-	UFUNCTION()
-		void BackToPatrolState();
+#pragma region Enemy Health
+public:
+	float EnemyCurHP;
+private:
+	void UpdateEnemyHP();
 #pragma endregion
 
 };

@@ -16,7 +16,7 @@ class GALAXYQUEST_API UC_BTD_ReturnCheck : public UBTDecorator
 
 public:
 	UPROPERTY(EditAnyWhere)
-		float AllowDostance;
+		float AllowDistance;
 public:
 	virtual bool CalculateRawConditionValue(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory) const;
 };

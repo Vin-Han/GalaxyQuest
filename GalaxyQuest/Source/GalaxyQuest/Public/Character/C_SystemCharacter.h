@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Pawn.h"
+#include "Projectile/C_Bullet_Normal.h"
 #include "C_SystemCharacter.generated.h"
 
 UCLASS()
@@ -62,6 +63,10 @@ public:
 	UPROPERTY(EditAnyWhere, Category = "RushHour")
 		float RushLeftAlarmRate;
 #pragma endregion
+
+public:
+	UPROPERTY(EditAnyWhere, Category = "Projectile")
+		TSubclassOf<AC_Bullet_Normal> NormalBullet;
 
 public:
 	UPROPERTY(EditAnyWhere, Category = "WarMode")

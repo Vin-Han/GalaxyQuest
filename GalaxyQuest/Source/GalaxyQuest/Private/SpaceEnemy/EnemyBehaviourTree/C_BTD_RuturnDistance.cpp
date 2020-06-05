@@ -16,7 +16,7 @@ bool UC_BTD_RuturnDistance::CalculateRawConditionValue(UBehaviorTreeComponent& O
 			FVector CurLocation = Enemy->GetActorLocation();
 			float CurDistacne = (OriginLocation - CurLocation).Size();
 			if (CurDistacne > AllowDostance){
-				Controller->ChangeToReturnMode();
+				Controller->TurnToReturnState();
 			}
 		}
 	}

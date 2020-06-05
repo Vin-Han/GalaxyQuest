@@ -6,7 +6,7 @@
 EBTNodeResult::Type UC_BTT_Partal::ExecuteTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory) {
 	AC_ShaceEnemyController* Controller = Cast<AC_ShaceEnemyController>(OwnerComp.GetAIOwner());
 	if (Controller && Controller->CurLoadingTime > Controller->ReloadingTime){
-		Controller->bCanReset = true;
+		Controller->SetPartolStateReset(true);
 	}
 	return EBTNodeResult::Succeeded;
 }

@@ -18,7 +18,7 @@ bool UC_BTD_TrackCheck::CalculateRawConditionValue(UBehaviorTreeComponent& Owner
 			FVector TargetLocation = BBCom->GetValueAsVector(TEXT("PlayerLocation"));
 			float CurrentDistance = (TargetLocation - Enemy->GetActorLocation()).Size();
 			if (CurrentDistance > AllowFollowDistance){
-				Controller->BackToPatrolState();
+				Controller->TurnToPartolState();
 			}
 		}
 	}

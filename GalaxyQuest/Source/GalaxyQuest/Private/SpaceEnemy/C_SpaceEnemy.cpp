@@ -6,6 +6,9 @@
 
 #include "Components/BoxComponent.h"
 #include "Components/StaticMeshComponent.h"
+#include "Components/WidgetComponent.h"
+#include "Components/ProgressBar.h"
+
 #include "GameFramework/FloatingPawnMovement.h"
 
 AC_SpaceEnemy::AC_SpaceEnemy(){
@@ -14,11 +17,13 @@ AC_SpaceEnemy::AC_SpaceEnemy(){
 	EnemyMovement = CreateDefaultSubobject<UFloatingPawnMovement>(TEXT("EnemyMovement"));
 
 	TriggerCom = CreateDefaultSubobject<UBoxComponent>(TEXT("TriggerComponent"));
+	EnemyBlood = CreateDefaultSubobject<UWidgetComponent>(TEXT("BloodWidget"));
 
 	RootComponent = CollisionCom;
 	EnemyMesh->SetupAttachment(CollisionCom);
 
 	TriggerCom->SetupAttachment(CollisionCom);
+	EnemyBlood->SetupAttachment(CollisionCom);
 
 	CurrentState = EnemyState::PATROL;
 
@@ -33,9 +38,25 @@ AC_SpaceEnemy::AC_SpaceEnemy(){
 
 	AroundCostTime = 1;
 	AroundSpeed = 12;
+
+	EnemyTolHP = 100;
+}
+
+void AC_SpaceEnemy::BeginPlay()
+{
+	Super::BeginPlay();
+	InitializeBloodUI();
 }
 
 void AC_SpaceEnemy::OnDestory(){
 	if (ParentSpawner && ParentSpawner->ReduceCount())
 		this->Destroy();
+}
+
+void AC_SpaceEnemy::InitializeBloodUI()
+{
+	if (EnemyBlood)
+	{
+		EnemyBloodBar = Cast<UProgressBar>(EnemyBlood->GetUserWidgetObject()->GetWidgetFromName(TEXT("Bar_EnemyBlood")));
+	}
 }

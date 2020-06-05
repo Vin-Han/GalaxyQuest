@@ -12,14 +12,14 @@ EBTNodeResult::Type UC_BTT_Around::ExecuteTask(UBehaviorTreeComponent& OwnerComp
 	AC_ShaceEnemyController* Controller = Cast<AC_ShaceEnemyController> (OwnerComp.GetAIOwner());
 	if (Controller){
 		AC_SpaceEnemy* Enemy = Cast<AC_SpaceEnemy>(Controller->GetPawn());
-		if (Controller->bNeedAngle == true){
+		if (Controller->IsAroundNeedAngle()){
 			FVector ResultLocation = (Enemy->GetActorLocation() - Controller->AroundPoint);
 			Controller->AroundDirectrion = UKismetMathLibrary::FindLookAtRotation(FVector::ZeroVector, ResultLocation);
-			Controller->bNeedAngle = false;
-			Controller->bKeepAround = true;
+			Controller->SetAroundNeedAngle(false);
+			Controller->SetKeepAround(true);
 		}
 		if (Controller->CurAroundTime > Enemy->AroundCostTime) {
-			Controller->bKeepAround = false;
+			Controller->SetKeepAround(false);
 		}
 	}
 	return EBTNodeResult::Succeeded;

@@ -87,4 +87,19 @@ public:
 		void StarExploreBtnOnClicked();
 
 #pragma endregion
+
+
+#pragma region Fire Relatied
+public:
+
+	FVector FireLocation;
+	FRotator FireRotation;
+public:
+	UFUNCTION()
+		void Fire();
+
+private:
+	void SpawnNormalBullet();
+
+#pragma endregion
 };

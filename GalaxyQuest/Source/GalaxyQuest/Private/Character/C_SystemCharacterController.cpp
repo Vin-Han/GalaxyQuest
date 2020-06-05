@@ -5,8 +5,10 @@
 #include "../Public/Widget/C_StarIntroduce_UI.h"
 #include "../Public/Widget/C_SolarUserFace.h"
 #include "../Public/GameMode/C_SolarSystemGameMode.h"
+#include "../Public/Projectile/C_Bullet_Base.h"
 
 #include "Components/BoxComponent.h"
+#include "Components/StaticMeshComponent.h"
 #include "Components/Button.h"
 #include "Components/Image.h"
 #include "Components/TextBlock.h"
@@ -106,6 +108,8 @@ void AC_SystemCharacterController::SetupInputComponent() {
 
 	InputComponent->BindAction("ShipSpeedUpEnd", EInputEvent::IE_Pressed ,	this, &AC_SystemCharacterController::ShipSpeedUp);
 	InputComponent->BindAction("ShipSpeedUpEnd", EInputEvent::IE_Released,  this, &AC_SystemCharacterController::ShipSpeedEnd);
+
+	InputComponent->BindAction("Fire", EInputEvent::IE_Pressed, this, &AC_SystemCharacterController::Fire);
 }
 
 void AC_SystemCharacterController::MouseUpDown(float value) {
@@ -235,4 +239,25 @@ void AC_SystemCharacterController::StarExploreBtnOnClicked(){
 	StarInfor->RemoveFromViewport();
 	UGameplayStatics::OpenLevel(GetWorld(), *TargetMapName);
 }
+
+#pragma endregion
+
+#pragma region Fire Relatied
+void AC_SystemCharacterController::Fire()
+{
+	SpawnNormalBullet();
+}
+
+void AC_SystemCharacterController::SpawnNormalBullet()
+{
+	UE_LOG(LogTemp, Warning, TEXT("Firing"));
+	if (ShipCharacter->NormalBullet)
+	{
+		FireLocation = ShipCharacter->ShipMesh->GetSocketLocation(TEXT("BulletSpawner"));
+		FireRotation = ShipCharacter->CollisionCom->GetComponentRotation();
+		GetWorld()->SpawnActor(ShipCharacter->NormalBullet, &FireLocation, &FireRotation);
+	}
+}
+
+
 #pragma endregion
