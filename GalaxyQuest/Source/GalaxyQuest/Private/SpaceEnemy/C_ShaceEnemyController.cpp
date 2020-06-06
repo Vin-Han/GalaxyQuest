@@ -91,7 +91,6 @@ void AC_ShaceEnemyController::InitializeEnemyHealth()
 {
 	if (EnemyShip)
 	{
-		EnemyCurHP = EnemyShip->EnemyTolHP;
 	}
 }
 
@@ -327,11 +326,22 @@ void AC_ShaceEnemyController::OverlapWithPlanet()
 #pragma region Enemy Health
 void AC_ShaceEnemyController::UpdateEnemyHP()
 {
+	if (EnemyShip->EnemyCurHP == 0)
+	{
+		if (EnemyShip->ParentSpawner)
+		{
+			EnemyShip->OnDestory();
+		}
+		else
+		{
+			EnemyShip->Destroy();
+		}
+	}
 	if (EnemyShip->EnemyBloodBar &&
 		EnemyShip->EnemyBlood)
 	{
 		if (EnemyShip->CurrentState != EnemyState::TRACK &&
-			EnemyCurHP == EnemyShip->EnemyTolHP)
+			EnemyShip->EnemyCurHP == EnemyShip->EnemyTolHP)
 		{
 			EnemyShip->EnemyBlood->SetVisibility(false);
 		}
@@ -340,7 +350,7 @@ void AC_ShaceEnemyController::UpdateEnemyHP()
 			EnemyShip->EnemyBlood->SetVisibility(true);
 		}
 
-		float tempPercent = FMath::Max(0.f, EnemyCurHP / EnemyShip->EnemyTolHP);
+		float tempPercent = FMath::Max(0.f, EnemyShip->EnemyCurHP / EnemyShip->EnemyTolHP);
 		EnemyShip->EnemyBloodBar->SetPercent(tempPercent);
 	}
 }

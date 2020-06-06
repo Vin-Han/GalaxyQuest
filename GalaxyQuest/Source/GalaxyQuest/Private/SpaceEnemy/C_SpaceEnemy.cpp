@@ -40,6 +40,7 @@ AC_SpaceEnemy::AC_SpaceEnemy(){
 	AroundSpeed = 12;
 
 	EnemyTolHP = 100;
+	EnemyCurHP = EnemyTolHP;
 }
 
 void AC_SpaceEnemy::BeginPlay()
@@ -59,4 +60,11 @@ void AC_SpaceEnemy::InitializeBloodUI()
 	{
 		EnemyBloodBar = Cast<UProgressBar>(EnemyBlood->GetUserWidgetObject()->GetWidgetFromName(TEXT("Bar_EnemyBlood")));
 	}
+}
+
+float AC_SpaceEnemy::TakeDamage(float Damage, FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser)
+{
+	//UE_LOG(LogTemp, Warning, TEXT("TakeDamage"));
+	EnemyCurHP = FMath::Max(0.f, EnemyCurHP - Damage);
+	return 0.0f;
 }

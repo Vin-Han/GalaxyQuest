@@ -4,11 +4,14 @@
 
 #include "Components/BoxComponent.h"
 
+#include "TimerManager.h"
 #include "Kismet/KismetMathLibrary.h"
 #include "Kismet/GameplayStatics.h"
 #include "Engine/World.h"
 
 AC_SpaceEnemySpawner::AC_SpaceEnemySpawner(){
+
+	PrimaryActorTick.bCanEverTick = true;
 	SpawnArea = CreateDefaultSubobject<UBoxComponent>(TEXT("SpawnArea"));
 	RootComponent = SpawnArea;
 
@@ -20,7 +23,11 @@ AC_SpaceEnemySpawner::AC_SpaceEnemySpawner(){
 void AC_SpaceEnemySpawner::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-
+	if (PlayerShip && CurrentEnemy < EnemyMaxCount) {
+		FTimerHandle TH_EnemySpaner;
+		GetWorld()->GetTimerManager().SetTimer(TH_EnemySpaner,this,&AC_SpaceEnemySpawner::ChildNumCheck, EnemyMaxCount - CurrentEnemy,false,2.0);
+		CurrentEnemy = EnemyMaxCount;
+	}
 }
 
 void AC_SpaceEnemySpawner::BeginPlay()
@@ -60,6 +67,7 @@ FTransform AC_SpaceEnemySpawner::FindLocationInBox(){
 }
 
 bool AC_SpaceEnemySpawner::ReduceCount(){
+	UE_LOG(LogTemp, Warning, TEXT("ChildDead"));
 	if (CurrentEnemy >0){
 		CurrentEnemy--;
 		return true;
@@ -67,4 +75,8 @@ bool AC_SpaceEnemySpawner::ReduceCount(){
 	return false;
 }
 
+void AC_SpaceEnemySpawner::ChildNumCheck()
+{
+	SpawnEnemy();
+}
 

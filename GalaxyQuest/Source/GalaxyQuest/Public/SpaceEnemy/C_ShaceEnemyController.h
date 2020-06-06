@@ -132,8 +132,6 @@ public:
 #pragma endregion
 
 #pragma region Enemy Health
-public:
-	float EnemyCurHP;
 private:
 	void UpdateEnemyHP();
 #pragma endregion

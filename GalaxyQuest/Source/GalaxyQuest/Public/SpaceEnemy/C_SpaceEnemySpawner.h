@@ -39,6 +39,9 @@ public:
 
 	bool ReduceCount();
 
+	UFUNCTION()
+		void ChildNumCheck();
+
 public:
 	int CurrentEnemy;
 

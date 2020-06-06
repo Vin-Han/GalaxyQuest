@@ -30,7 +30,7 @@ AC_Bullet_Base::AC_Bullet_Base()
 void AC_Bullet_Base::BeginPlay()
 {
 	Super::BeginPlay();
-	UE_LOG(LogTemp, Warning, TEXT("BaseBullet"));
+	//UE_LOG(LogTemp, Warning, TEXT("BaseBullet"));
 	CollisionCom->OnComponentBeginOverlap.AddDynamic(this,&AC_Bullet_Base::CollisionComOnOverlap);
 }
 
@@ -46,15 +46,15 @@ void AC_Bullet_Base::SelfDestroy()
 
 void AC_Bullet_Base::OverlapWithEnemy()
 {
-	UE_LOG(LogTemp,Warning,TEXT("OverlapWith-Enemy"));
+	//UE_LOG(LogTemp,Warning,TEXT("OverlapWith-Enemy"));
 }
 
 void AC_Bullet_Base::OverlapWithPlayer()
 {
-	UE_LOG(LogTemp, Warning, TEXT("OverlapWith-Player"));
+	//UE_LOG(LogTemp, Warning, TEXT("OverlapWith-Player"));
 }
 
 void AC_Bullet_Base::CollisionComOnOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComponent, int32 BodyIndex, bool FromSweep, const FHitResult& HitRusult)
 {
-	UE_LOG(LogTemp, Warning, TEXT("BaseOverlap"));
+	//UE_LOG(LogTemp, Warning, TEXT("BaseOverlap"));
 }

@@ -71,9 +71,13 @@ public:
 public:
 	void InitializeBloodUI();
 
+	virtual float TakeDamage(float Damage, struct FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser) override;
+
 public:
 	UPROPERTY()
 		class UProgressBar* EnemyBloodBar;
 public:
 	float EnemyTolHP;
+
+	float EnemyCurHP;
 };

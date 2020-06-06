@@ -250,7 +250,7 @@ void AC_SystemCharacterController::Fire()
 
 void AC_SystemCharacterController::SpawnNormalBullet()
 {
-	UE_LOG(LogTemp, Warning, TEXT("Firing"));
+	//UE_LOG(LogTemp, Warning, TEXT("Firing"));
 	if (ShipCharacter->NormalBullet)
 	{
 		FireLocation = ShipCharacter->ShipMesh->GetSocketLocation(TEXT("BulletSpawner"));
