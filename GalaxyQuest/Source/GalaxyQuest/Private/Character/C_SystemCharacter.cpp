@@ -11,7 +11,8 @@
 #include "Kismet/KismetMathLibrary.h"
 #include "Engine/Engine.h"
 
-AC_SystemCharacter::AC_SystemCharacter() {
+AC_SystemCharacter::AC_SystemCharacter() 
+{
 	/*Initialize Components*/
 	CollisionCom = CreateDefaultSubobject<UBoxComponent>		(TEXT("CollisionComponent"));
 	SpringArmCom = CreateDefaultSubobject<USpringArmComponent>	(TEXT("SpringArmComponent"));

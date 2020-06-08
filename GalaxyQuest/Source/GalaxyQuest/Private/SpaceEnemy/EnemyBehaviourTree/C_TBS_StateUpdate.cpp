@@ -9,10 +9,12 @@
 #include "BehaviorTree/BlackboardComponent.h"
 #include "Kismet/GameplayStatics.h"
 
-void UC_TBS_StateUpdate::TickNode(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory, float DeltaSeconds) {
+void UC_TBS_StateUpdate::TickNode(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory, float DeltaSeconds) 
+{
 	//Bboard->SetValueAsObject(TEXT("SelfActor"), Monster);
 	AC_ShaceEnemyController* EnemyController = Cast<AC_ShaceEnemyController>(OwnerComp.GetAIOwner());
-	if (EnemyController){
+	if (EnemyController)
+	{
 		EnemyController->BBCom->SetValueAsVector(TEXT("PlayerLocation"),
 			UGameplayStatics::GetPlayerController(GetWorld(), 0)->GetPawn()->GetActorLocation());
 	}

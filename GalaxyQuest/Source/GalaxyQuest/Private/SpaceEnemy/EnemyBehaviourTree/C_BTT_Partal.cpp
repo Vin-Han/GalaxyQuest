@@ -3,9 +3,11 @@
 #include "../Public/SpaceEnemy/C_SpaceEnemy.h"
 
 
-EBTNodeResult::Type UC_BTT_Partal::ExecuteTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory) {
+EBTNodeResult::Type UC_BTT_Partal::ExecuteTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory) 
+{
 	AC_ShaceEnemyController* Controller = Cast<AC_ShaceEnemyController>(OwnerComp.GetAIOwner());
-	if (Controller && Controller->CurLoadingTime > Controller->ReloadingTime){
+	if (Controller && Controller->CurLoadingTime > Controller->ReloadingTime)
+	{
 		Controller->SetPartolStateReset(true);
 	}
 	return EBTNodeResult::Succeeded;

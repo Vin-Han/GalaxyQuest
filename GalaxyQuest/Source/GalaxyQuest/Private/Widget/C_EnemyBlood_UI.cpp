@@ -8,9 +8,9 @@
 bool UC_EnemyBlood_UI::Initialize()
 {
 	if (!Super::Initialize())
+	{
 		return false;
-
+	}
 	Bar_Blood = Cast<UProgressBar>(GetWidgetFromName(TEXT("Bar_EnemyBlood")));
-
 	return true;
 }

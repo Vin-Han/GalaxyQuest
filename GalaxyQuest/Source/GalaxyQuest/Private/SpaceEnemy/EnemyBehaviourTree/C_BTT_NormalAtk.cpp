@@ -3,7 +3,8 @@
 
 #include "../Public/SpaceEnemy/EnemyBehaviourTree/C_BTT_NormalAtk.h"
 
-EBTNodeResult::Type UC_BTT_NormalAtk::ExecuteTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory) {
+EBTNodeResult::Type UC_BTT_NormalAtk::ExecuteTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory) 
+{
 
 	return EBTNodeResult::Failed;
 }

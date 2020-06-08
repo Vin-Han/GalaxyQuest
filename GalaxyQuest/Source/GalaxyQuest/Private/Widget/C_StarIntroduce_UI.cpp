@@ -6,7 +6,9 @@
 
 bool UC_StarIntroduce_UI::Initialize() {
 	if (!Super::Initialize())
+	{
 		return false;
+	}
 	
 	Button_Close	= Cast<UButton>(GetWidgetFromName(TEXT("ButtonClose")));
 	Button_Explore	= Cast<UButton>(GetWidgetFromName(TEXT("ButtonExplore")));

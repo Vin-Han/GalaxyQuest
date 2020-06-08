@@ -17,6 +17,7 @@ void EmptyLinkFunctionForGeneratedCodeC_PlanetController() {}
 	GALAXYQUEST_API UClass* Z_Construct_UClass_AC_PlanetController();
 	AIMODULE_API UClass* Z_Construct_UClass_AAIController();
 	UPackage* Z_Construct_UPackage__Script_GalaxyQuest();
+	GALAXYQUEST_API UClass* Z_Construct_UClass_UC_StarLocation_UI_NoRegister();
 	COREUOBJECT_API UScriptStruct* Z_Construct_UScriptStruct_FVector();
 	GALAXYQUEST_API UClass* Z_Construct_UClass_AC_NormalPlanetPawn_NoRegister();
 // End Cross Module References
@@ -33,6 +34,10 @@ void EmptyLinkFunctionForGeneratedCodeC_PlanetController() {}
 #if WITH_METADATA
 		static const UE4CodeGen_Private::FMetaDataPairParam Class_MetaDataParams[];
 #endif
+#if WITH_METADATA
+		static const UE4CodeGen_Private::FMetaDataPairParam NewProp_LocationUI_MetaData[];
+#endif
+		static const UE4CodeGen_Private::FObjectPropertyParams NewProp_LocationUI;
 #if WITH_METADATA
 		static const UE4CodeGen_Private::FMetaDataPairParam NewProp_OvalLocation_MetaData[];
 #endif
@@ -80,6 +85,13 @@ void EmptyLinkFunctionForGeneratedCodeC_PlanetController() {}
 		{ "ModuleRelativePath", "Public/Planet/C_PlanetController.h" },
 	};
 #endif
+#if WITH_METADATA
+	const UE4CodeGen_Private::FMetaDataPairParam Z_Construct_UClass_AC_PlanetController_Statics::NewProp_LocationUI_MetaData[] = {
+		{ "EditInline", "true" },
+		{ "ModuleRelativePath", "Public/Planet/C_PlanetController.h" },
+	};
+#endif
+	const UE4CodeGen_Private::FObjectPropertyParams Z_Construct_UClass_AC_PlanetController_Statics::NewProp_LocationUI = { "LocationUI", nullptr, (EPropertyFlags)0x0010000000080008, UE4CodeGen_Private::EPropertyGenFlags::Object, RF_Public|RF_Transient|RF_MarkAsNative, 1, STRUCT_OFFSET(AC_PlanetController, LocationUI), Z_Construct_UClass_UC_StarLocation_UI_NoRegister, METADATA_PARAMS(Z_Construct_UClass_AC_PlanetController_Statics::NewProp_LocationUI_MetaData, UE_ARRAY_COUNT(Z_Construct_UClass_AC_PlanetController_Statics::NewProp_LocationUI_MetaData)) };
 #if WITH_METADATA
 	const UE4CodeGen_Private::FMetaDataPairParam Z_Construct_UClass_AC_PlanetController_Statics::NewProp_OvalLocation_MetaData[] = {
 		{ "Comment", "//Current\n" },
@@ -139,6 +151,7 @@ void EmptyLinkFunctionForGeneratedCodeC_PlanetController() {}
 #endif
 	const UE4CodeGen_Private::FObjectPropertyParams Z_Construct_UClass_AC_PlanetController_Statics::NewProp_Planet = { "Planet", nullptr, (EPropertyFlags)0x0010000000000000, UE4CodeGen_Private::EPropertyGenFlags::Object, RF_Public|RF_Transient|RF_MarkAsNative, 1, STRUCT_OFFSET(AC_PlanetController, Planet), Z_Construct_UClass_AC_NormalPlanetPawn_NoRegister, METADATA_PARAMS(Z_Construct_UClass_AC_PlanetController_Statics::NewProp_Planet_MetaData, UE_ARRAY_COUNT(Z_Construct_UClass_AC_PlanetController_Statics::NewProp_Planet_MetaData)) };
 	const UE4CodeGen_Private::FPropertyParamsBase* const Z_Construct_UClass_AC_PlanetController_Statics::PropPointers[] = {
+		(const UE4CodeGen_Private::FPropertyParamsBase*)&Z_Construct_UClass_AC_PlanetController_Statics::NewProp_LocationUI,
 		(const UE4CodeGen_Private::FPropertyParamsBase*)&Z_Construct_UClass_AC_PlanetController_Statics::NewProp_OvalLocation,
 		(const UE4CodeGen_Private::FPropertyParamsBase*)&Z_Construct_UClass_AC_PlanetController_Statics::NewProp_CurrentRevolution,
 		(const UE4CodeGen_Private::FPropertyParamsBase*)&Z_Construct_UClass_AC_PlanetController_Statics::NewProp_RelativeRevolution,
@@ -175,7 +188,7 @@ void EmptyLinkFunctionForGeneratedCodeC_PlanetController() {}
 		}
 		return OuterClass;
 	}
-	IMPLEMENT_CLASS(AC_PlanetController, 2671569467);
+	IMPLEMENT_CLASS(AC_PlanetController, 3584714088);
 	template<> GALAXYQUEST_API UClass* StaticClass<AC_PlanetController>()
 	{
 		return AC_PlanetController::StaticClass();

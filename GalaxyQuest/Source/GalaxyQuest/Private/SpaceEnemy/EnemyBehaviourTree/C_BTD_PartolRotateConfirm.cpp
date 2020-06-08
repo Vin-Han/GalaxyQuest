@@ -4,9 +4,11 @@
 #include "../Public/SpaceEnemy/EnemyBehaviourTree/C_BTD_PartolRotateConfirm.h"
 #include "../Public/SpaceEnemy/C_ShaceEnemyController.h"
 
-bool UC_BTD_PartolRotateConfirm::CalculateRawConditionValue(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory) const{
+bool UC_BTD_PartolRotateConfirm::CalculateRawConditionValue(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory) const
+{
 	AC_ShaceEnemyController* Controller = Cast<AC_ShaceEnemyController>(OwnerComp.GetAIOwner());
-	if (Controller){
+	if (Controller)
+	{
 		return Controller->CanPartolStateReset();
 	}
 	return false;

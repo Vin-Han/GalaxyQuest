@@ -15,8 +15,6 @@ class GALAXYQUEST_API AC_PlanetController : public AAIController
 	GENERATED_BODY()
 
 public:
-	virtual void OnPossess(APawn* InPawn) override;
-
 	virtual void BeginPlay() override;
 
 	virtual void Tick(float DeltaTime) override;
@@ -25,6 +23,8 @@ public:
 	void InitializeOffsetLocation();
 	void InitializeOrbit();
 	void InitializePlanet();
+	void InitializeLocation();
+
 public:
 	UPROPERTY()
 		AC_NormalPlanetPawn* Planet;
@@ -51,4 +51,18 @@ public:
 	float OvalC;
 	float OvalA2;
 	float OvalB2;
+public:
+	void UpdateStarLocation(float DeltaTime);
+
+public:
+	UPROPERTY()
+		class UC_StarLocation_UI* LocationUI;
+
+	FVector PlayerLocation;
+
+	FVector2D ScreenPosition;
+
+	float PlayerDistance;
+private:
+	void UpdateLocationUI();
 };

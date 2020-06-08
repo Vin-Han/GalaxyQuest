@@ -21,7 +21,8 @@
 #include "Kismet/GameplayStatics.h"
 #include "Engine/Engine.h"
 
-void AC_SystemCharacterController::BeginPlay(){
+void AC_SystemCharacterController::BeginPlay()
+{
 	Super::BeginPlay();
 	CleanupGameViewport();
 	InitializeShip();
@@ -32,15 +33,18 @@ void AC_SystemCharacterController::BeginPlay(){
 	GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Red, TEXT("Hello,StartGameMode"));
 }
 
-void AC_SystemCharacterController::Tick(float DeltaSeconds){
+void AC_SystemCharacterController::Tick(float DeltaSeconds)
+{
 	Super::Tick(DeltaSeconds);
 	UpdateSpeedState(DeltaSeconds);
 }
 
 #pragma region Initialize Controller
-void AC_SystemCharacterController::InitializeShip(){
+void AC_SystemCharacterController::InitializeShip()
+{
 	ShipCharacter = Cast<AC_SystemCharacter>(GetPawn());
-	if (ShipCharacter){
+	if (ShipCharacter)
+	{
 		ShipCharacter->CollisionCom->OnComponentBeginOverlap.AddDynamic(this,&AC_SystemCharacterController::OverlapStar);
 		
 		SpeedGap = ShipCharacter->MaxSpeed * ShipCharacter->MaxSpeedRate;
@@ -72,12 +76,20 @@ void AC_SystemCharacterController::InitializeShip(){
 	}
 }
 
-void AC_SystemCharacterController::InitializeStarWidget(){
+void AC_SystemCharacterController::InitializeStarWidget()
+{
 	StarInfor = CreateWidget<UC_StarIntroduce_UI>(GetGameInstance(), 
 				LoadClass<UC_StarIntroduce_UI>(nullptr, TEXT("WidgetBlueprint'/Game/UI/SolarSystemUI/BP_StarIntroduction.BP_StarIntroduction_c'")));
-	if (StarInfor) {
-		if (StarInfor->Button_Close) StarInfor->Button_Close->OnClicked.AddDynamic(this, &AC_SystemCharacterController::StarCloseBtnOnClicked);
-		if (StarInfor->Button_Explore) StarInfor->Button_Explore->OnClicked.AddDynamic(this, &AC_SystemCharacterController::StarExploreBtnOnClicked);
+	if (StarInfor)
+	{
+		if (StarInfor->Button_Close)
+		{
+			StarInfor->Button_Close->OnClicked.AddDynamic(this, &AC_SystemCharacterController::StarCloseBtnOnClicked);
+		}
+		if (StarInfor->Button_Explore)
+		{
+		StarInfor->Button_Explore->OnClicked.AddDynamic(this, &AC_SystemCharacterController::StarExploreBtnOnClicked);
+		}
 	}
 }
 
@@ -85,7 +97,8 @@ void AC_SystemCharacterController::InitializeShipWidget()
 {
 	ShipUI = CreateWidget<UC_SolarUserFace>(GetGameInstance(),
 											LoadClass<UC_SolarUserFace>(nullptr, TEXT("WidgetBlueprint'/Game/UI/SolarSystemUI/BP_SolarUserFace.BP_SolarUserFace_c'")));
-	if (ShipUI){
+	if (ShipUI)
+	{
 		ShipUI->AddToViewport();
 		if (ShipUI->Bar_SpeedUp)   ShipUI->Bar_SpeedUp	 ->SetPercent(1.f);
 		if (ShipUI->Bar_Speed)	   ShipUI->Bar_Speed	 ->SetPercent(0.f);
@@ -97,7 +110,8 @@ void AC_SystemCharacterController::InitializeShipWidget()
 #pragma endregion
 
 #pragma region Ship Move Relatived
-void AC_SystemCharacterController::SetupInputComponent() {
+void AC_SystemCharacterController::SetupInputComponent() 
+{
 	Super::SetupInputComponent();
 
 	InputComponent->BindAxis("UpDown",		this,	 &AC_SystemCharacterController::MouseUpDown);
@@ -112,15 +126,18 @@ void AC_SystemCharacterController::SetupInputComponent() {
 	InputComponent->BindAction("Fire", EInputEvent::IE_Pressed, this, &AC_SystemCharacterController::Fire);
 }
 
-void AC_SystemCharacterController::MouseUpDown(float value) {
+void AC_SystemCharacterController::MouseUpDown(float value) 
+{
 	AddYawInput(value * ShipCharacter->CameraSpeed);
 }
 
-void AC_SystemCharacterController::MouseRightLeft(float value) {
+void AC_SystemCharacterController::MouseRightLeft(float value) 
+{
 	AddPitchInput(value * ShipCharacter->CameraSpeed);
 }
 
-void AC_SystemCharacterController::MoveTurn(float value) {
+void AC_SystemCharacterController::MoveTurn(float value) 
+{
 	FRotator temp = FRotator::ZeroRotator;
 	float rSpeedLimit = CurSpeed
 					  / ShipCharacter->ShipMovement->MaxSpeed;
@@ -128,7 +145,8 @@ void AC_SystemCharacterController::MoveTurn(float value) {
 	ShipCharacter->AddActorWorldRotation(temp);
 }
 
-void AC_SystemCharacterController::MoveUpDown(float value) {
+void AC_SystemCharacterController::MoveUpDown(float value) 
+{
 	FRotator temp = FRotator::ZeroRotator;
 	float rSpeedLimit = CurSpeed
 		/ ShipCharacter->ShipMovement->MaxSpeed;
@@ -136,69 +154,87 @@ void AC_SystemCharacterController::MoveUpDown(float value) {
 	ShipCharacter->AddActorLocalRotation(temp);
 }
 
-void AC_SystemCharacterController::MoveForward(float value) {
+void AC_SystemCharacterController::MoveForward(float value) 
+{
 	FVector temp = ShipCharacter->GetActorForwardVector();
-	if (CurSpeed < ShipCharacter->ShipMovement->MaxSpeed){
+	if (CurSpeed < ShipCharacter->ShipMovement->MaxSpeed)
+	{
 		ShipCharacter->AddMovementInput(temp, value);
 	}
 }
 
-void AC_SystemCharacterController::ShipSpeedUp(){
-	if (!bIsRevertMode){
+void AC_SystemCharacterController::ShipSpeedUp()
+{
+	if (!bIsRevertMode)
+	{
 		bIsSpeedUpMode = true;
 		ShipCharacter->ShipMovement->MaxSpeed = ShipCharacter->MaxSpeed + SpeedGap;
 		ShipCharacter->ShipMovement->Acceleration = ShipCharacter->Acceleration * ShipCharacter->AccelerationRate;
 	}
 }
 
-void AC_SystemCharacterController::ShipSpeedEnd(){
+void AC_SystemCharacterController::ShipSpeedEnd()
+{
 	bIsSpeedUpMode = false;
 	ShipCharacter->ShipMovement->MaxSpeed = ShipCharacter->MaxSpeed;
 	ShipCharacter->ShipMovement->Acceleration = ShipCharacter->Acceleration;
 }
 
-void AC_SystemCharacterController::UpdateSpeedState(float DeltaSeconds){
+void AC_SystemCharacterController::UpdateSpeedState(float DeltaSeconds)
+{
 	CurSpeed = ShipCharacter->GetVelocity().Size();
-
-	if ( RushLeft <= 0 ){
+	if ( RushLeft <= 0 )
+	{
 		bIsRevertMode = true;
 		ShipSpeedEnd();
 	}
-	else if (bIsRevertMode && RushLeft > RushLestAlarm){
+	else if (bIsRevertMode && RushLeft > RushLestAlarm)
+	{
 		bIsRevertMode = false;
 	}
 
 	RushLeft += !bIsSpeedUpMode ? ( RushRevertRate * DeltaSeconds ):( -RushRevertRate * DeltaSeconds );
 	RushLeft = FMath::Min(RushLeft, ShipCharacter->MaxRushTime);
-	if (ShipUI && ShipUI->Bar_SpeedUp) {
+	if (ShipUI && ShipUI->Bar_SpeedUp) 
+	{
 		if (RushLeft < RushLestAlarm)
+		{
 			ShipUI->Bar_SpeedUp->SetFillColorAndOpacity(FLinearColor(FColor::Red));
-		else 
+		}
+		else
+		{
 			ShipUI->Bar_SpeedUp->SetFillColorAndOpacity(FLinearColor(FColor::Green));
+		}
 		ShipUI->Bar_SpeedUp->SetPercent(RushLeft / ShipCharacter->MaxRushTime);
 	}
-	if (ShipUI && ShipUI->Bar_Speed) {
+	if (ShipUI && ShipUI->Bar_Speed) 
+	{
 		float temp = FMath::Min(CurSpeed / ShipCharacter->MaxSpeed , 1.0f);
 		ShipUI->Bar_Speed->SetPercent(temp);
-		if (ShipUI->Bar_ExtraSpeed && temp == 1){
+		if (ShipUI->Bar_ExtraSpeed && temp == 1)
+		{
 			float extra = (CurSpeed - ShipCharacter->MaxSpeed) / (SpeedGap);
 			ShipUI->Bar_ExtraSpeed->SetPercent(extra);
 		}
 	}
 
 	if (bIsSpeedUpMode){
-		if (ShipCharacter->SpringArmCom->TargetArmLength > ArmMinLength){
+		if (ShipCharacter->SpringArmCom->TargetArmLength > ArmMinLength)
+		{
 			ShipCharacter->SpringArmCom->TargetArmLength -= ArmLenChangeRate * DeltaSeconds;
 		}
-		if (ShipCharacter->CameraCom->FieldOfView < CamMaxField) {
+		if (ShipCharacter->CameraCom->FieldOfView < CamMaxField) 
+		{
 			ShipCharacter->CameraCom->FieldOfView += CamAngChangeRate * DeltaSeconds;
 		}
 	}
 	else{
-		if (ShipCharacter->SpringArmCom->TargetArmLength < ArmBaseLength) {
+		if (ShipCharacter->SpringArmCom->TargetArmLength < ArmBaseLength) 
+		{
 			ShipCharacter->SpringArmCom->TargetArmLength += ArmLenChangeRate * DeltaSeconds;
 		}
-		if (ShipCharacter->CameraCom->FieldOfView > CamBaseField) {
+		if (ShipCharacter->CameraCom->FieldOfView > CamBaseField) 
+		{
 			ShipCharacter->CameraCom->FieldOfView -= CamAngChangeRate * DeltaSeconds;
 		}
 	}
@@ -210,16 +246,31 @@ void AC_SystemCharacterController::UpdateSpeedState(float DeltaSeconds){
 #pragma region Widget about Overlap With Star
 void AC_SystemCharacterController::OverlapStar(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComponent, int32 BodyIndex, bool FromSweep, const FHitResult& HitRusult)
 {
-	if (ShipCharacter->bIsInWarMode){
+	if (ShipCharacter->bIsInWarMode)
+	{
 		return;
 	}
 	AC_NormalPlanetPawn* tempStar = Cast<AC_NormalPlanetPawn>(OtherActor);
-	if (tempStar) {
-		if (StarInfor) {
-			if (StarInfor->TextBlock_Name) StarInfor->TextBlock_Name->SetText(FText::FromString(tempStar->StarName));
-			if (StarInfor->TextBlock_Intro)StarInfor->TextBlock_Intro->SetText(FText::FromString(tempStar->StarIntrodoce));;
-			if (StarInfor->Image_Pic)	   StarInfor->Image_Pic->SetBrushFromTexture(tempStar->StarPicture);
-			if (tempStar->StarName != "")  TargetMapName = tempStar->StarMap;
+	if (tempStar) 
+	{
+		if (StarInfor) 
+		{
+			if (StarInfor->TextBlock_Name) 
+			{
+				StarInfor->TextBlock_Name->SetText(FText::FromString(tempStar->StarName));
+			}
+			if (StarInfor->TextBlock_Intro)
+			{
+				StarInfor->TextBlock_Intro->SetText(FText::FromString(tempStar->StarIntrodoce));
+			}
+			if (StarInfor->Image_Pic) 
+			{ 
+				StarInfor->Image_Pic->SetBrushFromTexture(tempStar->StarPicture); 
+			}
+			if (tempStar->StarName != "")  
+			{
+				TargetMapName = tempStar->StarMap;
+			}
 			UGameplayStatics::SetGamePaused(this,true);
 			bShowMouseCursor = true;
 			StarInfor->AddToViewport();
@@ -227,13 +278,15 @@ void AC_SystemCharacterController::OverlapStar(UPrimitiveComponent* OverlappedCo
 	}
 }
 
-void AC_SystemCharacterController::StarCloseBtnOnClicked(){
+void AC_SystemCharacterController::StarCloseBtnOnClicked()
+{
 	UGameplayStatics::SetGamePaused(this, false);
 	bShowMouseCursor = false;
 	StarInfor->RemoveFromViewport();
 }
 
-void AC_SystemCharacterController::StarExploreBtnOnClicked(){
+void AC_SystemCharacterController::StarExploreBtnOnClicked()
+{
 	UGameplayStatics::SetGamePaused(this, false);
 	bShowMouseCursor = false;
 	StarInfor->RemoveFromViewport();
@@ -258,6 +311,5 @@ void AC_SystemCharacterController::SpawnNormalBullet()
 		GetWorld()->SpawnActor(ShipCharacter->NormalBullet, &FireLocation, &FireRotation);
 	}
 }
-
 
 #pragma endregion

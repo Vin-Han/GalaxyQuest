@@ -3,7 +3,8 @@
 
 #include "../Public/SpaceEnemy/EnemyBehaviourTree/C_BTD_DistanceCheck.h"
 
-bool UC_BTD_DistanceCheck::CalculateRawConditionValue(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory) const {
+bool UC_BTD_DistanceCheck::CalculateRawConditionValue(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory) const 
+{
 
 	return false;
 }

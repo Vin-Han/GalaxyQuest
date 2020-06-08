@@ -9,8 +9,8 @@
 #include "Kismet/GameplayStatics.h"
 #include "Engine/World.h"
 
-AC_SpaceEnemySpawner::AC_SpaceEnemySpawner(){
-
+AC_SpaceEnemySpawner::AC_SpaceEnemySpawner()
+{
 	PrimaryActorTick.bCanEverTick = true;
 	SpawnArea = CreateDefaultSubobject<UBoxComponent>(TEXT("SpawnArea"));
 	RootComponent = SpawnArea;
@@ -23,7 +23,8 @@ AC_SpaceEnemySpawner::AC_SpaceEnemySpawner(){
 void AC_SpaceEnemySpawner::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-	if (PlayerShip && CurrentEnemy < EnemyMaxCount) {
+	if (PlayerShip && CurrentEnemy < EnemyMaxCount) 
+	{
 		FTimerHandle TH_EnemySpaner;
 		GetWorld()->GetTimerManager().SetTimer(TH_EnemySpaner,this,&AC_SpaceEnemySpawner::ChildNumCheck, EnemyMaxCount - CurrentEnemy,false,2.0);
 		CurrentEnemy = EnemyMaxCount;
@@ -34,20 +35,26 @@ void AC_SpaceEnemySpawner::BeginPlay()
 {
 	Super::BeginPlay();
 	PlayerShip = Cast<AC_SystemCharacter>(UGameplayStatics::GetPlayerPawn(this, 0));
-	if (PlayerShip){
-		while (CurrentEnemy < EnemyMaxCount){
+	if (PlayerShip)
+	{
+		while (CurrentEnemy < EnemyMaxCount)
+		{
 			if (SpawnEnemy())
-				CurrentEnemy ++ ;
+			{
+				CurrentEnemy++;
+			}
 		}
 	}
 }
 
-bool AC_SpaceEnemySpawner::SpawnEnemy(){
+bool AC_SpaceEnemySpawner::SpawnEnemy()
+{
 	FTransform SpawnTransform = FindLocationInBox();
 	AC_SpaceEnemy* NewEnemy = GetWorld()->SpawnActor<AC_SpaceEnemy>(Enemy, 
 							SpawnTransform.GetLocation(), 
 							SpawnTransform.GetRotation().Rotator());
-	if (NewEnemy) {
+	if (NewEnemy) 
+	{
 		NewEnemy->ParentSpawner = this;
 		NewEnemy->SpawnerLocation = this->GetActorLocation();
 		return true;
@@ -55,20 +62,25 @@ bool AC_SpaceEnemySpawner::SpawnEnemy(){
 	return false;
 }
 
-FTransform AC_SpaceEnemySpawner::FindLocationInBox(){
+FTransform AC_SpaceEnemySpawner::FindLocationInBox()
+{
 	FVector location;
-	do{
+	do
+	{
 		location = UKismetMathLibrary::RandomPointInBoundingBox(GetActorLocation(), SpawnArea->Bounds.BoxExtent);
-	} while (FVector(PlayerShip->GetActorLocation() - location).Size() < EnemyDistanceLimit);
+	} 
+	while (FVector(PlayerShip->GetActorLocation() - location).Size() < EnemyDistanceLimit);
 
 	FRotator rotation = UKismetMathLibrary::RandomRotator();
 	FTransform result = FTransform(rotation,location);
 	return result;
 }
 
-bool AC_SpaceEnemySpawner::ReduceCount(){
+bool AC_SpaceEnemySpawner::ReduceCount()
+{
 	UE_LOG(LogTemp, Warning, TEXT("ChildDead"));
-	if (CurrentEnemy >0){
+	if (CurrentEnemy >0)
+	{
 		CurrentEnemy--;
 		return true;
 	}

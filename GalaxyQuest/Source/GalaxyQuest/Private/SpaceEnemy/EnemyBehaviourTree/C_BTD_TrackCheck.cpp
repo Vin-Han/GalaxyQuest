@@ -9,15 +9,19 @@
 
 #include "BehaviorTree/BlackboardComponent.h"
 
-bool UC_BTD_TrackCheck::CalculateRawConditionValue(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory) const {
+bool UC_BTD_TrackCheck::CalculateRawConditionValue(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory) const 
+{
 	AC_ShaceEnemyController* Controller = Cast<AC_ShaceEnemyController>(OwnerComp.GetAIOwner());
-	if (Controller) {
+	if (Controller) 
+	{
 		AC_SpaceEnemy* Enemy = Controller->EnemyShip;
-		if (Enemy && AllowFollowDistance > 0){
+		if (Enemy && AllowFollowDistance > 0)
+		{
 			UBlackboardComponent* BBCom = Controller->BBCom;
 			FVector TargetLocation = BBCom->GetValueAsVector(TEXT("PlayerLocation"));
 			float CurrentDistance = (TargetLocation - Enemy->GetActorLocation()).Size();
-			if (CurrentDistance > AllowFollowDistance){
+			if (CurrentDistance > AllowFollowDistance)
+			{
 				Controller->TurnToPartolState();
 			}
 		}

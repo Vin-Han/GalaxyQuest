@@ -11,7 +11,8 @@
 
 #include "GameFramework/FloatingPawnMovement.h"
 
-AC_SpaceEnemy::AC_SpaceEnemy(){
+AC_SpaceEnemy::AC_SpaceEnemy()
+{
 	EnemyMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("EnemyMesh"));
 	CollisionCom = CreateDefaultSubobject<UBoxComponent>(TEXT("CollisionComponent"));
 	EnemyMovement = CreateDefaultSubobject<UFloatingPawnMovement>(TEXT("EnemyMovement"));
@@ -49,9 +50,13 @@ void AC_SpaceEnemy::BeginPlay()
 	InitializeBloodUI();
 }
 
-void AC_SpaceEnemy::OnDestory(){
+void AC_SpaceEnemy::OnDestory()
+{
 	if (ParentSpawner && ParentSpawner->ReduceCount())
+	{
 		this->Destroy();
+	}
+
 }
 
 void AC_SpaceEnemy::InitializeBloodUI()

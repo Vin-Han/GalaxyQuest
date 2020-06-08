@@ -33,7 +33,8 @@
 			"C_TBS_StateUpdate.cpp.obj",
 			"C_EnemyBlood_UI.cpp.obj",
 			"C_SolarUserFace.cpp.obj",
-			"C_StarIntroduce_UI.cpp.obj"
+			"C_StarIntroduce_UI.cpp.obj",
+			"C_StarLocation_UI.cpp.obj"
 		],
 		"Module.GalaxyQuest.gen.cpp.obj": [
 			"C_BTD_CDTimeCheck.gen.cpp.obj",
@@ -63,6 +64,7 @@
 			"C_SpaceEnemy_State.gen.cpp.obj",
 			"C_SpaceEnemySpawner.gen.cpp.obj",
 			"C_StarIntroduce_UI.gen.cpp.obj",
+			"C_StarLocation_UI.gen.cpp.obj",
 			"C_SubordinatePlanet.gen.cpp.obj",
 			"C_SystemCharacter.gen.cpp.obj",
 			"C_SystemCharacterController.gen.cpp.obj",

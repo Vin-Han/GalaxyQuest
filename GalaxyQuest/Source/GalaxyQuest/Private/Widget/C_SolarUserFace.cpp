@@ -8,7 +8,9 @@
 bool UC_SolarUserFace::Initialize()
 {
 	if(!Super::Initialize())
+	{
 		return false;
+	}
 
 	Bar_SpeedUp = Cast<UProgressBar>(GetWidgetFromName(TEXT("ProgressBar_SpeedUp")));
 	Bar_Speed = Cast<UProgressBar>(GetWidgetFromName(TEXT("ProgressBar_Speed")));

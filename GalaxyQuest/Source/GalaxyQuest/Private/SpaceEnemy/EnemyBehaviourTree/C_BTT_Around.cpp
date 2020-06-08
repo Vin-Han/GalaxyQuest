@@ -8,17 +8,21 @@
 
 #include "Kismet/KismetMathLibrary.h"
 
-EBTNodeResult::Type UC_BTT_Around::ExecuteTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory) {
+EBTNodeResult::Type UC_BTT_Around::ExecuteTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory) 
+{
 	AC_ShaceEnemyController* Controller = Cast<AC_ShaceEnemyController> (OwnerComp.GetAIOwner());
-	if (Controller){
+	if (Controller)
+	{
 		AC_SpaceEnemy* Enemy = Cast<AC_SpaceEnemy>(Controller->GetPawn());
-		if (Controller->IsAroundNeedAngle()){
+		if (Controller->IsAroundNeedAngle())
+		{
 			FVector ResultLocation = (Enemy->GetActorLocation() - Controller->AroundPoint);
 			Controller->AroundDirectrion = UKismetMathLibrary::FindLookAtRotation(FVector::ZeroVector, ResultLocation);
 			Controller->SetAroundNeedAngle(false);
 			Controller->SetKeepAround(true);
 		}
-		if (Controller->CurAroundTime > Enemy->AroundCostTime) {
+		if (Controller->CurAroundTime > Enemy->AroundCostTime) 
+		{
 			Controller->SetKeepAround(false);
 		}
 	}
