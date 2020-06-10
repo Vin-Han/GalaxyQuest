@@ -31,6 +31,12 @@ void AC_SystemCharacterController::BeginPlay()
 
 	TargetMapName = "/Game/Blueprint/BP_Map/BP_Test_Map";
 	GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Red, TEXT("Hello,StartGameMode"));
+
+	if (ShipCharacter->BulletList.Num() > 0)
+	{
+		CurrentBullet = ShipCharacter->BulletList[0];
+		CurrentIndex = 0;
+	}
 }
 
 void AC_SystemCharacterController::Tick(float DeltaSeconds)
@@ -109,23 +115,25 @@ void AC_SystemCharacterController::InitializeShipWidget()
 
 #pragma endregion
 
-#pragma region Ship Move Relatived
-void AC_SystemCharacterController::SetupInputComponent() 
+void AC_SystemCharacterController::SetupInputComponent()
 {
 	Super::SetupInputComponent();
 
-	InputComponent->BindAxis("UpDown",		this,	 &AC_SystemCharacterController::MouseUpDown);
-	InputComponent->BindAxis("RightLeft",	this,	 &AC_SystemCharacterController::MouseRightLeft);
-	InputComponent->BindAxis("MoveForward", this,	 &AC_SystemCharacterController::MoveForward);
-	InputComponent->BindAxis("MoveTurn",	this,	 &AC_SystemCharacterController::MoveTurn);
-	InputComponent->BindAxis("MoveUpDown",	this,	 &AC_SystemCharacterController::MoveUpDown);
+	InputComponent->BindAxis("UpDown", this, &AC_SystemCharacterController::MouseUpDown);
+	InputComponent->BindAxis("RightLeft", this, &AC_SystemCharacterController::MouseRightLeft);
+	InputComponent->BindAxis("MoveForward", this, &AC_SystemCharacterController::MoveForward);
+	InputComponent->BindAxis("MoveTurn", this, &AC_SystemCharacterController::MoveTurn);
+	InputComponent->BindAxis("MoveUpDown", this, &AC_SystemCharacterController::MoveUpDown);
 
-	InputComponent->BindAction("ShipSpeedUpEnd", EInputEvent::IE_Pressed ,	this, &AC_SystemCharacterController::ShipSpeedUp);
-	InputComponent->BindAction("ShipSpeedUpEnd", EInputEvent::IE_Released,  this, &AC_SystemCharacterController::ShipSpeedEnd);
+	InputComponent->BindAction("ShipSpeedUpEnd", EInputEvent::IE_Pressed, this, &AC_SystemCharacterController::ShipSpeedUp);
+	InputComponent->BindAction("ShipSpeedUpEnd", EInputEvent::IE_Released, this, &AC_SystemCharacterController::ShipSpeedEnd);
 
 	InputComponent->BindAction("Fire", EInputEvent::IE_Pressed, this, &AC_SystemCharacterController::Fire);
+	InputComponent->BindAction("ChangeBulletAdd", EInputEvent::IE_Pressed, this, &AC_SystemCharacterController::ChangeBulletAdd);
+	InputComponent->BindAction("ChangeBulletExtract", EInputEvent::IE_Pressed, this, &AC_SystemCharacterController::ChangeBulletExtract);
 }
 
+#pragma region Ship Move Relatived
 void AC_SystemCharacterController::MouseUpDown(float value) 
 {
 	AddYawInput(value * ShipCharacter->CameraSpeed);
@@ -298,17 +306,50 @@ void AC_SystemCharacterController::StarExploreBtnOnClicked()
 #pragma region Fire Relatied
 void AC_SystemCharacterController::Fire()
 {
-	SpawnNormalBullet();
-}
-
-void AC_SystemCharacterController::SpawnNormalBullet()
-{
-	//UE_LOG(LogTemp, Warning, TEXT("Firing"));
-	if (ShipCharacter->NormalBullet)
+	if (CurrentBullet)
 	{
 		FireLocation = ShipCharacter->ShipMesh->GetSocketLocation(TEXT("BulletSpawner"));
 		FireRotation = ShipCharacter->CollisionCom->GetComponentRotation();
-		GetWorld()->SpawnActor(ShipCharacter->NormalBullet, &FireLocation, &FireRotation);
+		AC_Bullet_Base* test = Cast<AC_Bullet_Base>(
+		GetWorld()->SpawnActor(CurrentBullet, &FireLocation, &FireRotation) );
+		if (test)
+		{
+			UE_LOG(LogTemp, Warning, TEXT("%s"), *(test->BulletName));
+		}
+	}
+}
+
+void AC_SystemCharacterController::ChangeBulletAdd()
+{
+	if (ShipCharacter->BulletList.Num() > 0)
+	{
+		if (CurrentIndex == ShipCharacter->BulletList.Num() - 1)
+		{
+			CurrentBullet = ShipCharacter->BulletList[0];
+			CurrentIndex = 0;
+		}
+		else
+		{
+			CurrentBullet = ShipCharacter->BulletList[CurrentIndex+1];
+			CurrentIndex ++;
+		}
+	}
+}
+
+void AC_SystemCharacterController::ChangeBulletExtract()
+{
+	if (ShipCharacter->BulletList.Num() > 0)
+	{
+		if (CurrentIndex == 0)
+		{
+			CurrentBullet = ShipCharacter->BulletList[ShipCharacter->BulletList.Num() - 1];
+			CurrentIndex = ShipCharacter->BulletList.Num() - 1;
+		}
+		else
+		{
+			CurrentBullet = ShipCharacter->BulletList[CurrentIndex - 1];
+			CurrentIndex--;
+		}
 	}
 }
 

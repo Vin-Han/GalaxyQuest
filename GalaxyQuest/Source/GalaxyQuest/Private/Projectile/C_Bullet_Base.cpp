@@ -24,7 +24,7 @@ AC_Bullet_Base::AC_Bullet_Base()
 	MovementCom->Friction				= 0.0f;
 
 	InitialLifeSpan = 5.0f;
-
+	BulletName = "BaseBullet";
 }
 
 void AC_Bullet_Base::BeginPlay()

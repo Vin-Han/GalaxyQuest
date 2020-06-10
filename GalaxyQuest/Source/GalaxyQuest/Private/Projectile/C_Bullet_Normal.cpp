@@ -12,6 +12,8 @@
 AC_Bullet_Normal::AC_Bullet_Normal() 
 {
 	BaseDamage = 20;
+	InitialLifeSpan = 5.0f;
+	BulletName = "NormalBullet";
 }
 
 void AC_Bullet_Normal::BeginPlay() 

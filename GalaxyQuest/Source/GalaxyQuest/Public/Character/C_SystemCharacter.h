@@ -4,7 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Pawn.h"
-#include "Projectile/C_Bullet_Normal.h"
+#include "Projectile/C_Bullet_Base.h"
 #include "C_SystemCharacter.generated.h"
 
 UCLASS()
@@ -66,7 +66,7 @@ public:
 
 public:
 	UPROPERTY(EditAnyWhere, Category = "Projectile")
-		TSubclassOf<AC_Bullet_Normal> NormalBullet;
+		TArray<TSubclassOf<AC_Bullet_Base>> BulletList;
 
 public:
 	UPROPERTY(EditAnyWhere, Category = "WarMode")

@@ -23,6 +23,8 @@ public:
 		class UStaticMeshComponent* BulletMesh;
 	UPROPERTY(VisibleAnyWhere)
 		class UProjectileMovementComponent* MovementCom;
+public:
+	FString BulletName;
 
 protected:
 	float BaseDamage = 0;

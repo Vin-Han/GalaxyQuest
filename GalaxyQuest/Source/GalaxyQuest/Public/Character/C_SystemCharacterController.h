@@ -91,15 +91,20 @@ public:
 
 #pragma region Fire Relatied
 public:
-
 	FVector FireLocation;
 	FRotator FireRotation;
+
 public:
 	UFUNCTION()
 		void Fire();
+	UFUNCTION()
+		void ChangeBulletAdd();
+	UFUNCTION()
+		void ChangeBulletExtract();
 
 private:
-	void SpawnNormalBullet();
+	TSubclassOf<AC_Bullet_Base> CurrentBullet;
 
+	int CurrentIndex;
 #pragma endregion
 };
