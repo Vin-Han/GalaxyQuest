@@ -6,6 +6,7 @@
 #include "../Public/Widget/C_SolarUserFace.h"
 #include "../Public/GameMode/C_SolarSystemGameMode.h"
 #include "../Public/Projectile/C_Bullet_Base.h"
+#include "../Public/Character/C_BagItemBase.h"
 
 #include "Components/BoxComponent.h"
 #include "Components/StaticMeshComponent.h"
@@ -28,21 +29,18 @@ void AC_SystemCharacterController::BeginPlay()
 	InitializeShip();
 	InitializeStarWidget();
 	InitializeShipWidget();
-
+	InitializeBulletWindow();
 	TargetMapName = "/Game/Blueprint/BP_Map/BP_Test_Map";
 	GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Red, TEXT("Hello,StartGameMode"));
 
-	if (ShipCharacter->BulletList.Num() > 0)
-	{
-		CurrentBullet = ShipCharacter->BulletList[0];
-		CurrentIndex = 0;
-	}
+
 }
 
 void AC_SystemCharacterController::Tick(float DeltaSeconds)
 {
 	Super::Tick(DeltaSeconds);
 	UpdateSpeedState(DeltaSeconds);
+	UpdateBulletLoadingTime(DeltaSeconds);
 }
 
 #pragma region Initialize Controller
@@ -111,6 +109,83 @@ void AC_SystemCharacterController::InitializeShipWidget()
 		if (ShipUI->Bar_ExtraSpeed)ShipUI->Bar_ExtraSpeed->SetPercent(0.f);
 		if (ShipUI->Bar_Horizontal)ShipUI->Bar_Horizontal->SetPercent(1.f);
 	}
+}
+/*
+void AC_SystemCharacterController::InitializeBulletWindow()
+{
+	if (GenerateBulletItem() == false)
+	{
+		return;
+	}
+
+	BulletWindowBaseSize = 80;
+	if (ShipCharacter->BulletList.Num() > 0)
+	{
+		CurrentBullet = ShipCharacter->BulletList[0];
+		CurrentIndex = 0;
+	}
+	else
+	{
+		return;
+	}
+	if (ShipUI)
+	{
+		for (int i = 0; i < ShipUI->BulletOut.Num(); i++)
+		{
+			ShipUI->BulletOut[i]->SetVisibility(ESlateVisibility::Hidden);
+			ShipUI->BulletPic[i]->SetOpacity(0.5f);
+			ShipUI->BulletPic[i]->SetVisibility(ESlateVisibility::Hidden);
+		}
+		//UE_LOG(LogTemp, Warning, TEXT("CheckingVisible"));
+		int TolalIndex = FMath::Min(5, ShipCharacter->BulletList.Num());
+		for (int i = 0; i < TolalIndex; i++)
+		{
+			ShipUI->BulletOut[i]->SetVisibility(ESlateVisibility::Visible);
+			ShipUI->BulletPic[i]->SetVisibility(ESlateVisibility::Visible);
+			ShipUI->BulletPic[i]->SetBrushFromTexture(
+				ShipCharacter->BulletList[i].GetDefaultObject()->BulletPicture);
+
+			ChangeBulletWindow(i, false);
+		}
+	}
+	ChangeBulletWindow(CurrentIndex,true);
+}
+*/
+void AC_SystemCharacterController::InitializeBulletWindow()
+{
+	if (GenerateBulletItem() == false)
+	{
+		return;
+	}
+	BulletWindowBaseSize = 80;
+	//CurrentBullet = BulletItemList[0].BulletClass;
+	CurrentIndex = 0;
+
+	if (ShipUI)
+	{
+		for (int i = 0; i < ShipUI->BulletOut.Num(); i++)
+		{
+			ShipUI->BulletOut[i]->SetVisibility(ESlateVisibility::Hidden);
+			ShipUI->BulletPic[i]->SetOpacity(0.5f);
+			ShipUI->BulletPic[i]->SetVisibility(ESlateVisibility::Hidden);
+			ShipUI->BulletCD[i]->SetVisibility(ESlateVisibility::Hidden);
+			ShipUI->BulletNum[i]->SetVisibility(ESlateVisibility::Hidden);
+			ShipUI->BulletNum[i]->SetOpacity(0.8f);
+		}
+		//UE_LOG(LogTemp, Warning, TEXT("CheckingVisible"));
+		int TolalIndex = FMath::Min(5, BulletItemList.Num());
+		for (int i = 0; i < TolalIndex; i++)
+		{
+			ShipUI->BulletOut[i]->SetVisibility(ESlateVisibility::Visible);
+			ShipUI->BulletPic[i]->SetVisibility(ESlateVisibility::Visible);
+			ShipUI->BulletPic[i]->SetBrushFromTexture(
+				BulletItemList[i].BulletClass.GetDefaultObject()->BulletPicture);
+			ShipUI->BulletCD[i]->SetVisibility(ESlateVisibility::Visible);
+			ShipUI->BulletNum[i]->SetVisibility(ESlateVisibility::Visible);
+			ChangeBulletWindow(i, false);
+		}
+	}
+	ChangeBulletWindow(CurrentIndex, true);
 }
 
 #pragma endregion
@@ -306,49 +381,135 @@ void AC_SystemCharacterController::StarExploreBtnOnClicked()
 #pragma region Fire Relatied
 void AC_SystemCharacterController::Fire()
 {
-	if (CurrentBullet)
+	if (BulletStateCheck() == true)
 	{
 		FireLocation = ShipCharacter->ShipMesh->GetSocketLocation(TEXT("BulletSpawner"));
 		FireRotation = ShipCharacter->CollisionCom->GetComponentRotation();
+
 		AC_Bullet_Base* test = Cast<AC_Bullet_Base>(
-		GetWorld()->SpawnActor(CurrentBullet, &FireLocation, &FireRotation) );
+			GetWorld()->SpawnActor(BulletItemList[CurrentIndex].BulletClass,
+				&FireLocation, &FireRotation));
+
+		BulletItemList[CurrentIndex].CurrentAccout = BulletItemList[CurrentIndex].CurrentAccout - 1;
+		BulletItemList[CurrentIndex].CurrentLoadingTime = 
+					BulletItemList[CurrentIndex].BulletClass.GetDefaultObject()->BulletLoadingTime;
 		if (test)
 		{
-			UE_LOG(LogTemp, Warning, TEXT("%s"), *(test->BulletName));
+			UE_LOG(LogTemp, Warning, TEXT("%s,%d"), *(test->BulletName), BulletItemList[CurrentIndex].CurrentAccout);
 		}
 	}
 }
 
 void AC_SystemCharacterController::ChangeBulletAdd()
 {
-	if (ShipCharacter->BulletList.Num() > 0)
+	ChangeBulletWindow(CurrentIndex, false);
+	if (BulletItemList.Num() > 0)
 	{
-		if (CurrentIndex == ShipCharacter->BulletList.Num() - 1)
+		if (CurrentIndex == BulletItemList.Num() - 1)
 		{
-			CurrentBullet = ShipCharacter->BulletList[0];
+			//CurrentBullet = BulletItemList[0].BulletClass;
 			CurrentIndex = 0;
 		}
 		else
 		{
-			CurrentBullet = ShipCharacter->BulletList[CurrentIndex+1];
+			//CurrentBullet = BulletItemList[CurrentIndex + 1].BulletClass;
 			CurrentIndex ++;
 		}
 	}
+	ChangeBulletWindow(CurrentIndex, true);
 }
 
 void AC_SystemCharacterController::ChangeBulletExtract()
 {
-	if (ShipCharacter->BulletList.Num() > 0)
+	ChangeBulletWindow(CurrentIndex, false);
+	if (BulletItemList.Num() > 0)
 	{
 		if (CurrentIndex == 0)
 		{
-			CurrentBullet = ShipCharacter->BulletList[ShipCharacter->BulletList.Num() - 1];
-			CurrentIndex = ShipCharacter->BulletList.Num() - 1;
+			//CurrentBullet = BulletItemList[ShipCharacter->BulletList.Num() - 1].BulletClass;
+			CurrentIndex = BulletItemList.Num() - 1;
 		}
 		else
 		{
-			CurrentBullet = ShipCharacter->BulletList[CurrentIndex - 1];
+			//CurrentBullet = BulletItemList[CurrentIndex - 1].BulletClass;
 			CurrentIndex--;
+		}
+	}
+	ChangeBulletWindow(CurrentIndex, true);
+}
+
+void AC_SystemCharacterController::ChangeBulletWindow(float WindowIndex, bool bIsUpgrade)
+{
+	if (ShipUI)
+	{
+		if (bIsUpgrade)
+		{
+			ShipUI->BulletOut[WindowIndex]->SetColorAndOpacity(FColor::White);
+			ShipUI->BulletOut[WindowIndex]->SetBrushSize(FVector2D(BulletWindowBaseSize * 1.05));
+			ShipUI->BulletPic[WindowIndex]->SetOpacity(1.0f);
+			ShipUI->BulletPic[WindowIndex]->SetBrushSize(FVector2D(BulletWindowBaseSize * 1.05));
+			ShipUI->BulletNum[WindowIndex]->SetOpacity(1.0f);
+		}
+		else
+		{
+			ShipUI->BulletOut[WindowIndex]->SetColorAndOpacity(FColor::Black);
+			ShipUI->BulletOut[WindowIndex]->SetBrushSize(FVector2D(BulletWindowBaseSize));
+			ShipUI->BulletPic[WindowIndex]->SetOpacity(0.5f);
+			ShipUI->BulletPic[WindowIndex]->SetBrushSize(FVector2D(BulletWindowBaseSize));
+			ShipUI->BulletNum[WindowIndex]->SetOpacity(0.8f);
+		}
+	}
+}
+
+bool AC_SystemCharacterController::GenerateBulletItem()
+{
+	if (ShipCharacter->BulletList.Num() == 0)
+	{
+		return false;
+	}
+	for (int i = 0; i < ShipCharacter->BulletList.Num(); i++)
+	{
+		FBulletItem tempBulletItem;
+		tempBulletItem.TotalAccout = 999;
+		tempBulletItem.CurrentAccout = 999;
+		tempBulletItem.CurrentLoadingTime = 0;
+		tempBulletItem.BulletClass = ShipCharacter->BulletList[i];
+		BulletItemList.Add(tempBulletItem);
+	}
+	return true;
+}
+
+bool AC_SystemCharacterController::BulletStateCheck()
+{
+	if (CurrentIndex < BulletItemList.Num()
+		&& BulletItemList[CurrentIndex].CurrentAccout > 0
+		&& BulletItemList[CurrentIndex].CurrentLoadingTime <= 0
+		)
+	{
+		return true;
+	}
+	UE_LOG(LogTemp, Warning, TEXT("FireNotAllow"));
+	return false;
+}
+
+void AC_SystemCharacterController::UpdateBulletLoadingTime(float DeltaSeconds)
+{
+
+	for (int i = 0; i < BulletItemList.Num(); i++)
+	{
+		BulletItemList[i].CurrentLoadingTime = 
+			FMath::Max(0.f, 
+				BulletItemList[i].CurrentLoadingTime - DeltaSeconds);
+	}
+	for (int i = 0; i < ShipUI->BulletOut.Num(); i++)
+	{
+		if (ShipUI->BulletOut[i]->Visibility == ESlateVisibility::Visible)
+		{
+			ShipUI->BulletCD[i]->SetPercent(
+				BulletItemList[i].CurrentLoadingTime / 
+				BulletItemList[i].BulletClass.GetDefaultObject()->BulletLoadingTime);
+			ShipUI->BulletNum[i]->SetText(FText::FromString(
+				FString::FromInt( BulletItemList[i].CurrentAccout)));
 		}
 	}
 }

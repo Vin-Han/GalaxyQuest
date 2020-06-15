@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
+#include "Engine/Texture2D.h"
 #include "C_Bullet_Base.generated.h"
 
 UCLASS()
@@ -23,8 +24,14 @@ public:
 		class UStaticMeshComponent* BulletMesh;
 	UPROPERTY(VisibleAnyWhere)
 		class UProjectileMovementComponent* MovementCom;
+
 public:
-	FString BulletName;
+	UPROPERTY(EditAnyWhere, Category = "ItemInformation")
+		FString BulletName;
+	UPROPERTY(EditAnyWhere, Category = "ItemInformation")
+		UTexture2D* BulletPicture;
+	UPROPERTY(EditAnyWhere, Category = "ItemInformation")
+		float BulletLoadingTime;
 
 protected:
 	float BaseDamage = 0;

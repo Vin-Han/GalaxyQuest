@@ -3,6 +3,7 @@
 	{
 		"Module.GalaxyQuest.cpp.obj": [
 			"GalaxyQuest.cpp.obj",
+			"C_BagItemBase.cpp.obj",
 			"C_SystemCharacter.cpp.obj",
 			"C_SystemCharacterController.cpp.obj",
 			"C_SingleStarGameMode.cpp.obj",
@@ -39,6 +40,7 @@
 			"C_StarLocation_UI.cpp.obj"
 		],
 		"Module.GalaxyQuest.gen.cpp.obj": [
+			"C_BagItemBase.gen.cpp.obj",
 			"C_BTD_CDTimeCheck.gen.cpp.obj",
 			"C_BTD_DistanceCheck.gen.cpp.obj",
 			"C_BTD_PartolRotateConfirm.gen.cpp.obj",

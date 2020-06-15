@@ -21,6 +21,7 @@ public:
 	void InitializeShip();
 	void InitializeStarWidget();
 	void InitializeShipWidget();
+	void InitializeBulletWindow();
 
 public:
 	UPROPERTY()
@@ -103,8 +104,18 @@ public:
 		void ChangeBulletExtract();
 
 private:
-	TSubclassOf<AC_Bullet_Base> CurrentBullet;
+	void ChangeBulletWindow(float WindowIndex, bool bIsUpgrade);
 
+	bool GenerateBulletItem();
+
+	bool BulletStateCheck();
+
+	void UpdateBulletLoadingTime(float DeltaSeconds);
+
+private:
+	//TSubclassOf<AC_Bullet_Base> CurrentBullet;
+	TArray<struct FBulletItem> BulletItemList;
 	int CurrentIndex;
+	float BulletWindowBaseSize;
 #pragma endregion
 };
