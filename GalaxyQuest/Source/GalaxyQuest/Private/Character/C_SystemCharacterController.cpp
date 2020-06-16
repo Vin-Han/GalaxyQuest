@@ -110,47 +110,7 @@ void AC_SystemCharacterController::InitializeShipWidget()
 		if (ShipUI->Bar_Horizontal)ShipUI->Bar_Horizontal->SetPercent(1.f);
 	}
 }
-/*
-void AC_SystemCharacterController::InitializeBulletWindow()
-{
-	if (GenerateBulletItem() == false)
-	{
-		return;
-	}
 
-	BulletWindowBaseSize = 80;
-	if (ShipCharacter->BulletList.Num() > 0)
-	{
-		CurrentBullet = ShipCharacter->BulletList[0];
-		CurrentIndex = 0;
-	}
-	else
-	{
-		return;
-	}
-	if (ShipUI)
-	{
-		for (int i = 0; i < ShipUI->BulletOut.Num(); i++)
-		{
-			ShipUI->BulletOut[i]->SetVisibility(ESlateVisibility::Hidden);
-			ShipUI->BulletPic[i]->SetOpacity(0.5f);
-			ShipUI->BulletPic[i]->SetVisibility(ESlateVisibility::Hidden);
-		}
-		//UE_LOG(LogTemp, Warning, TEXT("CheckingVisible"));
-		int TolalIndex = FMath::Min(5, ShipCharacter->BulletList.Num());
-		for (int i = 0; i < TolalIndex; i++)
-		{
-			ShipUI->BulletOut[i]->SetVisibility(ESlateVisibility::Visible);
-			ShipUI->BulletPic[i]->SetVisibility(ESlateVisibility::Visible);
-			ShipUI->BulletPic[i]->SetBrushFromTexture(
-				ShipCharacter->BulletList[i].GetDefaultObject()->BulletPicture);
-
-			ChangeBulletWindow(i, false);
-		}
-	}
-	ChangeBulletWindow(CurrentIndex,true);
-}
-*/
 void AC_SystemCharacterController::InitializeBulletWindow()
 {
 	if (GenerateBulletItem() == false)
@@ -393,10 +353,6 @@ void AC_SystemCharacterController::Fire()
 		BulletItemList[CurrentIndex].CurrentAccout = BulletItemList[CurrentIndex].CurrentAccout - 1;
 		BulletItemList[CurrentIndex].CurrentLoadingTime = 
 					BulletItemList[CurrentIndex].BulletClass.GetDefaultObject()->BulletLoadingTime;
-		if (test)
-		{
-			UE_LOG(LogTemp, Warning, TEXT("%s,%d"), *(test->BulletName), BulletItemList[CurrentIndex].CurrentAccout);
-		}
 	}
 }
 

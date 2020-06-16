@@ -3,6 +3,7 @@
 
 #include "../Public/SpaceEnemy/C_SpaceEnemy.h"
 #include "../public/SpaceEnemy/C_SpaceEnemySpawner.h"
+#include "../Public/Projectile/C_Bullet_Base.h"
 
 #include "Components/BoxComponent.h"
 #include "Components/StaticMeshComponent.h"

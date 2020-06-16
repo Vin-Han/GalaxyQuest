@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "AIController.h"
 #include "../Public/SpaceEnemy/C_SpaceEnemy_State.h"
+#include "../Public/Character/C_BagItemBase.h"
 #include "C_ShaceEnemyController.generated.h"
 
 UCLASS()
@@ -59,6 +60,7 @@ private:
 	void InitializeEvent();
 	void InitializeControllerData();
 	void InitializeEnemyHealth();
+	void InitializeEnemyBullet();
 
 private:
 	void InitializeTrack();
@@ -134,6 +136,14 @@ public:
 #pragma region Enemy Health
 private:
 	void UpdateEnemyHP();
+#pragma endregion
+
+#pragma region Enemy Fire
+public:
+	FBulletItem EnemyBulletItem;
+public:
+	void Fire();
+	void UpdateBullet(float DeltaSeconds);
 #pragma endregion
 
 };

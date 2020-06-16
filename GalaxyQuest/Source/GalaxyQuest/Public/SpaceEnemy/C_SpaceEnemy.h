@@ -43,7 +43,8 @@ public:
 		UBehaviorTree* BehaviorTree;
 	UPROPERTY(EditAnyWhere,Category = "AIEnemy")
 		EnemyState CurrentState;
-
+	UPROPERTY(EditAnyWhere, Category = "AIEnemy")
+		TSubclassOf<class AC_Bullet_Base> EnemyBullet;
 public:
 	UPROPERTY(EditAnyWhere, Category = "PartolState")
 		float PartolSpeed;

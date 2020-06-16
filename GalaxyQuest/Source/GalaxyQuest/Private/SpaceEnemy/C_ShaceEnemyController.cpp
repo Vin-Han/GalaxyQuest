@@ -13,6 +13,7 @@
 #include "Components/ProgressBar.h"
 
 #include "TimerManager.h"
+#include "Engine/World.h"
 
 #include "Kismet/KismetMathLibrary.h"
 #include "Kismet/GameplayStatics.h"
@@ -32,6 +33,7 @@ void AC_ShaceEnemyController::OnPossess(APawn* InPawn)
 	InitializeEvent();
 	InitializeControllerData();
 	InitializeEnemyHealth();
+	InitializeEnemyBullet();
 	if (EnemyShip)
 	{
 		InilializePatrol();
@@ -92,6 +94,18 @@ void AC_ShaceEnemyController::InitializeEnemyHealth()
 	if (EnemyShip)
 	{
 	}
+}
+
+void AC_ShaceEnemyController::InitializeEnemyBullet()
+{
+	if (EnemyShip && EnemyShip->EnemyBullet)
+	{
+		EnemyBulletItem = FBulletItem();
+		EnemyBulletItem.BulletClass = EnemyShip->EnemyBullet;
+		EnemyBulletItem.CurrentLoadingTime = 
+			EnemyBulletItem.BulletClass.GetDefaultObject()->BulletLoadingTime;
+	}
+	//UE_LOG(LogTemp, Warning, TEXT("Bullet have instance"));
 }
 
 void AC_ShaceEnemyController::InitializeTrack() 
@@ -193,6 +207,7 @@ void AC_ShaceEnemyController::Tick(float DeltaSeconds)
 
 	UpdateMovement(DeltaSeconds);
 	UpdateEnemyHP();
+	UpdateBullet(DeltaSeconds);
 }
 
 #pragma region Update Movement
@@ -322,7 +337,6 @@ void AC_ShaceEnemyController::OverlapWithPlanet()
 
 #pragma endregion
 
-
 #pragma region Enemy Health
 void AC_ShaceEnemyController::UpdateEnemyHP()
 {
@@ -355,4 +369,29 @@ void AC_ShaceEnemyController::UpdateEnemyHP()
 	}
 }
 
+
+
 #pragma endregion
+
+#pragma region Enemy Fire
+void AC_ShaceEnemyController::Fire()
+{
+	if (EnemyBulletItem.BulletClass)
+	{
+		FVector spawnLocation = EnemyShip->GetActorLocation();
+		GetWorld()->SpawnActor(EnemyBulletItem.BulletClass,&spawnLocation, &FRotator::ZeroRotator);
+		EnemyBulletItem.CurrentLoadingTime = 
+			EnemyBulletItem.BulletClass.GetDefaultObject()->BulletLoadingTime;
+	}
+}
+
+void AC_ShaceEnemyController::UpdateBullet(float DeltaSeconds)
+{
+	if (EnemyBulletItem.CurrentLoadingTime > 0.0f)
+	{
+		EnemyBulletItem.CurrentLoadingTime -= DeltaSeconds;
+	}
+}
+
+#pragma endregion
+

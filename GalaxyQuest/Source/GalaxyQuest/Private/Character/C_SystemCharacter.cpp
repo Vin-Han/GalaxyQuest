@@ -1,4 +1,5 @@
 #include "../Public/Character/C_SystemCharacter.h"
+#include "../Public/Projectile/C_Bullet_EnemyNormal.h" 
 
 #include "Components/BoxComponent.h"
 #include "Components/SkeletalMeshComponent.h"
@@ -45,3 +46,15 @@ AC_SystemCharacter::AC_SystemCharacter()
 	RushLeftAlarmRate = 0.2;
 }
 
+float AC_SystemCharacter::TakeDamage(float Damage, FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser)
+{
+	if (Cast<AC_Bullet_EnemyNormal>(DamageCauser))
+	{
+		UE_LOG(LogTemp, Warning, TEXT("Hit By Enemy Bullet"));
+	}
+	else
+	{
+		UE_LOG(LogTemp, Warning, TEXT("It Is Not Enemy Bullet"));
+	}
+	return 0.0f;
+}

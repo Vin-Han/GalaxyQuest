@@ -94,7 +94,14 @@ void AC_Bullet_Track::UpDateRotation()
 void AC_Bullet_Track::Explore()
 {
 	TArray<AActor*> IgnoreActor;
-	UGameplayStatics::ApplyRadialDamage(GetWorld(), BaseDamage, GetActorLocation(),
-										ExploreRadial,nullptr, IgnoreActor);
+	IgnoreActor.Add(
+		UGameplayStatics::GetPlayerPawn(GetWorld(), 0));
+
+	UGameplayStatics::ApplyRadialDamage(
+		GetWorld(), BaseDamage, GetActorLocation(),
+		ExploreRadial,nullptr, IgnoreActor,
+		UGameplayStatics::GetPlayerPawn(this, 0),
+		UGameplayStatics::GetPlayerController(this, 0));
+
 	SelfDestroy();
 }
