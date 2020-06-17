@@ -13,12 +13,13 @@ bool UC_SolarUserFace::Initialize()
 	{
 		return false;
 	}
-
 	Bar_SpeedUp = Cast<UProgressBar>(GetWidgetFromName(TEXT("ProgressBar_SpeedUp")));
 	Bar_Speed = Cast<UProgressBar>(GetWidgetFromName(TEXT("ProgressBar_Speed")));
 	Bar_ExtraSpeed = Cast<UProgressBar>(GetWidgetFromName(TEXT("ProgressBar_ExtraSpeed")));
 	Bar_Horizontal = Cast<UProgressBar>(GetWidgetFromName(TEXT("ProgressBar_Horizontal")));
+	Bar_Blood = Cast<UProgressBar>(GetWidgetFromName(TEXT("ProgressBar_BloodIn")));
 
+#pragma region Bullet Property
 	Image_WP_1 = Cast<UImage>(GetWidgetFromName(TEXT("Image_Bullet_1")));
 	Image_WP_P1 = Cast<UImage>(GetWidgetFromName(TEXT("Image_Bullet_P1")));
 	Bar_WP_1 = Cast<UProgressBar>(GetWidgetFromName(TEXT("ProgressBar_Bullet_1")));
@@ -67,6 +68,9 @@ bool UC_SolarUserFace::Initialize()
 	BulletNum.Add(Text_WP_3);
 	BulletNum.Add(Text_WP_4);
 	BulletNum.Add(Text_WP_5);
+#pragma endregion
+
+
 
 	return true;
 }

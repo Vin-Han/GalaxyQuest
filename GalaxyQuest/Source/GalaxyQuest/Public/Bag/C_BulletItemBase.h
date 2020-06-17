@@ -2,11 +2,12 @@
 
 #pragma once
 
+#include "../Public/Bag/C_BagItemBase.h"
 #include "../Public/Projectile/C_Bullet_Base.h"
-#include "C_BagItemBase.generated.h"
+#include "C_BulletItemBase.generated.h"
 
 USTRUCT(BlueprintType)
-struct FBulletItem
+struct FBulletBagItem : public FBagItemBase
 {
     GENERATED_USTRUCT_BODY()
 

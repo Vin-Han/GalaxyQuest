@@ -22,6 +22,8 @@ public:
 		UProgressBar* Bar_ExtraSpeed;
 	UPROPERTY()
 		UProgressBar* Bar_Horizontal;
+	UPROPERTY()
+		UProgressBar* Bar_Blood;
 
 #pragma region Bullet Property
 	UPROPERTY()

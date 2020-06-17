@@ -6,7 +6,7 @@
 #include "../Public/Widget/C_SolarUserFace.h"
 #include "../Public/GameMode/C_SolarSystemGameMode.h"
 #include "../Public/Projectile/C_Bullet_Base.h"
-#include "../Public/Character/C_BagItemBase.h"
+#include "../Public/Bag/C_BulletItemBase.h"
 
 #include "Components/BoxComponent.h"
 #include "Components/StaticMeshComponent.h"
@@ -104,10 +104,26 @@ void AC_SystemCharacterController::InitializeShipWidget()
 	if (ShipUI)
 	{
 		ShipUI->AddToViewport();
-		if (ShipUI->Bar_SpeedUp)   ShipUI->Bar_SpeedUp	 ->SetPercent(1.f);
-		if (ShipUI->Bar_Speed)	   ShipUI->Bar_Speed	 ->SetPercent(0.f);
-		if (ShipUI->Bar_ExtraSpeed)ShipUI->Bar_ExtraSpeed->SetPercent(0.f);
-		if (ShipUI->Bar_Horizontal)ShipUI->Bar_Horizontal->SetPercent(1.f);
+		if (ShipUI->Bar_SpeedUp) 
+		{
+			ShipUI->Bar_SpeedUp->SetPercent(1.f);
+		}
+		if (ShipUI->Bar_Speed)
+		{
+			ShipUI->Bar_Speed->SetPercent(0.f);
+		}
+		if (ShipUI->Bar_ExtraSpeed)
+		{
+			ShipUI->Bar_ExtraSpeed->SetPercent(0.f);
+		}
+		if (ShipUI->Bar_Horizontal)
+		{
+			ShipUI->Bar_Horizontal->SetPercent(1.f);
+		}
+		if (ShipUI->Bar_Blood)
+		{
+			ShipUI->Bar_Blood->SetPercent(1.f);
+		}
 	}
 }
 
@@ -425,7 +441,7 @@ bool AC_SystemCharacterController::GenerateBulletItem()
 	}
 	for (int i = 0; i < ShipCharacter->BulletList.Num(); i++)
 	{
-		FBulletItem tempBulletItem;
+		FBulletBagItem tempBulletItem;
 		tempBulletItem.TotalAccout = 999;
 		tempBulletItem.CurrentAccout = 999;
 		tempBulletItem.CurrentLoadingTime = 0;

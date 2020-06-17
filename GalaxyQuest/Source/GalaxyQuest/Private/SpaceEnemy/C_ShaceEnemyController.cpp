@@ -100,7 +100,7 @@ void AC_ShaceEnemyController::InitializeEnemyBullet()
 {
 	if (EnemyShip && EnemyShip->EnemyBullet)
 	{
-		EnemyBulletItem = FBulletItem();
+		EnemyBulletItem = FBulletBagItem();
 		EnemyBulletItem.BulletClass = EnemyShip->EnemyBullet;
 		EnemyBulletItem.CurrentLoadingTime = 
 			EnemyBulletItem.BulletClass.GetDefaultObject()->BulletLoadingTime;

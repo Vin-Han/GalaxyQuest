@@ -5,7 +5,7 @@
 #include "CoreMinimal.h"
 #include "AIController.h"
 #include "../Public/SpaceEnemy/C_SpaceEnemy_State.h"
-#include "../Public/Character/C_BagItemBase.h"
+#include "../Public/Bag/C_BulletItemBase.h"
 #include "C_ShaceEnemyController.generated.h"
 
 UCLASS()
@@ -140,7 +140,7 @@ private:
 
 #pragma region Enemy Fire
 public:
-	FBulletItem EnemyBulletItem;
+	FBulletBagItem EnemyBulletItem;
 public:
 	void Fire();
 	void UpdateBullet(float DeltaSeconds);

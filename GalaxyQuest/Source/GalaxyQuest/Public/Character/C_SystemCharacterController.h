@@ -114,7 +114,7 @@ private:
 
 private:
 	//TSubclassOf<AC_Bullet_Base> CurrentBullet;
-	TArray<struct FBulletItem> BulletItemList;
+	TArray<struct FBulletBagItem> BulletItemList;
 	int CurrentIndex;
 	float BulletWindowBaseSize;
 #pragma endregion
