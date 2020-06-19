@@ -44,8 +44,10 @@ AC_SystemCharacter::AC_SystemCharacter()
 	MaxRushTime = 10;
 	RushTimeRevertTime = 5;
 	RushLeftAlarmRate = 0.2;
-}
 
+	TotalHP = 300;
+}
+/*
 float AC_SystemCharacter::TakeDamage(float Damage, FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser)
 {
 	if (Cast<AC_Bullet_EnemyNormal>(DamageCauser))
@@ -58,3 +60,4 @@ float AC_SystemCharacter::TakeDamage(float Damage, FDamageEvent const& DamageEve
 	}
 	return 0.0f;
 }
+*/

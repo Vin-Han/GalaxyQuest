@@ -13,8 +13,16 @@ AC_Shield_Base::AC_Shield_Base()
 {
 	PrimaryActorTick.bCanEverTick = true;
 	ShieldMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("ShieldMesh"));
-	RootComponent = ShieldMesh;
+	ShieldMesh->SetupAttachment(RootComponent);
+	//RootComponent = ShieldMesh;
 	ShieldMesh->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+
+	TotalShield = 200;
+	CurrentShield = 0;
+	Recovery = 10;
+	RecoveryDelay = 3;
+	bIsEqiped = false;
+	bCanRecovery = true;
 }
 
 void AC_Shield_Base::BeginPlay()
@@ -27,11 +35,20 @@ void AC_Shield_Base::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 	RecoveryShield(DeltaTime);
+	if (CurrentShield < 1)
+	{
+		ShieldMesh->SetVisibility(false);
+	}
+	else
+	{
+		ShieldMesh->SetVisibility(true);
+	}
 }
 
 void AC_Shield_Base::SetRecoveryTH()
 {
-	GetWorld()->GetTimerManager().SetTimer(TH_BeginRecoveryShield,this, &AC_Shield_Base::BeginRecovery, 1, false, RecoveryDelay);
+	GetWorld()->GetTimerManager().SetTimer(
+		TH_BeginRecoveryShield,this, &AC_Shield_Base::BeginRecovery, 1, false, RecoveryDelay);
 }
 
 void AC_Shield_Base::RecoveryShield(float DeltaTime)

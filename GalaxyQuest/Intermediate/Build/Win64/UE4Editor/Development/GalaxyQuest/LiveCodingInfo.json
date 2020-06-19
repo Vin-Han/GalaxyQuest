@@ -7,6 +7,7 @@
 			"C_BulletItemBase.cpp.obj",
 			"C_SystemCharacter.cpp.obj",
 			"C_SystemCharacterController.cpp.obj",
+			"C_SystemCharacterState.cpp.obj",
 			"C_SingleStarGameMode.cpp.obj",
 			"C_SolarSystemGameMode.cpp.obj",
 			"C_NormalPlanetPawn.cpp.obj",
@@ -18,6 +19,7 @@
 			"C_Bullet_Normal.cpp.obj",
 			"C_Bullet_Track.cpp.obj",
 			"C_Shield_Base.cpp.obj",
+			"C_Shield_Normal.cpp.obj",
 			"C_ShaceEnemyController.cpp.obj",
 			"C_SpaceEnemy.cpp.obj",
 			"C_SpaceEnemy_State.cpp.obj",
@@ -69,6 +71,7 @@
 			"C_PlanetController.gen.cpp.obj",
 			"C_ShaceEnemyController.gen.cpp.obj",
 			"C_Shield_Base.gen.cpp.obj",
+			"C_Shield_Normal.gen.cpp.obj",
 			"C_SingleStarGameMode.gen.cpp.obj",
 			"C_SolarSystemGameMode.gen.cpp.obj",
 			"C_SolarUserFace.gen.cpp.obj",
@@ -80,6 +83,7 @@
 			"C_SubordinatePlanet.gen.cpp.obj",
 			"C_SystemCharacter.gen.cpp.obj",
 			"C_SystemCharacterController.gen.cpp.obj",
+			"C_SystemCharacterState.gen.cpp.obj",
 			"C_TBS_StateUpdate.gen.cpp.obj",
 			"GalaxyQuest.init.gen.cpp.obj"
 		]

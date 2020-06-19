@@ -49,5 +49,7 @@ public:
 
 	FORCEINLINE void SetEqipState(bool IsEqiped) { bIsEqiped = IsEqiped; }
 
-
+	FORCEINLINE void AfterTakeDamage() { 
+		bCanRecovery = false;
+		SetRecoveryTH(); }
 };

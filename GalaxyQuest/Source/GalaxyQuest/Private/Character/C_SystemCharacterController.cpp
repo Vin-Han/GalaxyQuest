@@ -1,12 +1,15 @@
 #include "../Public/Character/C_SystemCharacterController.h"
 
 #include "../Public/Character/C_SystemCharacter.h"
+#include "../Public/Character/C_SystemCharacterState.h"
 #include "../Public/Planet/C_NormalPlanetPawn.h"
 #include "../Public/Widget/C_StarIntroduce_UI.h"
 #include "../Public/Widget/C_SolarUserFace.h"
 #include "../Public/GameMode/C_SolarSystemGameMode.h"
 #include "../Public/Projectile/C_Bullet_Base.h"
 #include "../Public/Bag/C_BulletItemBase.h"
+#include "../Public/Shield/C_Shield_Base.h"
+#include "../Public/Projectile/C_Bullet_EnemyNormal.h"
 
 #include "Components/BoxComponent.h"
 #include "Components/StaticMeshComponent.h"
@@ -25,15 +28,17 @@
 void AC_SystemCharacterController::BeginPlay()
 {
 	Super::BeginPlay();
+
 	CleanupGameViewport();
 	InitializeShip();
 	InitializeStarWidget();
 	InitializeShipWidget();
 	InitializeBulletWindow();
+	InitializeBaseSheild();
+	InitializeShipState();
+
 	TargetMapName = "/Game/Blueprint/BP_Map/BP_Test_Map";
 	GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Red, TEXT("Hello,StartGameMode"));
-
-
 }
 
 void AC_SystemCharacterController::Tick(float DeltaSeconds)
@@ -41,6 +46,7 @@ void AC_SystemCharacterController::Tick(float DeltaSeconds)
 	Super::Tick(DeltaSeconds);
 	UpdateSpeedState(DeltaSeconds);
 	UpdateBulletLoadingTime(DeltaSeconds);
+	UpdatePlayerState();
 }
 
 #pragma region Initialize Controller
@@ -124,6 +130,10 @@ void AC_SystemCharacterController::InitializeShipWidget()
 		{
 			ShipUI->Bar_Blood->SetPercent(1.f);
 		}
+		if (ShipUI->Bar_Shield)
+		{
+			ShipUI->Bar_Shield->SetPercent(1.f);
+		}
 	}
 }
 
@@ -164,6 +174,24 @@ void AC_SystemCharacterController::InitializeBulletWindow()
 	ChangeBulletWindow(CurrentIndex, true);
 }
 
+void AC_SystemCharacterController::InitializeBaseSheild()
+{
+	GenerateNewShield();
+}
+
+void AC_SystemCharacterController::InitializeShipState()
+{
+	ShipState = Cast<AC_SystemCharacterState>(this->PlayerState);
+	if (ShipState)
+	{
+		ShipState->PlayerCurrentHp = ShipCharacter->TotalHP;
+		if (CurrentEqipedShield)
+		{
+			ShipState->CurrentShield = CurrentEqipedShield->CurrentShield;
+		}
+	}
+}
+
 #pragma endregion
 
 void AC_SystemCharacterController::SetupInputComponent()
@@ -200,7 +228,7 @@ void AC_SystemCharacterController::MoveTurn(float value)
 	FRotator temp = FRotator::ZeroRotator;
 	float rSpeedLimit = CurSpeed
 					  / ShipCharacter->ShipMovement->MaxSpeed;
-	temp.Yaw = rSpeedLimit * (ShipCharacter->RotateSpeed * value);
+	temp.Yaw = rSpeedLimit * (ShipCharacter->RotateSpeed*0.8 * value);
 	ShipCharacter->AddActorWorldRotation(temp);
 }
 
@@ -486,4 +514,100 @@ void AC_SystemCharacterController::UpdateBulletLoadingTime(float DeltaSeconds)
 	}
 }
 
+float AC_SystemCharacterController::TakeDamage(float Damage, FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser)
+{
+	if (Cast<AC_Bullet_EnemyNormal>(DamageCauser))
+	{
+		CalculateDamage(Damage);
+	}
+	return 0.0f;
+}
+
+#pragma endregion
+
+#pragma region Shield Related
+void AC_SystemCharacterController::GenerateNewShield()
+{
+	if (CurrentEqipedShield)
+	{
+		CurrentEqipedShield->SetEqipState(false);
+		CurrentEqipedShield->Destroy();
+	}
+	if (ShipCharacter->CurrentShield)
+	{
+		CurrentEqipedShield = Cast<AC_Shield_Base>(GetWorld()->SpawnActor(ShipCharacter->CurrentShield));
+		CurrentEqipedShield->AttachToComponent(ShipCharacter->ShipMesh, 
+			FAttachmentTransformRules::KeepRelativeTransform);
+		CurrentEqipedShield->SetActorRelativeScale3D(FVector(1.05f, 1.05f, 1.05f));
+		CurrentEqipedShield->SetEqipState(true);
+	}
+}
+
+void AC_SystemCharacterController::CalculateDamage(float Damage, bool bIfCalculateExtraDamage)
+{
+	if (CurrentEqipedShield && CurrentEqipedShield->CurrentShield > 0)
+	{
+		CurrentEqipedShield->AfterTakeDamage();
+		CurrentEqipedShield->CurrentShield -= Damage;
+		if (bIfCalculateExtraDamage && CurrentEqipedShield->CurrentShield < 0)
+		{
+			ShipState->PlayerCurrentHp -= CurrentEqipedShield->CurrentShield;
+			CurrentEqipedShield->CurrentShield = 0;
+			ShipState->CurrentShield = 0;
+		}
+		else
+		{
+			ShipState->CurrentShield = CurrentEqipedShield->CurrentShield;
+		}
+	}
+	else
+	{
+		ShipState->PlayerCurrentHp -= Damage;
+	}
+
+	if (ShipState->PlayerCurrentHp < 0)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("Player Should Die"));
+	}
+}
+
+void AC_SystemCharacterController::UpdatePlayerState()
+{
+	if (ShipState && ShipUI)
+	{
+		ShipUI->Bar_Blood->SetPercent( 
+			ShipState->PlayerCurrentHp / ShipCharacter->TotalHP);
+
+		if (CurrentEqipedShield)
+		{
+			ShipState->CurrentShield = CurrentEqipedShield->CurrentShield;
+			ShipUI->Bar_Shield->SetPercent(
+				CurrentEqipedShield->CurrentShield / CurrentEqipedShield->TotalShield);
+		}
+		else
+		{
+			ShipUI->Bar_Shield->SetPercent(0);
+		}
+
+
+		if (ShipUI->Bar_Blood->Percent < 0.2)
+		{
+			ShipUI->Bar_Blood->SetFillColorAndOpacity(FLinearColor(FColor::Red));
+		}
+		else
+		{
+			ShipUI->Bar_Blood->SetFillColorAndOpacity(FLinearColor(FColor::Green));
+		}
+
+		if (ShipUI->Bar_Shield->Percent < 0.2)
+		{
+			ShipUI->Bar_Shield->SetFillColorAndOpacity(FLinearColor(FColor::Red));
+		}
+		else
+		{
+			ShipUI->Bar_Shield->SetFillColorAndOpacity(FLinearColor(FColor::Yellow));
+		}
+	}
+
+}
 #pragma endregion

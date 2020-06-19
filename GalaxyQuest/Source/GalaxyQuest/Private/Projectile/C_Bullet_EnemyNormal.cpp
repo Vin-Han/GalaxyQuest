@@ -40,7 +40,7 @@ void AC_Bullet_EnemyNormal::BeginPlay()
 void AC_Bullet_EnemyNormal::OverlapWithPlayer()
 {
 	//UE_LOG(LogTemp, Warning, TEXT("OverlapWith-Player"));
-	UGameplayStatics::ApplyDamage(UGameplayStatics::GetPlayerPawn(GetWorld(),0),
+	UGameplayStatics::ApplyDamage(UGameplayStatics::GetPlayerController(GetWorld(),0),
 		BaseDamage,nullptr,this,nullptr);
 	SelfDestroy();
 }

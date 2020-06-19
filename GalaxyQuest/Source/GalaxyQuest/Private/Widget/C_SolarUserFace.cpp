@@ -18,6 +18,7 @@ bool UC_SolarUserFace::Initialize()
 	Bar_ExtraSpeed = Cast<UProgressBar>(GetWidgetFromName(TEXT("ProgressBar_ExtraSpeed")));
 	Bar_Horizontal = Cast<UProgressBar>(GetWidgetFromName(TEXT("ProgressBar_Horizontal")));
 	Bar_Blood = Cast<UProgressBar>(GetWidgetFromName(TEXT("ProgressBar_BloodIn")));
+	Bar_Shield = Cast<UProgressBar>(GetWidgetFromName(TEXT("ProgressBar_ShieldIn")));
 
 #pragma region Bullet Property
 	Image_WP_1 = Cast<UImage>(GetWidgetFromName(TEXT("Image_Bullet_1")));

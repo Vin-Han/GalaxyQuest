@@ -15,17 +15,20 @@ public:
 	virtual void BeginPlay() override;
 
 	virtual void Tick(float DeltaSeconds) override;
-
 #pragma region Initialize Controller
 public:
 	void InitializeShip();
 	void InitializeStarWidget();
 	void InitializeShipWidget();
 	void InitializeBulletWindow();
-
+	void InitializeBaseSheild();
+	void InitializeShipState();
 public:
 	UPROPERTY()
 		class AC_SystemCharacter* ShipCharacter;
+	UPROPERTY()
+		class AC_SystemCharacterState* ShipState;
+
 	FString TargetMapName;
 
 	UPROPERTY()
@@ -89,7 +92,6 @@ public:
 
 #pragma endregion
 
-
 #pragma region Fire Relatied
 public:
 	FVector FireLocation;
@@ -102,6 +104,8 @@ public:
 		void ChangeBulletAdd();
 	UFUNCTION()
 		void ChangeBulletExtract();
+
+	virtual float TakeDamage(float Damage, struct FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser) override;
 
 private:
 	void ChangeBulletWindow(float WindowIndex, bool bIsUpgrade);
@@ -118,4 +122,16 @@ private:
 	int CurrentIndex;
 	float BulletWindowBaseSize;
 #pragma endregion
+
+#pragma region Shield Related
+	private:
+		class AC_Shield_Base* CurrentEqipedShield;
+	private:
+		void GenerateNewShield();
+
+		void CalculateDamage(float Damage, bool bIfCalculateExtraDamage = false);
+
+		void UpdatePlayerState();
+#pragma endregion
+
 };

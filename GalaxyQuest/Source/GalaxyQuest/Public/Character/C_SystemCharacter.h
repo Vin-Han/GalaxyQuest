@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Pawn.h"
 #include "Projectile/C_Bullet_Base.h"
+#include "Shield/C_Shield_Base.h"
 #include "C_SystemCharacter.generated.h"
 
 UCLASS()
@@ -64,15 +65,21 @@ public:
 		float RushLeftAlarmRate;
 #pragma endregion
 
+#pragma region Fight Retaled
 public:
-	UPROPERTY(EditAnyWhere, Category = "Projectile")
+	UPROPERTY(EditAnyWhere, Category = "Fight")
 		TArray<TSubclassOf<AC_Bullet_Base>> BulletList;
-
-public:
-	UPROPERTY(EditAnyWhere, Category = "WarMode")
+	UPROPERTY(EditAnyWhere, Category = "Fight")
+		TSubclassOf<AC_Shield_Base> CurrentShield;
+	UPROPERTY(EditAnyWhere, Category = "Fight")
+		float TotalHP;
+	UPROPERTY(EditAnyWhere, Category = "Fight")
 		bool bIsInWarMode;
-
+	/*
 public:
 	virtual float TakeDamage(float Damage, struct FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser) override;
+	*/
+#pragma endregion
+
 
 };
