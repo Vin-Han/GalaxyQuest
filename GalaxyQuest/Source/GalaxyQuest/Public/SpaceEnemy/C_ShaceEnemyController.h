@@ -46,11 +46,15 @@ private:
 		void EnemyBlock(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComponent, int32 BodyIndex, bool FromSweep, const FHitResult& HitRusult);
 	UFUNCTION()
 		void TriggerOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComponent, int32 BodyIndex, bool FromSweep, const FHitResult& HitRusult);
+	UFUNCTION()
+		void TriggerEndOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComponent, int32 BodyIndex);
 
+private:
 	void BlockWithShip();
 	void BlockWithPlanet();
 	void OverlapWithShip();
-	void OverlapWithPlanet();
+	void OverlapWithPlanet(AActor* OtherActor);
+	void EndOverlapWithPlanet();
 
 #pragma endregion
 
@@ -75,7 +79,7 @@ public:
 	UFUNCTION()
 		void BackToOriginState();
 	UFUNCTION()
-		void TurnToAroundState();
+		void TurnToAroundState(FVector NewAroundPoint);
 	UFUNCTION()
 		void TurnToReturnState();
 	UFUNCTION()
@@ -89,15 +93,6 @@ public:
 public:
 	bool CanPartolStateReset() { return bCanReset; }
 	void SetPartolStateReset(bool newState) { bCanReset = newState; }
-
-	bool IsAroundNeedAngle() { return bNeedAngle; }
-	void SetAroundNeedAngle(bool newState){ bNeedAngle = newState;}
-
-	bool IsAroundbKeepAround() { return bKeepAround; }
-	void SetKeepAround(bool newState) { bKeepAround = newState; }
-
-	bool IsTrackCanMove() { return bCanMove; }
-	void SetTrackCanMove(bool newState) { bCanMove = newState; }
 
 	void ReSetPartolInfor(float newReloadTime, FRotator newRotator, bool isCurTimeReset = true);
 
@@ -113,23 +108,20 @@ public:
 
 	/*Track State*/
 public:
-	bool bCanMove;
+	bool bIfTrackKeepMove;
 	FRotator TargetDirection;
 
 	/*Around State*/
 public:
-	bool bKeepAround;
-	bool bNeedAngle;
-	FRotator AroundDirectrion;
+	bool bIsAroudFinished;
+	FRotator AroundTargetDirection;
 	FVector AroundPoint;
-	float AroudSpeed;
-	float CurAroundTime;
 	EnemyState OriginalState;
-	FTimerHandle TH_StateReverse;
 
 	/*Return State*/
 public:
-	float ReturnSpeed;
+	bool bIfReturnKeepRotate;
+	FRotator ReturnTargetDirection;
 
 #pragma endregion
 

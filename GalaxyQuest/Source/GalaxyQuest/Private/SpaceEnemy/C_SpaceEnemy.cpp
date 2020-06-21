@@ -6,6 +6,7 @@
 #include "../Public/Projectile/C_Bullet_Base.h"
 
 #include "Components/BoxComponent.h"
+#include "Components/SphereComponent.h"
 #include "Components/StaticMeshComponent.h"
 #include "Components/WidgetComponent.h"
 #include "Components/ProgressBar.h"
@@ -14,18 +15,18 @@
 
 AC_SpaceEnemy::AC_SpaceEnemy()
 {
-	EnemyMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("EnemyMesh"));
-	CollisionCom = CreateDefaultSubobject<UBoxComponent>(TEXT("CollisionComponent"));
-	EnemyMovement = CreateDefaultSubobject<UFloatingPawnMovement>(TEXT("EnemyMovement"));
+	CollisionCom	= CreateDefaultSubobject<UBoxComponent>			(TEXT("CollisionComponent"));
 
-	TriggerCom = CreateDefaultSubobject<UBoxComponent>(TEXT("TriggerComponent"));
-	EnemyBlood = CreateDefaultSubobject<UWidgetComponent>(TEXT("BloodWidget"));
+	EnemyMesh		= CreateDefaultSubobject<UStaticMeshComponent>	(TEXT("EnemyMesh"));
+	TriggerCom		= CreateDefaultSubobject<USphereComponent>		(TEXT("TriggerSphere"));
+	EnemyBlood		= CreateDefaultSubobject<UWidgetComponent>		(TEXT("BloodWidget"));
+
+	EnemyMovement	= CreateDefaultSubobject<UFloatingPawnMovement>(TEXT("EnemyMovement"));
 
 	RootComponent = CollisionCom;
-	EnemyMesh->SetupAttachment(CollisionCom);
-
-	TriggerCom->SetupAttachment(CollisionCom);
-	EnemyBlood->SetupAttachment(CollisionCom);
+	EnemyMesh	->SetupAttachment(CollisionCom);
+	TriggerCom	->SetupAttachment(CollisionCom);
+	EnemyBlood	->SetupAttachment(CollisionCom);
 
 	CurrentState = EnemyState::PATROL;
 
@@ -35,11 +36,7 @@ AC_SpaceEnemy::AC_SpaceEnemy()
 	ReloadMaxTime = 2;
 
 	TrackSpeed = 10;
-	TrackCostTime = 1;
 	AllowDistance = 300;
-
-	AroundCostTime = 1;
-	AroundSpeed = 12;
 
 	EnemyTolHP = 100;
 	EnemyCurHP = EnemyTolHP;

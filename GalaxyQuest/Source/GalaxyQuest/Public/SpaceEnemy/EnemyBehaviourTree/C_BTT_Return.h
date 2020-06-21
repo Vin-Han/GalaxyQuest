@@ -16,7 +16,9 @@ class GALAXYQUEST_API UC_BTT_Return : public UBTTaskNode
 	
 public:
 	UPROPERTY(EditAnyWhere)
-		float AllowDostance;
+		float AllowDistance;
+	UPROPERTY(EditAnyWhere)
+		float AllowDegree;
 
 public:
 	virtual EBTNodeResult::Type ExecuteTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory);

@@ -9,6 +9,7 @@
 #include "../Public/Character/C_SystemCharacter.h"
 
 #include "Components/BoxComponent.h"
+#include "Components/SphereComponent.h"
 #include "Components/WidgetComponent.h"
 #include "Components/ProgressBar.h"
 
@@ -55,11 +56,7 @@ void AC_ShaceEnemyController::InitializeEnemyData()
 		EnemyShip->PartolSpeed = FMath::Max(0.0f, EnemyShip->PartolSpeed);
 
 		EnemyShip->TrackSpeed = FMath::Max(0.0f, EnemyShip->TrackSpeed);
-		EnemyShip->TrackCostTime = FMath::Max(0.0f, EnemyShip->TrackCostTime);
 		EnemyShip->AllowDistance = FMath::Max(0.0f, EnemyShip->AllowDistance);
-
-		EnemyShip->AroundSpeed = FMath::Max(0.0f, EnemyShip->AroundSpeed);
-		EnemyShip->AroundCostTime = FMath::Max(0.0f, EnemyShip->AroundCostTime);
 
 	}
 }
@@ -69,9 +66,14 @@ void AC_ShaceEnemyController::InitializeEvent()
 	if (EnemyShip)
 	{
 		if (EnemyShip->CollisionCom)
+		{
 			EnemyShip->CollisionCom->OnComponentBeginOverlap.AddDynamic(this, &AC_ShaceEnemyController::EnemyBlock);
+		}
 		if (EnemyShip->TriggerCom)
+		{
 			EnemyShip->TriggerCom->OnComponentBeginOverlap.AddDynamic(this, &AC_ShaceEnemyController::TriggerOverlap);
+			EnemyShip->TriggerCom->OnComponentEndOverlap.AddDynamic(this,&AC_ShaceEnemyController::TriggerEndOverlap);
+		}
 	}
 }
 
@@ -80,7 +82,6 @@ void AC_ShaceEnemyController::InitializeControllerData()
 	if (EnemyShip)
 	{
 		OriginalState = EnemyState::PATROL;
-		ReturnSpeed = 15;
 	}
 	if (EnemyShip && EnemyShip->BehaviorTree)
 	{
@@ -110,20 +111,16 @@ void AC_ShaceEnemyController::InitializeEnemyBullet()
 
 void AC_ShaceEnemyController::InitializeTrack() 
 {
-	bCanMove = true;
-
+	bIfTrackKeepMove = true;
 }
 
 void AC_ShaceEnemyController::InitializeAround() 
 {
-	bKeepAround = false;
-	bNeedAngle = true;
-	CurAroundTime = 0;
+	bIsAroudFinished = true;
 	if (EnemyShip->CurrentState != EnemyState::AROUND) 
 	{
 		OriginalState = EnemyShip->CurrentState;
 	}
-
 }
 
 void AC_ShaceEnemyController::InilializePatrol() 
@@ -138,42 +135,31 @@ void AC_ShaceEnemyController::InilializePatrol()
 
 void AC_ShaceEnemyController::IniilalizeReturn()
 {
+	bIfReturnKeepRotate = true;
 }
 
 #pragma endregion
 
-void AC_ShaceEnemyController::BackToOriginState() 
-{
-
-	if (OriginalState == EnemyState::TRACK)
-	{
-		TurnToTrackState();
-	}
-	else if (OriginalState == EnemyState::PATROL)
-	{
-		TurnToPartolState();
-	}
-	else if (OriginalState == EnemyState::RETURN)
-	{
-		TurnToReturnState();
-	}
-
-}
-
 #pragma region State Change
-void AC_ShaceEnemyController::TurnToAroundState()
+void AC_ShaceEnemyController::TurnToAroundState(FVector NewAroundPoint)
 {
 	InitializeAround();
 	EnemyShip->CurrentState = EnemyState::AROUND;
+	AroundPoint = NewAroundPoint;
+	/*
 	GetWorld()->GetTimerManager().SetTimer(TH_StateReverse, this, &AC_ShaceEnemyController::BackToOriginState, 1,
 		false, (EnemyShip->AroundCostTime + 2.0f));
+	*/
 }
 
 void AC_ShaceEnemyController::TurnToReturnState()
 {
 	EnemyShip->CurrentState = EnemyState::RETURN;
+	IniilalizeReturn();
+	/*
 	EnemyShip->SetActorRotation(UKismetMathLibrary::FindLookAtRotation
-	(EnemyShip->GetActorLocation(), EnemyShip->SpawnerLocation));
+		(EnemyShip->GetActorLocation(), EnemyShip->SpawnerLocation));
+	*/
 }
 
 void AC_ShaceEnemyController::TurnToPartolState()
@@ -195,6 +181,23 @@ void AC_ShaceEnemyController::ReSetPartolInfor(float newReloadTime, FRotator new
 	if (isCurTimeReset)
 	{
 		CurLoadingTime = 0;
+	}
+}
+
+void AC_ShaceEnemyController::BackToOriginState()
+{
+	bIsAroudFinished = true;
+	if (OriginalState == EnemyState::TRACK)
+	{
+		TurnToTrackState();
+	}
+	else if (OriginalState == EnemyState::PATROL)
+	{
+		TurnToPartolState();
+	}
+	else if (OriginalState == EnemyState::RETURN)
+	{
+		TurnToReturnState();
 	}
 
 }
@@ -233,66 +236,74 @@ void AC_ShaceEnemyController::ShipPartolMove(float DeltaSeconds)
 	}
 	EnemyShip->AddMovementInput(EnemyShip->GetActorForwardVector(),
 		EnemyShip->PartolSpeed * DeltaSeconds);
-
 }
 
 void AC_ShaceEnemyController::ShipTrackMove(float DeltaSeconds) 
 {
 	EnemyShip->SetActorRotation(EnemyShip->GetActorRotation() +
 		DeltaSeconds * (TargetDirection - EnemyShip->GetActorRotation()));
-	if (bCanMove) 
+	if (bIfTrackKeepMove)
 	{
 		EnemyShip->AddMovementInput(EnemyShip->GetActorForwardVector(),
-			EnemyShip->TrackSpeed * DeltaSeconds / EnemyShip->TrackCostTime);
+			EnemyShip->TrackSpeed * DeltaSeconds);
 	}
 
 }
 
 void AC_ShaceEnemyController::ShipAroundMove(float DeltaSeconds)
 {
-	CurAroundTime += DeltaSeconds;
-	if (bKeepAround)
-	{
-		EnemyShip->SetActorRotation(EnemyShip->GetActorRotation() +
-			AroundDirectrion * (DeltaSeconds / EnemyShip->AroundCostTime));
-	}
+	EnemyShip->SetActorRotation(EnemyShip->GetActorRotation() +
+		DeltaSeconds * (AroundTargetDirection - EnemyShip->GetActorRotation()));
 	EnemyShip->AddMovementInput(EnemyShip->GetActorForwardVector(),
-		EnemyShip->AroundSpeed * DeltaSeconds);
-
+		EnemyShip->PartolSpeed * DeltaSeconds);
 }
 
 void AC_ShaceEnemyController::ShipReturnMove(float DeltaSeconds) 
 {
+	if (bIfReturnKeepRotate)
+	{
+		EnemyShip->SetActorRotation(EnemyShip->GetActorRotation() +
+			DeltaSeconds * (ReturnTargetDirection - EnemyShip->GetActorRotation()));
+	}
 	EnemyShip->AddMovementInput(EnemyShip->GetActorForwardVector(),
-		ReturnSpeed * DeltaSeconds);
+		EnemyShip->PartolSpeed * DeltaSeconds);
 }
 
 #pragma endregion
 
 void AC_ShaceEnemyController::EnemyBlock(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComponent, int32 BodyIndex, bool FromSweep, const FHitResult& HitRusult)
 {
-	if (Cast<AC_NormalPlanetPawn>(OtherActor))
+	if (OverlappedComponent->IsA<UBoxComponent>())
 	{
-		BlockWithPlanet();
+		if (Cast<AC_NormalPlanetPawn>(OtherActor))
+		{
+			BlockWithPlanet();
+		}
+		if (Cast<AC_SystemCharacter>(OtherActor))
+		{
+			BlockWithShip();
+		}
 	}
-	if (Cast<AC_SystemCharacter>(OtherActor)) 
-	{
-		BlockWithShip();
-	}
-
 }
 
 void AC_ShaceEnemyController::TriggerOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComponent, int32 BodyIndex, bool FromSweep, const FHitResult& HitRusult)
 {
 	if (Cast<AC_NormalPlanetPawn>(OtherActor)) 
 	{
-		OverlapWithPlanet();
+		OverlapWithPlanet(OtherActor);
 	}
 	if (Cast<AC_SystemCharacter>(OtherActor)) 
 	{
 		OverlapWithShip();
 	}
+}
 
+void AC_ShaceEnemyController::TriggerEndOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComponent, int32 BodyIndex)
+{
+	if (Cast<AC_NormalPlanetPawn>(OtherActor))
+	{
+		EndOverlapWithPlanet();
+	}
 }
 
 #pragma region Overlap Event
@@ -306,7 +317,6 @@ void AC_ShaceEnemyController::BlockWithShip()
 	{
 		EnemyShip->Destroy();
 	}
-
 }
 
 void AC_ShaceEnemyController::BlockWithPlanet() 
@@ -319,7 +329,20 @@ void AC_ShaceEnemyController::BlockWithPlanet()
 	{
 		EnemyShip->Destroy();
 	}
+}
 
+void AC_ShaceEnemyController::OverlapWithPlanet(AActor* OtherActor)
+{
+	AC_NormalPlanetPawn* AroundPlanet = Cast<AC_NormalPlanetPawn>(OtherActor);
+	if (AroundPlanet)
+	{
+		TurnToAroundState(AroundPlanet->CollisionCom->GetComponentLocation());
+	}
+}
+
+void AC_ShaceEnemyController::EndOverlapWithPlanet()
+{
+	BackToOriginState();
 }
 
 void AC_ShaceEnemyController::OverlapWithShip() 
@@ -328,11 +351,6 @@ void AC_ShaceEnemyController::OverlapWithShip()
 	{
 		TurnToTrackState();
 	}
-}
-
-void AC_ShaceEnemyController::OverlapWithPlanet() 
-{
-	TurnToAroundState();
 }
 
 #pragma endregion

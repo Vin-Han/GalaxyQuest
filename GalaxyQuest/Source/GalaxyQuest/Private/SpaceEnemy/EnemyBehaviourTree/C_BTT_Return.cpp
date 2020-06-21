@@ -6,6 +6,8 @@
 #include "../Public/SpaceEnemy/C_ShaceEnemyController.h"
 #include "../Public/SpaceEnemy/C_SpaceEnemy.h"
 
+#include "Kismet/KismetMathLibrary.h"
+
 EBTNodeResult::Type UC_BTT_Return::ExecuteTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory) 
 {
 	
@@ -15,12 +17,26 @@ EBTNodeResult::Type UC_BTT_Return::ExecuteTask(UBehaviorTreeComponent& OwnerComp
 		AC_SpaceEnemy* Enemy = Controller->EnemyShip;
 		if (Enemy) 
 		{
-			FVector OriginLocation = Enemy->SpawnerLocation;
-			FVector CurLocation = Enemy->GetActorLocation();
-			float CurDistacne = (OriginLocation - CurLocation).Size();
-			if (CurDistacne < AllowDostance) 
+			float CurDistacne = (Enemy->SpawnerLocation - 
+				Enemy->GetActorLocation()).Size();
+
+			if (CurDistacne < AllowDistance)
 			{
 				Controller->TurnToPartolState();
+			}
+
+			else if (Controller->bIfReturnKeepRotate)
+			{
+				FRotator EnemyToSpawner = UKismetMathLibrary::
+					FindLookAtRotation(Enemy->GetActorLocation(), Enemy->SpawnerLocation);
+				if (EnemyToSpawner.Equals(Enemy->GetActorRotation(), AllowDegree))
+				{
+					Controller->bIfReturnKeepRotate = false;
+				}
+				else
+				{
+					Controller->ReturnTargetDirection = EnemyToSpawner;
+				}
 			}
 		}
 	}

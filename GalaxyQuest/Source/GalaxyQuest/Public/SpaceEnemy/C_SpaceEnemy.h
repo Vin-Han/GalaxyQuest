@@ -21,11 +21,11 @@ public:
 
 public:
 	UPROPERTY(VisibleAnyWhere)
-		class UStaticMeshComponent* EnemyMesh;
-	UPROPERTY(VisibleAnyWhere)
 		class UBoxComponent* CollisionCom;
 	UPROPERTY(VisibleAnyWhere)
-		class UBoxComponent* TriggerCom;
+		class UStaticMeshComponent* EnemyMesh;
+	UPROPERTY(VisibleAnyWhere)
+		class USphereComponent* TriggerCom;
 	UPROPERTY(VisibleAnyWhere)
 		class UFloatingPawnMovement* EnemyMovement;
 
@@ -59,15 +59,7 @@ public:
 	UPROPERTY(EditAnyWhere, Category = "TrackState")
 		float TrackSpeed;
 	UPROPERTY(EditAnyWhere, Category = "TrackState")
-		float TrackCostTime;
-	UPROPERTY(EditAnyWhere, Category = "TrackState")
 		float AllowDistance;
-
-public:
-	UPROPERTY(EditAnyWhere, Category = "AroundState")
-		float AroundSpeed;
-	UPROPERTY(EditAnyWhere, Category = "AroundState")
-		float AroundCostTime;
 
 public:
 	void InitializeBloodUI();

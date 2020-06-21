@@ -8,7 +8,6 @@
 
 EBTNodeResult::Type UC_BTT_Track::ExecuteTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory) 
 {
-
 	AC_ShaceEnemyController* Controller = Cast<AC_ShaceEnemyController>(OwnerComp.GetAIOwner());
 	if (Controller) 
 	{
@@ -19,7 +18,7 @@ EBTNodeResult::Type UC_BTT_Track::ExecuteTask(UBehaviorTreeComponent& OwnerComp,
 			Controller->TargetDirection = UKismetMathLibrary::FindLookAtRotation(Enemy->GetActorLocation(), PlayerLocation);
 
 			float Distance = FVector(Enemy->GetActorLocation() - PlayerLocation).Size();
-			Controller->SetTrackCanMove(Distance < Enemy->AllowDistance ? 0 : 1);
+			Controller->bIfTrackKeepMove = Distance < Enemy->AllowDistance ? 0 : 1;
 		}
 	}
 	return EBTNodeResult::Succeeded;

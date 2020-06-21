@@ -14,6 +14,19 @@ EBTNodeResult::Type UC_BTT_Around::ExecuteTask(UBehaviorTreeComponent& OwnerComp
 	if (Controller)
 	{
 		AC_SpaceEnemy* Enemy = Cast<AC_SpaceEnemy>(Controller->GetPawn());
+
+		if (Controller->bIsAroudFinished)
+		{
+			Controller->bIsAroudFinished = false;
+
+			FVector EnemyToPlanet = FVector(
+				Controller->AroundPoint - Controller->EnemyShip->GetActorLocation()).GetSafeNormal();
+
+			FVector EnemyForward = Controller->EnemyShip->GetActorForwardVector();
+			Controller->AroundTargetDirection 
+				= UKismetMathLibrary::FindLookAtRotation(EnemyToPlanet, EnemyForward);
+		}
+		/*
 		if (Controller->IsAroundNeedAngle())
 		{
 			FVector ResultLocation = (Enemy->GetActorLocation() - Controller->AroundPoint);
@@ -25,6 +38,7 @@ EBTNodeResult::Type UC_BTT_Around::ExecuteTask(UBehaviorTreeComponent& OwnerComp
 		{
 			Controller->SetKeepAround(false);
 		}
+		*/
 	}
 	return EBTNodeResult::Succeeded;
 }

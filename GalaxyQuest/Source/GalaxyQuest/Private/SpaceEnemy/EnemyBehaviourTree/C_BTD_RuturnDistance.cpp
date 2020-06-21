@@ -14,10 +14,10 @@ bool UC_BTD_RuturnDistance::CalculateRawConditionValue(UBehaviorTreeComponent& O
 		AC_SpaceEnemy* Enemy= Controller->EnemyShip;
 		if (Enemy)
 		{
-			FVector OriginLocation = Enemy->SpawnerLocation;
+			FVector OriginLocation = Enemy->ParentSpawner->GetActorLocation();
 			FVector CurLocation = Enemy->GetActorLocation();
 			float CurDistacne = (OriginLocation - CurLocation).Size();
-			if (CurDistacne > AllowDostance)
+			if (CurDistacne > AllowDistance)
 			{
 				Controller->TurnToReturnState();
 			}
