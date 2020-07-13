@@ -3,11 +3,16 @@
 #include "../Public/Character/C_SystemCharacter.h"
 #include "../Public/Character/C_SystemCharacterState.h"
 #include "../Public/Planet/C_NormalPlanetPawn.h"
+
 #include "../Public/Widget/C_StarIntroduce_UI.h"
 #include "../Public/Widget/C_SolarUserFace.h"
+#include "../Public/Widget/C_UserBag.h"
+#include "../Public/Widget/C_SingleItem.h"
+
 #include "../Public/GameMode/C_SolarSystemGameMode.h"
 #include "../Public/Projectile/C_Bullet_Base.h"
 #include "../Public/Bag/C_BulletItemBase.h"
+#include "../Public/Bag/C_ShieldItemBase.h"
 #include "../Public/Shield/C_Shield_Base.h"
 #include "../Public/Projectile/C_Bullet_EnemyNormal.h"
 
@@ -17,12 +22,14 @@
 #include "Components/Image.h"
 #include "Components/TextBlock.h"
 #include "Components/ProgressBar.h"
+#include "Components/ScrollBox.h"
 
 #include "Camera/CameraComponent.h"
 #include "GameFramework/SpringArmComponent.h"
 #include "GameFramework/FloatingPawnMovement.h"
 
 #include "Kismet/GameplayStatics.h"
+#include "TimerManager.h"
 #include "Engine/Engine.h"
 
 void AC_SystemCharacterController::BeginPlay()
@@ -36,7 +43,9 @@ void AC_SystemCharacterController::BeginPlay()
 	InitializeBulletWindow();
 	InitializeBaseSheild();
 	InitializeShipState();
+	InitializeShipBag();
 
+	WarTimeDelaySecond = 3.0;
 	TargetMapName = "/Game/Blueprint/BP_Map/BP_Test_Map";
 	GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Red, TEXT("Hello,StartGameMode"));
 }
@@ -192,6 +201,17 @@ void AC_SystemCharacterController::InitializeShipState()
 	}
 }
 
+void AC_SystemCharacterController::InitializeShipBag()
+{
+	ShipBag = CreateWidget<UC_UserBag>(GetGameInstance(),LoadClass<UC_UserBag>(nullptr,
+		TEXT("WidgetBlueprint'/Game/UI/SolarSystemUI/BP_UserBag.BP_UserBag_c'")));
+	if (ShipBag)
+	{
+		ShipBag->Exit_Btn->OnClicked.AddDynamic(this,&AC_SystemCharacterController::BagBtn_CloseWindow);
+
+	}
+}
+
 #pragma endregion
 
 void AC_SystemCharacterController::SetupInputComponent()
@@ -210,6 +230,8 @@ void AC_SystemCharacterController::SetupInputComponent()
 	InputComponent->BindAction("Fire", EInputEvent::IE_Pressed, this, &AC_SystemCharacterController::Fire);
 	InputComponent->BindAction("ChangeBulletAdd", EInputEvent::IE_Pressed, this, &AC_SystemCharacterController::ChangeBulletAdd);
 	InputComponent->BindAction("ChangeBulletExtract", EInputEvent::IE_Pressed, this, &AC_SystemCharacterController::ChangeBulletExtract);
+
+	InputComponent->BindAction("OpenBag", EInputEvent::IE_Pressed, this, &AC_SystemCharacterController::BagOpen_Function);
 }
 
 #pragma region Ship Move Relatived
@@ -398,6 +420,7 @@ void AC_SystemCharacterController::Fire()
 		BulletItemList[CurrentIndex].CurrentLoadingTime = 
 					BulletItemList[CurrentIndex].BulletClass.GetDefaultObject()->BulletLoadingTime;
 	}
+	ChangeWarMode();
 }
 
 void AC_SystemCharacterController::ChangeBulletAdd()
@@ -436,6 +459,15 @@ void AC_SystemCharacterController::ChangeBulletExtract()
 		}
 	}
 	ChangeBulletWindow(CurrentIndex, true);
+}
+
+void AC_SystemCharacterController::DelayModeChange()
+{
+	if (ShipCharacter)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("EndWar"));
+		ShipCharacter->bIsInWarMode = false;
+	}
 }
 
 void AC_SystemCharacterController::ChangeBulletWindow(float WindowIndex, bool bIsUpgrade)
@@ -514,12 +546,23 @@ void AC_SystemCharacterController::UpdateBulletLoadingTime(float DeltaSeconds)
 	}
 }
 
+void AC_SystemCharacterController::ChangeWarMode()
+{
+	if (ShipCharacter)
+	{
+		ShipCharacter->bIsInWarMode = true;
+		UE_LOG(LogTemp, Warning, TEXT("BeginWar"));
+		GetWorld()->GetTimerManager().SetTimer(TH_ChangeWarMode,this,&AC_SystemCharacterController::DelayModeChange,1,false, WarTimeDelaySecond);
+	}
+}
+
 float AC_SystemCharacterController::TakeDamage(float Damage, FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser)
 {
 	if (Cast<AC_Bullet_EnemyNormal>(DamageCauser))
 	{
 		CalculateDamage(Damage);
 	}
+	ChangeWarMode();
 	return 0.0f;
 }
 
@@ -535,7 +578,18 @@ void AC_SystemCharacterController::GenerateNewShield()
 	}
 	if (ShipCharacter->CurrentShield)
 	{
-		CurrentEqipedShield = Cast<AC_Shield_Base>(GetWorld()->SpawnActor(ShipCharacter->CurrentShield));
+		if (CurrentShieldItem.Num() == 0)
+		{
+			FSheildBagItem newShield;
+			newShield.ShieldClass = ShipCharacter->CurrentShield;
+			CurrentShieldItem.Add(newShield);
+		}
+		else
+		{
+			CurrentShieldItem[0].ShieldClass = ShipCharacter->CurrentShield;
+		}
+		CurrentEqipedShield = Cast<AC_Shield_Base>(GetWorld()->SpawnActor(CurrentShieldItem[0].ShieldClass));
+		//CurrentEqipedShield = Cast<AC_Shield_Base>(GetWorld()->SpawnActor(ShipCharacter->CurrentShield));
 		CurrentEqipedShield->AttachToComponent(ShipCharacter->ShipMesh, 
 			FAttachmentTransformRules::KeepRelativeTransform);
 		CurrentEqipedShield->SetActorRelativeScale3D(FVector(1.05f, 1.05f, 1.05f));
@@ -609,5 +663,67 @@ void AC_SystemCharacterController::UpdatePlayerState()
 		}
 	}
 
+}
+#pragma endregion
+
+#pragma region Bag related Function
+void AC_SystemCharacterController::BagBtn_CloseWindow()
+{
+	if (UGameplayStatics::IsGamePaused(GetWorld()))
+	{
+		UGameplayStatics::SetGamePaused(this, false);
+	}
+	bShowMouseCursor = false;
+	ShipBag->RemoveFromViewport();
+}
+
+void AC_SystemCharacterController::BagOpen_Function()
+{
+	if (ShipBag)
+	{
+		if (ShipBag->IsInViewport() == false)
+		{
+			CreatItemList();
+			ShipBag->AddToViewport();
+			if (UGameplayStatics::IsGamePaused(GetWorld()) == false)
+			{
+				UGameplayStatics::SetGamePaused(this, true);
+			}
+			bShowMouseCursor = true;
+		}
+	}
+}
+
+void AC_SystemCharacterController::CreatItemList()
+{
+	ShipBag->Left_Roll->ClearChildren();
+	CreatBulletList();
+	CreatShieldList();
+}
+void AC_SystemCharacterController::CreatBulletList()
+{
+	for (const FBulletBagItem& tempItem : BulletItemList)
+	{
+		UC_SingleItem* newItem = CreateWidget<UC_SingleItem>(GetGameInstance(), LoadClass<UC_SingleItem>
+			(nullptr, TEXT("WidgetBlueprint'/Game/UI/SolarSystemUI/BP_SingleItem.BP_SingleItem_c'")));
+		newItem->Item_Name->SetText(FText::FromString(tempItem.BulletClass.GetDefaultObject()->BulletName));
+		newItem->Item_Pic->SetBrushFromTexture(tempItem.BulletClass.GetDefaultObject()->BulletPicture);
+		newItem->Item_BtnName->SetText(FText::FromString(FString::FromInt(tempItem.CurrentAccout)));
+		newItem->Item_Btn->SetVisibility(ESlateVisibility::Hidden);
+		ShipBag->Left_Roll->AddChild(newItem);
+	}
+}
+void AC_SystemCharacterController::CreatShieldList()
+{
+	for (const FSheildBagItem& tempItem : CurrentShieldItem)
+	{
+		UC_SingleItem* newItem = CreateWidget<UC_SingleItem>(GetGameInstance(), LoadClass<UC_SingleItem>
+			(nullptr, TEXT("WidgetBlueprint'/Game/UI/SolarSystemUI/BP_SingleItem.BP_SingleItem_c'")));
+		newItem->Item_Name->SetText(FText::FromString(tempItem.ShieldClass.GetDefaultObject()->ShieldName));
+		newItem->Item_Pic->SetBrushFromTexture(tempItem.ShieldClass.GetDefaultObject()->ShieldPicture);
+		newItem->Item_BtnName->SetText(FText::FromString("1"));
+		newItem->Item_Btn->SetVisibility(ESlateVisibility::Hidden);
+		ShipBag->Left_Roll->AddChild(newItem);
+	}
 }
 #pragma endregion

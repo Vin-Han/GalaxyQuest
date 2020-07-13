@@ -13,8 +13,8 @@ AC_Shield_Base::AC_Shield_Base()
 {
 	PrimaryActorTick.bCanEverTick = true;
 	ShieldMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("ShieldMesh"));
-	ShieldMesh->SetupAttachment(RootComponent);
-	//RootComponent = ShieldMesh;
+	//ShieldMesh->SetupAttachment(RootComponent);
+	RootComponent = ShieldMesh;
 	ShieldMesh->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 
 	TotalShield = 200;
@@ -23,6 +23,8 @@ AC_Shield_Base::AC_Shield_Base()
 	RecoveryDelay = 3;
 	bIsEqiped = false;
 	bCanRecovery = true;
+
+	ShieldName = "BaseShield";
 }
 
 void AC_Shield_Base::BeginPlay()

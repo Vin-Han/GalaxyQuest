@@ -28,6 +28,10 @@ public:
 		float Recovery;
 	UPROPERTY(EditAnyWhere, Category = "Attributes")
 		float RecoveryDelay;
+	UPROPERTY(EditAnyWhere, Category = "ItemInformation")
+		FString ShieldName;
+	UPROPERTY(EditAnyWhere, Category = "ItemInformation")
+		UTexture2D* ShieldPicture;
 public:
 	FTimerHandle TH_BeginRecoveryShield;
 	float CurrentShield;

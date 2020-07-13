@@ -23,6 +23,7 @@ public:
 	void InitializeBulletWindow();
 	void InitializeBaseSheild();
 	void InitializeShipState();
+	void InitializeShipBag();
 public:
 	UPROPERTY()
 		class AC_SystemCharacter* ShipCharacter;
@@ -35,6 +36,8 @@ public:
 		class UC_StarIntroduce_UI* StarInfor;
 	UPROPERTY()
 		class UC_SolarUserFace* ShipUI;
+	UPROPERTY()
+		class UC_UserBag* ShipBag;
 
 #pragma endregion
 
@@ -96,6 +99,8 @@ public:
 public:
 	FVector FireLocation;
 	FRotator FireRotation;
+	FTimerHandle TH_ChangeWarMode;
+	float WarTimeDelaySecond;
 
 public:
 	UFUNCTION()
@@ -104,6 +109,8 @@ public:
 		void ChangeBulletAdd();
 	UFUNCTION()
 		void ChangeBulletExtract();
+	UFUNCTION()
+		void DelayModeChange();
 
 	virtual float TakeDamage(float Damage, struct FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser) override;
 
@@ -116,6 +123,8 @@ private:
 
 	void UpdateBulletLoadingTime(float DeltaSeconds);
 
+	void ChangeWarMode();
+
 private:
 	//TSubclassOf<AC_Bullet_Base> CurrentBullet;
 	TArray<struct FBulletBagItem> BulletItemList;
@@ -126,12 +135,25 @@ private:
 #pragma region Shield Related
 	private:
 		class AC_Shield_Base* CurrentEqipedShield;
+		TArray<struct FSheildBagItem> CurrentShieldItem;
 	private:
 		void GenerateNewShield();
 
 		void CalculateDamage(float Damage, bool bIfCalculateExtraDamage = false);
 
 		void UpdatePlayerState();
+#pragma endregion
+
+#pragma region Bag related Function
+public:
+	UFUNCTION()
+		void BagBtn_CloseWindow();
+	UFUNCTION()
+		void BagOpen_Function();
+private:
+	void CreatItemList();
+	void CreatBulletList();
+	void CreatShieldList();
 #pragma endregion
 
 };

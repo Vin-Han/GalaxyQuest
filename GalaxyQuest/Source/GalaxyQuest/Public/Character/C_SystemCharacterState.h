@@ -4,6 +4,8 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/PlayerState.h"
+#include "../Public/Bag/C_BulletItemBase.h"
+#include "../Public/Bag/C_ShieldItemBase.h"
 #include "C_SystemCharacterState.generated.h"
 
 /**
@@ -20,5 +22,10 @@ public:
 	float CurrentShield;
 
 public:
-	TArray<struct FBagItemBase> BagList;
+	TArray<FBulletBagItem> BulletList;
+	TArray<FSheildBagItem> ShieldList;
+
+public:
+	void AddItem(FBulletBagItem& newItem);
+	void AddItem(FSheildBagItem& newItem);
 };
