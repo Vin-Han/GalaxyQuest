@@ -36,14 +36,17 @@ void AC_Shield_Base::BeginPlay()
 void AC_Shield_Base::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-	RecoveryShield(DeltaTime);
-	if (CurrentShield < 1)
+	if (bIsEqiped == true)
 	{
-		ShieldMesh->SetVisibility(false);
-	}
-	else
-	{
-		ShieldMesh->SetVisibility(true);
+		RecoveryShield(DeltaTime);
+		if (CurrentShield < 1)
+		{
+			ShieldMesh->SetVisibility(false);
+		}
+		else
+		{
+			ShieldMesh->SetVisibility(true);
+		}
 	}
 }
 

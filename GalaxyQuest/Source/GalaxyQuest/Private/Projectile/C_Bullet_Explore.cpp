@@ -17,7 +17,7 @@ AC_Bullet_Explore::AC_Bullet_Explore()
 	InitialLifeSpan = 0.f;
 	HoldOnTime = 3.0f;
 	ExploreRadial = 5000.0f;
-
+	BulletLoadingTime = 2.0f;
 	BulletName = "ExploreBullet";
 }
 

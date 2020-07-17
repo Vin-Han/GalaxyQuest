@@ -35,7 +35,7 @@ public:
 public:
 	FTimerHandle TH_BeginRecoveryShield;
 	float CurrentShield;
-private:
+public:
 	bool bIsEqiped;
 	bool bCanRecovery;
 public:

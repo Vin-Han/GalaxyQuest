@@ -4,7 +4,12 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/PlayerController.h"
+#include "../Public/Bag/C_BulletItemBase.h"
+#include "../Public/Bag/C_ShieldItemBase.h"
 #include "C_SystemCharacterController.generated.h"
+
+#define BAG_SIZE 5
+#define BULLET_WINDOW_SIZE 80
 
 UCLASS()
 class GALAXYQUEST_API AC_SystemCharacterController : public APlayerController
@@ -15,36 +20,50 @@ public:
 	virtual void BeginPlay() override;
 
 	virtual void Tick(float DeltaSeconds) override;
+
+	virtual void SetupInputComponent() override;
+
 #pragma region Initialize Controller
 public:
+	/*initialize player related*/
 	void InitializeShip();
+	void InitializeShipState();
+
+	/*initialize widgets*/
 	void InitializeStarWidget();
 	void InitializeShipWidget();
+	void InitializeBagWidget();
+	void InitializeShipMessage();
+
+	/*initialize instance system*/
 	void InitializeBulletWindow();
 	void InitializeBaseSheild();
-	void InitializeShipState();
-	void InitializeShipBag();
+
 public:
+	/*base proprety*/
 	UPROPERTY()
 		class AC_SystemCharacter* ShipCharacter;
 	UPROPERTY()
 		class AC_SystemCharacterState* ShipState;
 
-	FString TargetMapName;
-
+	/*widget instance*/
 	UPROPERTY()
 		class UC_StarIntroduce_UI* StarInfor;
 	UPROPERTY()
 		class UC_SolarUserFace* ShipUI;
 	UPROPERTY()
 		class UC_UserBag* ShipBag;
+	UPROPERTY()
+		class UC_StarLocation_UI* ShipMassage;
+
+	/*temp name for second map*/
+	FString TargetMapName;
 
 #pragma endregion
 
 #pragma region Ship Move Relatived
 public:
-	virtual void SetupInputComponent() override;
-
+	/*base move function*/
 	UFUNCTION()
 		void MouseUpDown(float value);
 	UFUNCTION()
@@ -56,10 +75,13 @@ public:
 	UFUNCTION()
 		void MoveUpDown(float value);
 
+	/*speed up function*/
 	UFUNCTION()
 		void ShipSpeedUp();
 	UFUNCTION()
 		void ShipSpeedEnd();
+
+	/*update speed*/
 	UFUNCTION()
 		void UpdateSpeedState(float DeltaSeconds);
 
@@ -87,21 +109,21 @@ public:
 #pragma region Widget about Overlap With Star
 public:
 	UFUNCTION()
-		void OverlapStar(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComponent, int32 BodyIndex, bool FromSweep, const FHitResult& HitRusult);
+		void OverlapWithStar(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComponent, int32 BodyIndex, bool FromSweep, const FHitResult& HitRusult);
+	UFUNCTION()
+		void EndOverlapWithStar(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComponent, int32 BodyIndex);
+	UFUNCTION()
+		void OpenStarWidget();
+
 	UFUNCTION()
 		void StarCloseBtnOnClicked();
 	UFUNCTION()
 		void StarExploreBtnOnClicked();
-
+private:
+	bool bIfCanOpenStarPage;
 #pragma endregion
 
 #pragma region Fire Relatied
-public:
-	FVector FireLocation;
-	FRotator FireRotation;
-	FTimerHandle TH_ChangeWarMode;
-	float WarTimeDelaySecond;
-
 public:
 	UFUNCTION()
 		void Fire();
@@ -117,27 +139,28 @@ public:
 private:
 	void ChangeBulletWindow(float WindowIndex, bool bIsUpgrade);
 
-	bool GenerateBulletItem();
-
 	bool BulletStateCheck();
 
 	void UpdateBulletLoadingTime(float DeltaSeconds);
 
 	void ChangeWarMode();
 
+	void UpdateBulletWindow();
+
 private:
-	//TSubclassOf<AC_Bullet_Base> CurrentBullet;
-	TArray<struct FBulletBagItem> BulletItemList;
+	FBulletBagItem* curBulletList[BAG_SIZE];
+
 	int CurrentIndex;
-	float BulletWindowBaseSize;
+
+	FTimerHandle TH_ChangeWarMode;
+
+	float WarTimeDelaySecond;
+
 #pragma endregion
 
 #pragma region Shield Related
 	private:
-		class AC_Shield_Base* CurrentEqipedShield;
-		TArray<struct FSheildBagItem> CurrentShieldItem;
-	private:
-		void GenerateNewShield();
+		void GenerateNewShield(FSheildBagItem* newShield = nullptr);
 
 		void CalculateDamage(float Damage, bool bIfCalculateExtraDamage = false);
 
@@ -146,14 +169,35 @@ private:
 
 #pragma region Bag related Function
 public:
+	FSheildBagItem* curSheildPtr;
+	FBulletBagItem* curBulletPtr;
+public:
 	UFUNCTION()
 		void BagBtn_CloseWindow();
 	UFUNCTION()
 		void BagOpen_Function();
+	UFUNCTION()
+		void BulletSetEquip();
+	UFUNCTION()
+		void BulletEndEquip();
+	UFUNCTION()
+		void ShieldSetEquip();
+	UFUNCTION()
+		void ShieldEndEquip();
+
+	void ShowItemInformation();
+
 private:
 	void CreatItemList();
 	void CreatBulletList();
 	void CreatShieldList();
+
+	void LoadPlayerBagState();
+
+private:
+	bool GenerateBulletList();
+	bool GenerateShieldList();
+
 #pragma endregion
 
 };

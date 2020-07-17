@@ -18,8 +18,8 @@ class GALAXYQUEST_API AC_SystemCharacterState : public APlayerState
 	
 public:
 	float PlayerCurrentHp;
-	
 	float CurrentShield;
+	AC_Shield_Base* CurrentEqipedShield;
 
 public:
 	TArray<FBulletBagItem> BulletList;

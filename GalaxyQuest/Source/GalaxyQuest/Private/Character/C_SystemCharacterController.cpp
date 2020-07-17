@@ -8,13 +8,12 @@
 #include "../Public/Widget/C_SolarUserFace.h"
 #include "../Public/Widget/C_UserBag.h"
 #include "../Public/Widget/C_SingleItem.h"
+#include "../Public/Widget/C_StarLocation_UI.h"
 
 #include "../Public/GameMode/C_SolarSystemGameMode.h"
 #include "../Public/Projectile/C_Bullet_Base.h"
-#include "../Public/Bag/C_BulletItemBase.h"
-#include "../Public/Bag/C_ShieldItemBase.h"
-#include "../Public/Shield/C_Shield_Base.h"
 #include "../Public/Projectile/C_Bullet_EnemyNormal.h"
+#include "../Public/Shield/C_Shield_Base.h"
 
 #include "Components/BoxComponent.h"
 #include "Components/StaticMeshComponent.h"
@@ -35,15 +34,18 @@
 void AC_SystemCharacterController::BeginPlay()
 {
 	Super::BeginPlay();
-
 	CleanupGameViewport();
+
 	InitializeShip();
+	InitializeShipState();
+
 	InitializeStarWidget();
 	InitializeShipWidget();
+	InitializeBagWidget();
+	InitializeShipMessage();
+
 	InitializeBulletWindow();
 	InitializeBaseSheild();
-	InitializeShipState();
-	InitializeShipBag();
 
 	WarTimeDelaySecond = 3.0;
 	TargetMapName = "/Game/Blueprint/BP_Map/BP_Test_Map";
@@ -58,14 +60,36 @@ void AC_SystemCharacterController::Tick(float DeltaSeconds)
 	UpdatePlayerState();
 }
 
+void AC_SystemCharacterController::SetupInputComponent()
+{
+	Super::SetupInputComponent();
+
+	InputComponent->BindAxis("UpDown", this, &AC_SystemCharacterController::MouseUpDown);
+	InputComponent->BindAxis("RightLeft", this, &AC_SystemCharacterController::MouseRightLeft);
+	InputComponent->BindAxis("MoveForward", this, &AC_SystemCharacterController::MoveForward);
+	InputComponent->BindAxis("MoveTurn", this, &AC_SystemCharacterController::MoveTurn);
+	InputComponent->BindAxis("MoveUpDown", this, &AC_SystemCharacterController::MoveUpDown);
+
+	InputComponent->BindAction("ShipSpeedUpEnd", EInputEvent::IE_Pressed, this, &AC_SystemCharacterController::ShipSpeedUp);
+	InputComponent->BindAction("ShipSpeedUpEnd", EInputEvent::IE_Released, this, &AC_SystemCharacterController::ShipSpeedEnd);
+
+	InputComponent->BindAction("Fire", EInputEvent::IE_Pressed, this, &AC_SystemCharacterController::Fire);
+	InputComponent->BindAction("ChangeBulletAdd", EInputEvent::IE_Pressed, this, &AC_SystemCharacterController::ChangeBulletAdd);
+	InputComponent->BindAction("ChangeBulletExtract", EInputEvent::IE_Pressed, this, &AC_SystemCharacterController::ChangeBulletExtract);
+
+	InputComponent->BindAction("OpenBag", EInputEvent::IE_Pressed, this, &AC_SystemCharacterController::BagOpen_Function);
+	InputComponent->BindAction("OpenStarPage", EInputEvent::IE_Pressed, this, &AC_SystemCharacterController::OpenStarWidget);
+}
+
 #pragma region Initialize Controller
 void AC_SystemCharacterController::InitializeShip()
 {
 	ShipCharacter = Cast<AC_SystemCharacter>(GetPawn());
 	if (ShipCharacter)
 	{
-		ShipCharacter->CollisionCom->OnComponentBeginOverlap.AddDynamic(this,&AC_SystemCharacterController::OverlapStar);
-		
+		ShipCharacter->CollisionCom->OnComponentBeginOverlap.AddDynamic(this,&AC_SystemCharacterController::OverlapWithStar);
+		ShipCharacter->CollisionCom->OnComponentEndOverlap.AddDynamic(this, &AC_SystemCharacterController::EndOverlapWithStar);
+
 		SpeedGap = ShipCharacter->MaxSpeed * ShipCharacter->MaxSpeedRate;
 		CurSpeed = 0;
 
@@ -95,12 +119,24 @@ void AC_SystemCharacterController::InitializeShip()
 	}
 }
 
+void AC_SystemCharacterController::InitializeShipState()
+{
+	ShipState = Cast<AC_SystemCharacterState>(this->PlayerState);
+	if (ShipState)
+	{
+		GenerateBulletList();
+		GenerateShieldList();
+		ShipState->PlayerCurrentHp = ShipCharacter->TotalHP;
+	}
+}
+
 void AC_SystemCharacterController::InitializeStarWidget()
 {
 	StarInfor = CreateWidget<UC_StarIntroduce_UI>(GetGameInstance(), 
 				LoadClass<UC_StarIntroduce_UI>(nullptr, TEXT("WidgetBlueprint'/Game/UI/SolarSystemUI/BP_StarIntroduction.BP_StarIntroduction_c'")));
 	if (StarInfor)
 	{
+		bIfCanOpenStarPage = false;
 		if (StarInfor->Button_Close)
 		{
 			StarInfor->Button_Close->OnClicked.AddDynamic(this, &AC_SystemCharacterController::StarCloseBtnOnClicked);
@@ -146,19 +182,39 @@ void AC_SystemCharacterController::InitializeShipWidget()
 	}
 }
 
+void AC_SystemCharacterController::InitializeBagWidget()
+{
+	ShipBag = CreateWidget<UC_UserBag>(GetGameInstance(), LoadClass<UC_UserBag>(nullptr,
+		TEXT("WidgetBlueprint'/Game/UI/SolarSystemUI/BP_UserBag.BP_UserBag_c'")));
+	if (ShipBag)
+	{
+		ShipBag->Exit_Btn->OnClicked.AddDynamic(this, &AC_SystemCharacterController::BagBtn_CloseWindow);
+
+	}
+}
+
+void AC_SystemCharacterController::InitializeShipMessage()
+{
+	ShipMassage = CreateWidget<UC_StarLocation_UI>(GetGameInstance(), LoadClass<UC_StarLocation_UI>(nullptr,
+		TEXT("WidgetBlueprint'/Game/UI/SolarSystemUI/BP_StarLocation.BP_StarLocation_c'")));
+	if (ShipMassage)
+	{
+		ShipMassage->Text_StarDistance->SetText(FText::FromString(""));
+		ShipMassage->Text_StarLocation->SetText(FText::FromString("Player Warning Message"));
+	}
+}
+
 void AC_SystemCharacterController::InitializeBulletWindow()
 {
-	if (GenerateBulletItem() == false)
+	for (int i = 0; i < BAG_SIZE; i++)
 	{
-		return;
+		curBulletList[i] = nullptr;
 	}
-	BulletWindowBaseSize = 80;
-	//CurrentBullet = BulletItemList[0].BulletClass;
-	CurrentIndex = 0;
 
+	CurrentIndex = 0;
 	if (ShipUI)
 	{
-		for (int i = 0; i < ShipUI->BulletOut.Num(); i++)
+		for (int i = 0; i < BAG_SIZE; i++)
 		{
 			ShipUI->BulletOut[i]->SetVisibility(ESlateVisibility::Hidden);
 			ShipUI->BulletPic[i]->SetOpacity(0.5f);
@@ -166,17 +222,6 @@ void AC_SystemCharacterController::InitializeBulletWindow()
 			ShipUI->BulletCD[i]->SetVisibility(ESlateVisibility::Hidden);
 			ShipUI->BulletNum[i]->SetVisibility(ESlateVisibility::Hidden);
 			ShipUI->BulletNum[i]->SetOpacity(0.8f);
-		}
-		//UE_LOG(LogTemp, Warning, TEXT("CheckingVisible"));
-		int TolalIndex = FMath::Min(5, BulletItemList.Num());
-		for (int i = 0; i < TolalIndex; i++)
-		{
-			ShipUI->BulletOut[i]->SetVisibility(ESlateVisibility::Visible);
-			ShipUI->BulletPic[i]->SetVisibility(ESlateVisibility::Visible);
-			ShipUI->BulletPic[i]->SetBrushFromTexture(
-				BulletItemList[i].BulletClass.GetDefaultObject()->BulletPicture);
-			ShipUI->BulletCD[i]->SetVisibility(ESlateVisibility::Visible);
-			ShipUI->BulletNum[i]->SetVisibility(ESlateVisibility::Visible);
 			ChangeBulletWindow(i, false);
 		}
 	}
@@ -185,54 +230,11 @@ void AC_SystemCharacterController::InitializeBulletWindow()
 
 void AC_SystemCharacterController::InitializeBaseSheild()
 {
+	ShipState->CurrentEqipedShield = nullptr;
 	GenerateNewShield();
 }
 
-void AC_SystemCharacterController::InitializeShipState()
-{
-	ShipState = Cast<AC_SystemCharacterState>(this->PlayerState);
-	if (ShipState)
-	{
-		ShipState->PlayerCurrentHp = ShipCharacter->TotalHP;
-		if (CurrentEqipedShield)
-		{
-			ShipState->CurrentShield = CurrentEqipedShield->CurrentShield;
-		}
-	}
-}
-
-void AC_SystemCharacterController::InitializeShipBag()
-{
-	ShipBag = CreateWidget<UC_UserBag>(GetGameInstance(),LoadClass<UC_UserBag>(nullptr,
-		TEXT("WidgetBlueprint'/Game/UI/SolarSystemUI/BP_UserBag.BP_UserBag_c'")));
-	if (ShipBag)
-	{
-		ShipBag->Exit_Btn->OnClicked.AddDynamic(this,&AC_SystemCharacterController::BagBtn_CloseWindow);
-
-	}
-}
-
 #pragma endregion
-
-void AC_SystemCharacterController::SetupInputComponent()
-{
-	Super::SetupInputComponent();
-
-	InputComponent->BindAxis("UpDown", this, &AC_SystemCharacterController::MouseUpDown);
-	InputComponent->BindAxis("RightLeft", this, &AC_SystemCharacterController::MouseRightLeft);
-	InputComponent->BindAxis("MoveForward", this, &AC_SystemCharacterController::MoveForward);
-	InputComponent->BindAxis("MoveTurn", this, &AC_SystemCharacterController::MoveTurn);
-	InputComponent->BindAxis("MoveUpDown", this, &AC_SystemCharacterController::MoveUpDown);
-
-	InputComponent->BindAction("ShipSpeedUpEnd", EInputEvent::IE_Pressed, this, &AC_SystemCharacterController::ShipSpeedUp);
-	InputComponent->BindAction("ShipSpeedUpEnd", EInputEvent::IE_Released, this, &AC_SystemCharacterController::ShipSpeedEnd);
-
-	InputComponent->BindAction("Fire", EInputEvent::IE_Pressed, this, &AC_SystemCharacterController::Fire);
-	InputComponent->BindAction("ChangeBulletAdd", EInputEvent::IE_Pressed, this, &AC_SystemCharacterController::ChangeBulletAdd);
-	InputComponent->BindAction("ChangeBulletExtract", EInputEvent::IE_Pressed, this, &AC_SystemCharacterController::ChangeBulletExtract);
-
-	InputComponent->BindAction("OpenBag", EInputEvent::IE_Pressed, this, &AC_SystemCharacterController::BagOpen_Function);
-}
 
 #pragma region Ship Move Relatived
 void AC_SystemCharacterController::MouseUpDown(float value) 
@@ -353,35 +355,47 @@ void AC_SystemCharacterController::UpdateSpeedState(float DeltaSeconds)
 #pragma endregion
 
 #pragma region Widget about Overlap With Star
-void AC_SystemCharacterController::OverlapStar(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComponent, int32 BodyIndex, bool FromSweep, const FHitResult& HitRusult)
+void AC_SystemCharacterController::OverlapWithStar(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComponent, int32 BodyIndex, bool FromSweep, const FHitResult& HitRusult)
 {
 	if (ShipCharacter->bIsInWarMode)
 	{
 		return;
 	}
 	AC_NormalPlanetPawn* tempStar = Cast<AC_NormalPlanetPawn>(OtherActor);
-	if (tempStar) 
+	if (tempStar && StarInfor)
 	{
-		if (StarInfor) 
+		StarInfor->TextBlock_Name->SetText(FText::FromString(tempStar->StarName));
+		StarInfor->TextBlock_Intro->SetText(FText::FromString(tempStar->StarIntrodoce));
+		StarInfor->Image_Pic->SetBrushFromTexture(tempStar->StarPicture);
+		TargetMapName = tempStar->StarMap;
+
+		bIfCanOpenStarPage = true;
+		if (ShipMassage->IsInViewport() == false)
 		{
-			if (StarInfor->TextBlock_Name) 
-			{
-				StarInfor->TextBlock_Name->SetText(FText::FromString(tempStar->StarName));
-			}
-			if (StarInfor->TextBlock_Intro)
-			{
-				StarInfor->TextBlock_Intro->SetText(FText::FromString(tempStar->StarIntrodoce));
-			}
-			if (StarInfor->Image_Pic) 
-			{ 
-				StarInfor->Image_Pic->SetBrushFromTexture(tempStar->StarPicture); 
-			}
-			if (tempStar->StarName != "")  
-			{
-				TargetMapName = tempStar->StarMap;
-			}
-			UGameplayStatics::SetGamePaused(this,true);
-			bShowMouseCursor = true;
+			ShipMassage->AddToViewport();
+		}
+		ShipMassage->Text_StarLocation->SetText(FText::FromString("Press [F] to open star detail surface."));
+
+	}
+}
+
+void AC_SystemCharacterController::EndOverlapWithStar(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComponent, int32 BodyIndex)
+{
+	if (ShipMassage->IsInViewport() == true)
+	{
+		ShipMassage->RemoveFromViewport();
+	}
+	bIfCanOpenStarPage = false;
+}
+
+void AC_SystemCharacterController::OpenStarWidget()
+{
+	if (ShipCharacter->bIsInWarMode == false && bIfCanOpenStarPage && StarInfor)
+	{
+		UGameplayStatics::SetGamePaused(this, true);
+		bShowMouseCursor = true;
+		if (StarInfor->IsInViewport() == false)
+		{
 			StarInfor->AddToViewport();
 		}
 	}
@@ -405,71 +419,6 @@ void AC_SystemCharacterController::StarExploreBtnOnClicked()
 #pragma endregion
 
 #pragma region Fire Relatied
-void AC_SystemCharacterController::Fire()
-{
-	if (BulletStateCheck() == true)
-	{
-		FireLocation = ShipCharacter->ShipMesh->GetSocketLocation(TEXT("BulletSpawner"));
-		FireRotation = ShipCharacter->CollisionCom->GetComponentRotation();
-
-		AC_Bullet_Base* test = Cast<AC_Bullet_Base>(
-			GetWorld()->SpawnActor(BulletItemList[CurrentIndex].BulletClass,
-				&FireLocation, &FireRotation));
-
-		BulletItemList[CurrentIndex].CurrentAccout = BulletItemList[CurrentIndex].CurrentAccout - 1;
-		BulletItemList[CurrentIndex].CurrentLoadingTime = 
-					BulletItemList[CurrentIndex].BulletClass.GetDefaultObject()->BulletLoadingTime;
-	}
-	ChangeWarMode();
-}
-
-void AC_SystemCharacterController::ChangeBulletAdd()
-{
-	ChangeBulletWindow(CurrentIndex, false);
-	if (BulletItemList.Num() > 0)
-	{
-		if (CurrentIndex == BulletItemList.Num() - 1)
-		{
-			//CurrentBullet = BulletItemList[0].BulletClass;
-			CurrentIndex = 0;
-		}
-		else
-		{
-			//CurrentBullet = BulletItemList[CurrentIndex + 1].BulletClass;
-			CurrentIndex ++;
-		}
-	}
-	ChangeBulletWindow(CurrentIndex, true);
-}
-
-void AC_SystemCharacterController::ChangeBulletExtract()
-{
-	ChangeBulletWindow(CurrentIndex, false);
-	if (BulletItemList.Num() > 0)
-	{
-		if (CurrentIndex == 0)
-		{
-			//CurrentBullet = BulletItemList[ShipCharacter->BulletList.Num() - 1].BulletClass;
-			CurrentIndex = BulletItemList.Num() - 1;
-		}
-		else
-		{
-			//CurrentBullet = BulletItemList[CurrentIndex - 1].BulletClass;
-			CurrentIndex--;
-		}
-	}
-	ChangeBulletWindow(CurrentIndex, true);
-}
-
-void AC_SystemCharacterController::DelayModeChange()
-{
-	if (ShipCharacter)
-	{
-		UE_LOG(LogTemp, Warning, TEXT("EndWar"));
-		ShipCharacter->bIsInWarMode = false;
-	}
-}
-
 void AC_SystemCharacterController::ChangeBulletWindow(float WindowIndex, bool bIsUpgrade)
 {
 	if (ShipUI)
@@ -477,45 +426,78 @@ void AC_SystemCharacterController::ChangeBulletWindow(float WindowIndex, bool bI
 		if (bIsUpgrade)
 		{
 			ShipUI->BulletOut[WindowIndex]->SetColorAndOpacity(FColor::White);
-			ShipUI->BulletOut[WindowIndex]->SetBrushSize(FVector2D(BulletWindowBaseSize * 1.05));
+			ShipUI->BulletOut[WindowIndex]->SetBrushSize(FVector2D(BULLET_WINDOW_SIZE * 1.05));
 			ShipUI->BulletPic[WindowIndex]->SetOpacity(1.0f);
-			ShipUI->BulletPic[WindowIndex]->SetBrushSize(FVector2D(BulletWindowBaseSize * 1.05));
+			ShipUI->BulletPic[WindowIndex]->SetBrushSize(FVector2D(BULLET_WINDOW_SIZE * 1.05));
 			ShipUI->BulletNum[WindowIndex]->SetOpacity(1.0f);
 		}
 		else
 		{
 			ShipUI->BulletOut[WindowIndex]->SetColorAndOpacity(FColor::Black);
-			ShipUI->BulletOut[WindowIndex]->SetBrushSize(FVector2D(BulletWindowBaseSize));
+			ShipUI->BulletOut[WindowIndex]->SetBrushSize(FVector2D(BULLET_WINDOW_SIZE));
 			ShipUI->BulletPic[WindowIndex]->SetOpacity(0.5f);
-			ShipUI->BulletPic[WindowIndex]->SetBrushSize(FVector2D(BulletWindowBaseSize));
+			ShipUI->BulletPic[WindowIndex]->SetBrushSize(FVector2D(BULLET_WINDOW_SIZE));
 			ShipUI->BulletNum[WindowIndex]->SetOpacity(0.8f);
 		}
 	}
 }
 
-bool AC_SystemCharacterController::GenerateBulletItem()
+void AC_SystemCharacterController::Fire()
 {
-	if (ShipCharacter->BulletList.Num() == 0)
+	if (BulletStateCheck() == true)
 	{
-		return false;
+		FVector FireLocation = ShipCharacter->ShipMesh->GetSocketLocation(TEXT("BulletSpawner"));
+		FRotator FireRotation = ShipCharacter->CollisionCom->GetComponentRotation();
+
+		AC_Bullet_Base* test = Cast<AC_Bullet_Base>(
+			GetWorld()->SpawnActor(curBulletList[CurrentIndex]->BulletClass,
+				&FireLocation, &FireRotation));
+
+		curBulletList[CurrentIndex]->CurrentAccout --;
+		curBulletList[CurrentIndex]->CurrentLoadingTime =
+			curBulletList[CurrentIndex]->BulletClass.GetDefaultObject()->BulletLoadingTime;
 	}
-	for (int i = 0; i < ShipCharacter->BulletList.Num(); i++)
+	ChangeWarMode();
+}
+
+void AC_SystemCharacterController::ChangeBulletAdd()
+{
+	ChangeBulletWindow(CurrentIndex, false);
+	CurrentIndex++;
+	if (CurrentIndex == BAG_SIZE || 
+		curBulletList[CurrentIndex] == nullptr)
 	{
-		FBulletBagItem tempBulletItem;
-		tempBulletItem.TotalAccout = 999;
-		tempBulletItem.CurrentAccout = 999;
-		tempBulletItem.CurrentLoadingTime = 0;
-		tempBulletItem.BulletClass = ShipCharacter->BulletList[i];
-		BulletItemList.Add(tempBulletItem);
+		CurrentIndex = 0;
 	}
-	return true;
+	ChangeBulletWindow(CurrentIndex, true);
+}
+
+void AC_SystemCharacterController::ChangeBulletExtract()
+{
+	ChangeBulletWindow(CurrentIndex, false);
+	if (CurrentIndex == 0)
+	{
+		for (int i = BAG_SIZE - 1; i >= 0; i--)
+		{
+			if (curBulletList[i] != nullptr)
+			{
+				CurrentIndex = i;
+				break;
+			}
+		}
+	}
+	else
+	{
+		CurrentIndex--;
+	}
+	ChangeBulletWindow(CurrentIndex, true);
 }
 
 bool AC_SystemCharacterController::BulletStateCheck()
 {
-	if (CurrentIndex < BulletItemList.Num()
-		&& BulletItemList[CurrentIndex].CurrentAccout > 0
-		&& BulletItemList[CurrentIndex].CurrentLoadingTime <= 0
+	if (curBulletList[CurrentIndex] != nullptr
+		&& curBulletList[CurrentIndex]->CurrentAccout > 0
+		&& curBulletList[CurrentIndex]->CurrentLoadingTime <= 0
 		)
 	{
 		return true;
@@ -526,24 +508,65 @@ bool AC_SystemCharacterController::BulletStateCheck()
 
 void AC_SystemCharacterController::UpdateBulletLoadingTime(float DeltaSeconds)
 {
-
-	for (int i = 0; i < BulletItemList.Num(); i++)
+	if (UGameplayStatics::IsGamePaused(GetWorld()))
 	{
-		BulletItemList[i].CurrentLoadingTime = 
-			FMath::Max(0.f, 
-				BulletItemList[i].CurrentLoadingTime - DeltaSeconds);
+		return;
 	}
-	for (int i = 0; i < ShipUI->BulletOut.Num(); i++)
+	for (int i = 0; i < ShipState->BulletList.Num(); i++)
 	{
-		if (ShipUI->BulletOut[i]->Visibility == ESlateVisibility::Visible)
+		if (ShipState->BulletList[i].CurrentLoadingTime != 0.0f)
 		{
-			ShipUI->BulletCD[i]->SetPercent(
-				BulletItemList[i].CurrentLoadingTime / 
-				BulletItemList[i].BulletClass.GetDefaultObject()->BulletLoadingTime);
-			ShipUI->BulletNum[i]->SetText(FText::FromString(
-				FString::FromInt( BulletItemList[i].CurrentAccout)));
+			ShipState->BulletList[i].CurrentLoadingTime =
+				FMath::Max(0.f,
+					ShipState->BulletList[i].CurrentLoadingTime - DeltaSeconds);
 		}
 	}
+	for (int i = 0; i < BAG_SIZE; i++)
+	{
+		if (curBulletList[i] != nullptr)
+		{
+			ShipUI->BulletCD[i]->SetPercent(
+				curBulletList[i]->CurrentLoadingTime /
+				curBulletList[i]->BulletClass.GetDefaultObject()->BulletLoadingTime);
+			ShipUI->BulletNum[i]->SetText(FText::FromString(
+				FString::FromInt(curBulletList[i]->CurrentAccout)));
+		}
+		else
+		{
+			break;
+		}
+	}
+}
+
+void AC_SystemCharacterController::UpdateBulletWindow()
+{
+	for (int i = 0; i < BAG_SIZE; i++)
+	{
+		ShipUI->BulletOut[i]->SetVisibility(ESlateVisibility::Hidden);
+		ShipUI->BulletPic[i]->SetVisibility(ESlateVisibility::Hidden);
+		ShipUI->BulletCD[i]->SetVisibility(ESlateVisibility::Hidden);
+		ShipUI->BulletNum[i]->SetVisibility(ESlateVisibility::Hidden);
+		ChangeBulletWindow(i, false);
+	}
+
+	for (int i = 0; i < BAG_SIZE; i++)
+	{
+		if (curBulletList[i] != nullptr)
+		{
+			ShipUI->BulletOut[i]->SetVisibility(ESlateVisibility::Visible);
+			ShipUI->BulletPic[i]->SetVisibility(ESlateVisibility::Visible);
+			ShipUI->BulletCD[i]->SetVisibility(ESlateVisibility::Visible);
+			ShipUI->BulletNum[i]->SetVisibility(ESlateVisibility::Visible);
+
+			ShipUI->BulletPic[i]->SetBrushFromTexture(curBulletList[i]->BulletClass.GetDefaultObject()->BulletPicture);
+			ShipUI->BulletNum[i]->SetText(FText::FromString(
+				FString::FromInt(curBulletList[i]->CurrentAccout)));
+
+			ChangeBulletWindow(i, false);
+		}
+	}
+	CurrentIndex = 0;
+	ChangeBulletWindow(CurrentIndex, true);
 }
 
 void AC_SystemCharacterController::ChangeWarMode()
@@ -553,6 +576,15 @@ void AC_SystemCharacterController::ChangeWarMode()
 		ShipCharacter->bIsInWarMode = true;
 		UE_LOG(LogTemp, Warning, TEXT("BeginWar"));
 		GetWorld()->GetTimerManager().SetTimer(TH_ChangeWarMode,this,&AC_SystemCharacterController::DelayModeChange,1,false, WarTimeDelaySecond);
+	}
+}
+
+void AC_SystemCharacterController::DelayModeChange()
+{
+	if (ShipCharacter)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("EndWar"));
+		ShipCharacter->bIsInWarMode = false;
 	}
 }
 
@@ -569,49 +601,55 @@ float AC_SystemCharacterController::TakeDamage(float Damage, FDamageEvent const&
 #pragma endregion
 
 #pragma region Shield Related
-void AC_SystemCharacterController::GenerateNewShield()
+void AC_SystemCharacterController::GenerateNewShield(FSheildBagItem* newShield)
 {
-	if (CurrentEqipedShield)
+	if (newShield == nullptr)
 	{
-		CurrentEqipedShield->SetEqipState(false);
-		CurrentEqipedShield->Destroy();
-	}
-	if (ShipCharacter->CurrentShield)
-	{
-		if (CurrentShieldItem.Num() == 0)
+		if (ShipState->CurrentEqipedShield)
 		{
-			FSheildBagItem newShield;
-			newShield.ShieldClass = ShipCharacter->CurrentShield;
-			CurrentShieldItem.Add(newShield);
+			ShipState->CurrentEqipedShield->SetEqipState(true);
+			ShipState->CurrentEqipedShield->ShieldMesh->SetVisibility(true);
+		}
+		return;
+	}
+	if (ShipState->CurrentEqipedShield)
+	{
+		if (ShipState->CurrentEqipedShield->ShieldName == newShield->ShieldClass.GetDefaultObject()->ShieldName)
+		{
+			ShipState->CurrentEqipedShield->SetEqipState(true);
+			ShipState->CurrentEqipedShield->ShieldMesh->SetVisibility(true);
+			return;
 		}
 		else
 		{
-			CurrentShieldItem[0].ShieldClass = ShipCharacter->CurrentShield;
+			ShipState->CurrentEqipedShield->Destroy();
+			ShipState->CurrentEqipedShield = nullptr;
 		}
-		CurrentEqipedShield = Cast<AC_Shield_Base>(GetWorld()->SpawnActor(CurrentShieldItem[0].ShieldClass));
-		//CurrentEqipedShield = Cast<AC_Shield_Base>(GetWorld()->SpawnActor(ShipCharacter->CurrentShield));
-		CurrentEqipedShield->AttachToComponent(ShipCharacter->ShipMesh, 
-			FAttachmentTransformRules::KeepRelativeTransform);
-		CurrentEqipedShield->SetActorRelativeScale3D(FVector(1.05f, 1.05f, 1.05f));
-		CurrentEqipedShield->SetEqipState(true);
 	}
+	ShipState->CurrentEqipedShield = Cast<AC_Shield_Base>(GetWorld()->SpawnActor(newShield->ShieldClass));
+	ShipState->CurrentEqipedShield->AttachToComponent(ShipCharacter->ShipMesh,
+		FAttachmentTransformRules::KeepRelativeTransform);
+	ShipState->CurrentEqipedShield->SetActorRelativeScale3D(FVector(1.05f, 1.05f, 1.05f));
+	ShipState->CurrentEqipedShield->SetEqipState(true);
 }
 
 void AC_SystemCharacterController::CalculateDamage(float Damage, bool bIfCalculateExtraDamage)
 {
-	if (CurrentEqipedShield && CurrentEqipedShield->CurrentShield > 0)
+	if (ShipState->CurrentEqipedShield && 
+		ShipState->CurrentEqipedShield->bIsEqiped == true && 
+		ShipState->CurrentEqipedShield->CurrentShield > 0)
 	{
-		CurrentEqipedShield->AfterTakeDamage();
-		CurrentEqipedShield->CurrentShield -= Damage;
-		if (bIfCalculateExtraDamage && CurrentEqipedShield->CurrentShield < 0)
+		ShipState->CurrentEqipedShield->AfterTakeDamage();
+		ShipState->CurrentEqipedShield->CurrentShield -= Damage;
+		if (bIfCalculateExtraDamage && ShipState->CurrentEqipedShield->CurrentShield < 0)
 		{
-			ShipState->PlayerCurrentHp -= CurrentEqipedShield->CurrentShield;
-			CurrentEqipedShield->CurrentShield = 0;
+			ShipState->PlayerCurrentHp -= ShipState->CurrentEqipedShield->CurrentShield;
+			ShipState->CurrentEqipedShield->CurrentShield = 0;
 			ShipState->CurrentShield = 0;
 		}
 		else
 		{
-			ShipState->CurrentShield = CurrentEqipedShield->CurrentShield;
+			ShipState->CurrentShield = ShipState->CurrentEqipedShield->CurrentShield;
 		}
 	}
 	else
@@ -632,11 +670,12 @@ void AC_SystemCharacterController::UpdatePlayerState()
 		ShipUI->Bar_Blood->SetPercent( 
 			ShipState->PlayerCurrentHp / ShipCharacter->TotalHP);
 
-		if (CurrentEqipedShield)
+		if (ShipState->CurrentEqipedShield && 
+			ShipState->CurrentEqipedShield->bIsEqiped == true)
 		{
-			ShipState->CurrentShield = CurrentEqipedShield->CurrentShield;
+			ShipState->CurrentShield = ShipState->CurrentEqipedShield->CurrentShield;
 			ShipUI->Bar_Shield->SetPercent(
-				CurrentEqipedShield->CurrentShield / CurrentEqipedShield->TotalShield);
+				ShipState->CurrentEqipedShield->CurrentShield / ShipState->CurrentEqipedShield->TotalShield);
 		}
 		else
 		{
@@ -673,6 +712,10 @@ void AC_SystemCharacterController::BagBtn_CloseWindow()
 	{
 		UGameplayStatics::SetGamePaused(this, false);
 	}
+	curSheildPtr = nullptr;
+	curBulletPtr = nullptr;
+	ShipBag->Left_Btn->OnClicked.RemoveAll(this);
+	ShipBag->Right_Btn->OnClicked.RemoveAll(this);
 	bShowMouseCursor = false;
 	ShipBag->RemoveFromViewport();
 }
@@ -684,12 +727,41 @@ void AC_SystemCharacterController::BagOpen_Function()
 		if (ShipBag->IsInViewport() == false)
 		{
 			CreatItemList();
+			LoadPlayerBagState();
 			ShipBag->AddToViewport();
 			if (UGameplayStatics::IsGamePaused(GetWorld()) == false)
 			{
 				UGameplayStatics::SetGamePaused(this, true);
 			}
 			bShowMouseCursor = true;
+
+		}
+	}
+}
+
+void AC_SystemCharacterController::ShowItemInformation()
+{
+	if (ShipBag)
+	{
+		ShipBag->Left_Btn->OnClicked.RemoveAll(this);
+		ShipBag->Right_Btn->OnClicked.RemoveAll(this);
+		if (curSheildPtr)
+		{
+			ShipBag->Intro_Text->SetText(FText::FromString(curSheildPtr->ShieldClass.GetDefaultObject()->ShieldName));
+			ShipBag->Load_Image->SetBrushFromTexture(curSheildPtr->ShieldClass.GetDefaultObject()->ShieldPicture);
+			ShipBag->LeftBtn_Text->SetText(FText::FromString("Install"));
+			ShipBag->Left_Btn->OnClicked.AddDynamic(this,&AC_SystemCharacterController::ShieldSetEquip);
+			ShipBag->RightBtn_Text->SetText(FText::FromString("Uninstall"));
+			ShipBag->Right_Btn->OnClicked.AddDynamic(this, &AC_SystemCharacterController::ShieldEndEquip);
+		}
+		else if (curBulletPtr)
+		{
+			ShipBag->Intro_Text->SetText(FText::FromString(curBulletPtr->BulletClass.GetDefaultObject()->BulletName));
+			ShipBag->Load_Image->SetBrushFromTexture(curBulletPtr->BulletClass.GetDefaultObject()->BulletPicture);
+			ShipBag->LeftBtn_Text->SetText(FText::FromString("Load"));
+			ShipBag->Left_Btn->OnClicked.AddDynamic(this, &AC_SystemCharacterController::BulletSetEquip);
+			ShipBag->RightBtn_Text->SetText(FText::FromString("Unload"));
+			ShipBag->Right_Btn->OnClicked.AddDynamic(this, &AC_SystemCharacterController::BulletEndEquip);
 		}
 	}
 }
@@ -700,30 +772,180 @@ void AC_SystemCharacterController::CreatItemList()
 	CreatBulletList();
 	CreatShieldList();
 }
+
 void AC_SystemCharacterController::CreatBulletList()
 {
-	for (const FBulletBagItem& tempItem : BulletItemList)
+	for (int i = 0; i < ShipState->BulletList.Num(); i++)
 	{
 		UC_SingleItem* newItem = CreateWidget<UC_SingleItem>(GetGameInstance(), LoadClass<UC_SingleItem>
 			(nullptr, TEXT("WidgetBlueprint'/Game/UI/SolarSystemUI/BP_SingleItem.BP_SingleItem_c'")));
-		newItem->Item_Name->SetText(FText::FromString(tempItem.BulletClass.GetDefaultObject()->BulletName));
-		newItem->Item_Pic->SetBrushFromTexture(tempItem.BulletClass.GetDefaultObject()->BulletPicture);
-		newItem->Item_BtnName->SetText(FText::FromString(FString::FromInt(tempItem.CurrentAccout)));
+		newItem->Item_Name->SetText(FText::FromString(ShipState->BulletList[i].BulletClass.GetDefaultObject()->BulletName));
+		newItem->Item_Pic->SetBrushFromTexture(ShipState->BulletList[i].BulletClass.GetDefaultObject()->BulletPicture);
+		newItem->Item_BtnName->SetText(FText::FromString(FString::FromInt(ShipState->BulletList[i].CurrentAccout)));
 		newItem->Item_Btn->SetVisibility(ESlateVisibility::Hidden);
+
+		newItem->BulletInfor = &ShipState->BulletList[i];
+		newItem->CurrentContoller = this;
+
 		ShipBag->Left_Roll->AddChild(newItem);
+
+		newItem->Item_WholeBtn->SetVisibility(ESlateVisibility::Visible);
+		newItem->Item_WholeBtn->OnClicked.AddDynamic(newItem, &UC_SingleItem::BindControllerItem);
 	}
 }
 void AC_SystemCharacterController::CreatShieldList()
 {
-	for (const FSheildBagItem& tempItem : CurrentShieldItem)
+	int b = ShipState->ShieldList.Num();
+	UE_LOG(LogTemp, Warning, TEXT("%d"), b);
+	for (int i = 0; i < ShipState->ShieldList.Num(); i++)
 	{
 		UC_SingleItem* newItem = CreateWidget<UC_SingleItem>(GetGameInstance(), LoadClass<UC_SingleItem>
 			(nullptr, TEXT("WidgetBlueprint'/Game/UI/SolarSystemUI/BP_SingleItem.BP_SingleItem_c'")));
-		newItem->Item_Name->SetText(FText::FromString(tempItem.ShieldClass.GetDefaultObject()->ShieldName));
-		newItem->Item_Pic->SetBrushFromTexture(tempItem.ShieldClass.GetDefaultObject()->ShieldPicture);
+		
+		newItem->Item_Name->SetText(FText::FromString(ShipState->ShieldList[i].ShieldClass.GetDefaultObject()->ShieldName));
+		
+		newItem->Item_Pic->SetBrushFromTexture(ShipState->ShieldList[i].ShieldClass.GetDefaultObject()->ShieldPicture);
 		newItem->Item_BtnName->SetText(FText::FromString("1"));
 		newItem->Item_Btn->SetVisibility(ESlateVisibility::Hidden);
+
+		newItem->ShieldInfor = &ShipState->ShieldList[i];
+		newItem->CurrentContoller = this;
 		ShipBag->Left_Roll->AddChild(newItem);
+		
+		newItem->Item_WholeBtn->SetVisibility(ESlateVisibility::Visible);
+		newItem->Item_WholeBtn->OnClicked.AddDynamic(newItem, &UC_SingleItem::BindControllerItem);
+		
 	}
+}
+
+void AC_SystemCharacterController::LoadPlayerBagState()
+{
+	ShipBag->HP_Bar->SetPercent(
+		ShipState->PlayerCurrentHp / ShipCharacter->TotalHP);
+
+	if (ShipState->CurrentEqipedShield && ShipState->CurrentEqipedShield->bIsEqiped == true)
+	{
+		ShipBag->Shield_Bar->SetPercent(
+			ShipState->CurrentEqipedShield->CurrentShield / ShipState->CurrentEqipedShield->TotalShield);
+	}
+	else
+	{
+		ShipBag->Shield_Bar->SetPercent(0);
+	}
+}
+
+void AC_SystemCharacterController::BulletSetEquip()
+{
+	if (curBulletPtr)
+	{
+		int tempIndex = 0;
+		for (; tempIndex < BAG_SIZE; tempIndex++)
+		{
+			if (curBulletList[tempIndex] != nullptr &&
+				curBulletList[tempIndex]->BulletClass.GetDefaultObject()->BulletName ==
+				curBulletPtr->BulletClass.GetDefaultObject()->BulletName)
+			{
+				break;
+			}
+			else if (curBulletList[tempIndex] == nullptr)
+			{
+				curBulletList[tempIndex] = curBulletPtr;
+				break;
+			}
+		}
+
+		if (tempIndex == BAG_SIZE)
+		{
+			for (int i = BAG_SIZE - 1; i > 0; i--)
+			{
+				curBulletList[i] = curBulletList[i - 1];
+			}
+			curBulletList[0] = curBulletPtr;
+		}
+	}
+	UpdateBulletWindow();
+}
+
+void AC_SystemCharacterController::BulletEndEquip()
+{
+	if (curBulletPtr)
+	{
+		for (int i = 0; i < BAG_SIZE; i++)
+		{
+			if (curBulletList[i] != nullptr &&
+				curBulletList[i]->BulletClass.GetDefaultObject()->BulletName 
+				== curBulletPtr->BulletClass.GetDefaultObject()->BulletName)
+			{
+				for (int j = i; j < BAG_SIZE - 1; j++)
+				{
+					curBulletList[j] = curBulletList[j + 1];
+				}
+				curBulletList[BAG_SIZE - 1] = nullptr;
+				UpdateBulletWindow();
+				return;
+			}
+		}
+	}
+}
+
+void AC_SystemCharacterController::ShieldSetEquip()
+{
+	if (curSheildPtr)
+	{
+		GenerateNewShield(curSheildPtr);
+	}
+}
+
+void AC_SystemCharacterController::ShieldEndEquip()
+{
+	if (curSheildPtr)
+	{
+		if (ShipState->CurrentEqipedShield && 
+			ShipState->CurrentEqipedShield->ShieldName == curSheildPtr->ShieldClass.GetDefaultObject()->ShieldName)
+		{
+			ShipState->CurrentEqipedShield->SetEqipState(false);
+			ShipState->CurrentEqipedShield->ShieldMesh->SetVisibility(false);
+		}
+		else
+		{
+			ShipState->CurrentEqipedShield->Destroy();
+			ShipState->CurrentEqipedShield = nullptr;
+		}
+	}
+}
+
+
+bool AC_SystemCharacterController::GenerateBulletList()
+{
+	if (ShipCharacter->BulletList.Num() == 0)
+	{
+		return false;
+	}
+	for (int i = 0; i < ShipCharacter->BulletList.Num(); i++)
+	{
+		FBulletBagItem tempBulletItem;
+		tempBulletItem.TotalAccout = 999;
+		tempBulletItem.CurrentAccout = 999;
+		tempBulletItem.CurrentLoadingTime = 0;
+		tempBulletItem.BulletClass = ShipCharacter->BulletList[i];
+		ShipState->BulletList.Add(tempBulletItem);
+	}
+	return true;
+}
+
+bool AC_SystemCharacterController::GenerateShieldList()
+{
+	if (ShipCharacter->ShieldList.Num() == 0)
+	{
+		return false;
+	}
+	for (int i = 0; i < ShipCharacter->ShieldList.Num(); i++)
+	{
+		FSheildBagItem tempShieldItem;
+		tempShieldItem.ShieldClass = ShipCharacter->ShieldList[i];
+		ShipState->ShieldList.Add(tempShieldItem);
+	}
+
+	return true;
 }
 #pragma endregion

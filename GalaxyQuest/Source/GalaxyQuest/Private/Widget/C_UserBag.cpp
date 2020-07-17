@@ -21,6 +21,10 @@ bool UC_UserBag::Initialize() {
 
 	Left_Btn = Cast<UButton>(GetWidgetFromName(TEXT("Button_Left")));
 
+	LeftBtn_Text = Cast<UTextBlock>(GetWidgetFromName(TEXT("TextBlock_LeftBtn")));;
+
+	RightBtn_Text = Cast<UTextBlock>(GetWidgetFromName(TEXT("TextBlock_RightBtn")));;
+
 	Right_Btn = Cast<UButton>(GetWidgetFromName(TEXT("Button_Right")));
 
 	HP_Bar = Cast<UProgressBar>(GetWidgetFromName(TEXT("ProgressBar_HP")));

@@ -38,5 +38,9 @@ public:
 		UTextBlock*		Intro_Text;
 	UPROPERTY()
 		UImage*			Load_Image;
+	UPROPERTY()
+		UTextBlock*		LeftBtn_Text;
+	UPROPERTY()
+		UTextBlock*		RightBtn_Text;
 
 };

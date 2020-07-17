@@ -70,7 +70,7 @@ public:
 	UPROPERTY(EditAnyWhere, Category = "Fight")
 		TArray<TSubclassOf<AC_Bullet_Base>> BulletList;
 	UPROPERTY(EditAnyWhere, Category = "Fight")
-		TSubclassOf<AC_Shield_Base> CurrentShield;
+		TArray<TSubclassOf<AC_Shield_Base>> ShieldList;
 	UPROPERTY(EditAnyWhere, Category = "Fight")
 		float TotalHP;
 	UPROPERTY(EditAnyWhere, Category = "Fight")
