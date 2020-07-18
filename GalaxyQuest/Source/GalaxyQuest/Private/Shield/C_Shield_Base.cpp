@@ -25,6 +25,8 @@ AC_Shield_Base::AC_Shield_Base()
 	bCanRecovery = true;
 
 	ShieldName = "BaseShield";
+
+	DisappearPercent = 0.1;
 }
 
 void AC_Shield_Base::BeginPlay()

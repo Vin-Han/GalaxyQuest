@@ -4,6 +4,8 @@
 
 #include "CoreMinimal.h"
 #include "AIController.h"
+#include "../Public/Bag/C_BulletItemBase.h"
+#include "../Public/Bag/C_ShieldItemBase.h"
 #include "C_PlanetController.generated.h"
 
 class AC_NormalPlanetPawn;
@@ -65,4 +67,21 @@ public:
 	float PlayerDistance;
 private:
 	void UpdateLocationUI();
+
+
+#pragma region Trade related
+public:
+	FTimerHandle TH_UpdateShop;
+
+private:
+	void InitializeShopList();
+
+	void ShopUpdate();
+
+public:
+	UFUNCTION()
+		void UpdateHandle();
+
+#pragma endregion
+
 };

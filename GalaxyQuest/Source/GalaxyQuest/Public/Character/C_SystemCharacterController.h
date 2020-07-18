@@ -119,6 +119,10 @@ public:
 		void StarCloseBtnOnClicked();
 	UFUNCTION()
 		void StarExploreBtnOnClicked();
+
+private:
+	void RefleshStarIntro(class AC_NormalPlanetPawn* targetStar);
+
 private:
 	bool bIfCanOpenStarPage;
 #pragma endregion
@@ -198,6 +202,13 @@ private:
 	bool GenerateBulletList();
 	bool GenerateShieldList();
 
+#pragma endregion
+
+#pragma region Shop Related
+private:
+	void GenerateShopList(AC_NormalPlanetPawn* targetStar);
+
+	void ResetStarShop(AC_NormalPlanetPawn* targetStar);
 #pragma endregion
 
 };

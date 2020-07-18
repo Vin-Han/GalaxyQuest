@@ -11,6 +11,8 @@ struct FSheildBagItem : public FBagItemBase
 {
     GENERATED_USTRUCT_BODY()
 
+    bool bIfShowOnShop;
+
     UPROPERTY(EditAnyWhere)
         TSubclassOf<AC_Shield_Base> ShieldClass;
 

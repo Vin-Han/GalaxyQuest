@@ -26,6 +26,10 @@ AC_Bullet_Base::AC_Bullet_Base()
 	InitialLifeSpan = 5.0f;
 	BulletLoadingTime = 0.3f;
 	BulletName = "BaseBullet";
+
+	DisappearPercent = 0.2f;
+	OccurPercent = 0.5f;
+	RandomCount = 99;
 }
 
 void AC_Bullet_Base::BeginPlay()

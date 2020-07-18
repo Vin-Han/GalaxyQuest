@@ -33,6 +33,13 @@ public:
 	UPROPERTY(EditAnyWhere, Category = "ItemInformation")
 		float BulletLoadingTime;
 
+	UPROPERTY(EditAnyWhere, Category = "Trade Attributes")
+		float DisappearPercent;
+	UPROPERTY(EditAnyWhere, Category = "Trade Attributes")
+		float OccurPercent;
+	UPROPERTY(EditAnyWhere, Category = "Trade Attributes")
+		int RandomCount;
+
 protected:
 	float BaseDamage = 0;
 

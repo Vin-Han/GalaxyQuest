@@ -17,12 +17,40 @@ void EmptyLinkFunctionForGeneratedCodeC_PlanetController() {}
 	GALAXYQUEST_API UClass* Z_Construct_UClass_AC_PlanetController();
 	AIMODULE_API UClass* Z_Construct_UClass_AAIController();
 	UPackage* Z_Construct_UPackage__Script_GalaxyQuest();
+	GALAXYQUEST_API UFunction* Z_Construct_UFunction_AC_PlanetController_UpdateHandle();
 	GALAXYQUEST_API UClass* Z_Construct_UClass_UC_StarLocation_UI_NoRegister();
 	COREUOBJECT_API UScriptStruct* Z_Construct_UScriptStruct_FVector();
 	GALAXYQUEST_API UClass* Z_Construct_UClass_AC_NormalPlanetPawn_NoRegister();
 // End Cross Module References
 	void AC_PlanetController::StaticRegisterNativesAC_PlanetController()
 	{
+		UClass* Class = AC_PlanetController::StaticClass();
+		static const FNameNativePtrPair Funcs[] = {
+			{ "UpdateHandle", &AC_PlanetController::execUpdateHandle },
+		};
+		FNativeFunctionRegistrar::RegisterFunctions(Class, Funcs, UE_ARRAY_COUNT(Funcs));
+	}
+	struct Z_Construct_UFunction_AC_PlanetController_UpdateHandle_Statics
+	{
+#if WITH_METADATA
+		static const UE4CodeGen_Private::FMetaDataPairParam Function_MetaDataParams[];
+#endif
+		static const UE4CodeGen_Private::FFunctionParams FuncParams;
+	};
+#if WITH_METADATA
+	const UE4CodeGen_Private::FMetaDataPairParam Z_Construct_UFunction_AC_PlanetController_UpdateHandle_Statics::Function_MetaDataParams[] = {
+		{ "ModuleRelativePath", "Public/Planet/C_PlanetController.h" },
+	};
+#endif
+	const UE4CodeGen_Private::FFunctionParams Z_Construct_UFunction_AC_PlanetController_UpdateHandle_Statics::FuncParams = { (UObject*(*)())Z_Construct_UClass_AC_PlanetController, nullptr, "UpdateHandle", nullptr, nullptr, 0, nullptr, 0, RF_Public|RF_Transient|RF_MarkAsNative, (EFunctionFlags)0x00020401, 0, 0, METADATA_PARAMS(Z_Construct_UFunction_AC_PlanetController_UpdateHandle_Statics::Function_MetaDataParams, UE_ARRAY_COUNT(Z_Construct_UFunction_AC_PlanetController_UpdateHandle_Statics::Function_MetaDataParams)) };
+	UFunction* Z_Construct_UFunction_AC_PlanetController_UpdateHandle()
+	{
+		static UFunction* ReturnFunction = nullptr;
+		if (!ReturnFunction)
+		{
+			UE4CodeGen_Private::ConstructUFunction(ReturnFunction, Z_Construct_UFunction_AC_PlanetController_UpdateHandle_Statics::FuncParams);
+		}
+		return ReturnFunction;
 	}
 	UClass* Z_Construct_UClass_AC_PlanetController_NoRegister()
 	{
@@ -31,6 +59,7 @@ void EmptyLinkFunctionForGeneratedCodeC_PlanetController() {}
 	struct Z_Construct_UClass_AC_PlanetController_Statics
 	{
 		static UObject* (*const DependentSingletons[])();
+		static const FClassFunctionLinkInfo FuncInfo[];
 #if WITH_METADATA
 		static const UE4CodeGen_Private::FMetaDataPairParam Class_MetaDataParams[];
 #endif
@@ -77,6 +106,9 @@ void EmptyLinkFunctionForGeneratedCodeC_PlanetController() {}
 	UObject* (*const Z_Construct_UClass_AC_PlanetController_Statics::DependentSingletons[])() = {
 		(UObject* (*)())Z_Construct_UClass_AAIController,
 		(UObject* (*)())Z_Construct_UPackage__Script_GalaxyQuest,
+	};
+	const FClassFunctionLinkInfo Z_Construct_UClass_AC_PlanetController_Statics::FuncInfo[] = {
+		{ &Z_Construct_UFunction_AC_PlanetController_UpdateHandle, "UpdateHandle" }, // 2068504473
 	};
 #if WITH_METADATA
 	const UE4CodeGen_Private::FMetaDataPairParam Z_Construct_UClass_AC_PlanetController_Statics::Class_MetaDataParams[] = {
@@ -169,11 +201,11 @@ void EmptyLinkFunctionForGeneratedCodeC_PlanetController() {}
 		"Engine",
 		&StaticCppClassTypeInfo,
 		DependentSingletons,
-		nullptr,
+		FuncInfo,
 		Z_Construct_UClass_AC_PlanetController_Statics::PropPointers,
 		nullptr,
 		UE_ARRAY_COUNT(DependentSingletons),
-		0,
+		UE_ARRAY_COUNT(FuncInfo),
 		UE_ARRAY_COUNT(Z_Construct_UClass_AC_PlanetController_Statics::PropPointers),
 		0,
 		0x009002A4u,
@@ -188,7 +220,7 @@ void EmptyLinkFunctionForGeneratedCodeC_PlanetController() {}
 		}
 		return OuterClass;
 	}
-	IMPLEMENT_CLASS(AC_PlanetController, 3584714088);
+	IMPLEMENT_CLASS(AC_PlanetController, 3582524981);
 	template<> GALAXYQUEST_API UClass* StaticClass<AC_PlanetController>()
 	{
 		return AC_PlanetController::StaticClass();

@@ -28,6 +28,8 @@ public:
 		float Recovery;
 	UPROPERTY(EditAnyWhere, Category = "Attributes")
 		float RecoveryDelay;
+	UPROPERTY(EditAnyWhere, Category = "Attributes")
+		float DisappearPercent;
 	UPROPERTY(EditAnyWhere, Category = "ItemInformation")
 		FString ShieldName;
 	UPROPERTY(EditAnyWhere, Category = "ItemInformation")

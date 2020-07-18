@@ -9,6 +9,7 @@
 #include "../Public/Widget/C_UserBag.h"
 #include "../Public/Widget/C_SingleItem.h"
 #include "../Public/Widget/C_StarLocation_UI.h"
+#include "../Public/Widget/C_ShopPage.h"
 
 #include "../Public/GameMode/C_SolarSystemGameMode.h"
 #include "../Public/Projectile/C_Bullet_Base.h"
@@ -364,18 +365,8 @@ void AC_SystemCharacterController::OverlapWithStar(UPrimitiveComponent* Overlapp
 	AC_NormalPlanetPawn* tempStar = Cast<AC_NormalPlanetPawn>(OtherActor);
 	if (tempStar && StarInfor)
 	{
-		StarInfor->TextBlock_Name->SetText(FText::FromString(tempStar->StarName));
-		StarInfor->TextBlock_Intro->SetText(FText::FromString(tempStar->StarIntrodoce));
-		StarInfor->Image_Pic->SetBrushFromTexture(tempStar->StarPicture);
-		TargetMapName = tempStar->StarMap;
-
-		bIfCanOpenStarPage = true;
-		if (ShipMassage->IsInViewport() == false)
-		{
-			ShipMassage->AddToViewport();
-		}
-		ShipMassage->Text_StarLocation->SetText(FText::FromString("Press [F] to open star detail surface."));
-
+		GenerateShopList(tempStar);
+		RefleshStarIntro(tempStar);
 	}
 }
 
@@ -385,7 +376,13 @@ void AC_SystemCharacterController::EndOverlapWithStar(UPrimitiveComponent* Overl
 	{
 		ShipMassage->RemoveFromViewport();
 	}
-	bIfCanOpenStarPage = false;
+	AC_NormalPlanetPawn* tempStar = Cast<AC_NormalPlanetPawn>(OtherActor);
+	if (tempStar)
+	{
+		ResetStarShop(tempStar);
+		bIfCanOpenStarPage = false;
+	}
+	
 }
 
 void AC_SystemCharacterController::OpenStarWidget()
@@ -414,6 +411,21 @@ void AC_SystemCharacterController::StarExploreBtnOnClicked()
 	bShowMouseCursor = false;
 	StarInfor->RemoveFromViewport();
 	UGameplayStatics::OpenLevel(GetWorld(), *TargetMapName);
+}
+
+void AC_SystemCharacterController::RefleshStarIntro(AC_NormalPlanetPawn* tempStar)
+{
+	StarInfor->TextBlock_Name->SetText(FText::FromString(tempStar->StarName));
+	StarInfor->TextBlock_Intro->SetText(FText::FromString(tempStar->StarIntrodoce));
+	StarInfor->Image_Pic->SetBrushFromTexture(tempStar->StarPicture);
+	TargetMapName = tempStar->StarMap;
+
+	bIfCanOpenStarPage = true;
+	if (ShipMassage->IsInViewport() == false)
+	{
+		ShipMassage->AddToViewport();
+	}
+	ShipMassage->Text_StarLocation->SetText(FText::FromString("Press [F] to open star detail surface."));
 }
 
 #pragma endregion
@@ -714,6 +726,7 @@ void AC_SystemCharacterController::BagBtn_CloseWindow()
 	}
 	curSheildPtr = nullptr;
 	curBulletPtr = nullptr;
+	ShipBag->Left_Roll->ClearChildren();
 	ShipBag->Left_Btn->OnClicked.RemoveAll(this);
 	ShipBag->Right_Btn->OnClicked.RemoveAll(this);
 	bShowMouseCursor = false;
@@ -948,4 +961,63 @@ bool AC_SystemCharacterController::GenerateShieldList()
 
 	return true;
 }
+
+#pragma endregion
+
+#pragma region Shop Related
+void AC_SystemCharacterController::GenerateShopList(AC_NormalPlanetPawn* targetStar)
+{
+	targetStar->bIfCanReflesh = false;
+	if (StarInfor)
+	{
+		StarInfor->Roll_Shop->ClearChildren();
+
+		for (int i = 0; i < targetStar->BulletList.Num(); i++)
+		{
+			if (targetStar->BulletList[i].TotalAccout > 0)
+			{
+				UC_ShopPage* tempPage = Cast<UC_ShopPage>(CreateWidget(GetGameInstance(), LoadClass<UC_ShopPage>
+					(nullptr, TEXT("WidgetBlueprint'/Game/UI/SolarSystemUI/BP_ShopPage.BP_ShopPage_c'"))));
+				if (tempPage)
+				{
+					tempPage->Image_Item->SetBrushFromTexture(targetStar->BulletList[i].BulletClass.GetDefaultObject()->BulletPicture);
+					tempPage->Text_Name->SetText(FText::FromString(targetStar->BulletList[i].BulletClass.GetDefaultObject()->BulletName));
+					tempPage->Text_Intro->SetText(FText::FromString(targetStar->BulletList[i].BulletClass.GetDefaultObject()->BulletName));
+					tempPage->UpdateTotalCount(targetStar->BulletList[i].TotalAccout);
+
+					tempPage->BulletInfor = &targetStar->BulletList[i];
+					StarInfor->Roll_Shop->AddChild(tempPage);
+				}
+			}
+		}
+		for (int i = 0; i < targetStar->ShieldList.Num(); i++)
+		{
+			if (targetStar->ShieldList[i].bIfShowOnShop == true)
+			{
+				UC_ShopPage* tempPage = Cast<UC_ShopPage>(CreateWidget(GetGameInstance(), LoadClass<UC_ShopPage>
+					(nullptr, TEXT("WidgetBlueprint'/Game/UI/SolarSystemUI/BP_ShopPage.BP_ShopPage_c'"))));
+				if (tempPage)
+				{
+					tempPage->Image_Item->SetBrushFromTexture(targetStar->ShieldList[i].ShieldClass.GetDefaultObject()->ShieldPicture);
+					tempPage->Text_Name->SetText(FText::FromString(targetStar->ShieldList[i].ShieldClass.GetDefaultObject()->ShieldName));
+					tempPage->Text_Intro->SetText(FText::FromString(targetStar->ShieldList[i].ShieldClass.GetDefaultObject()->ShieldName));
+					tempPage->UpdateTotalCount(1);
+
+					tempPage->ShieldInfor = &targetStar->ShieldList[i];
+					StarInfor->Roll_Shop->AddChild(tempPage);
+				}
+			}
+		}
+	}
+}
+
+void AC_SystemCharacterController::ResetStarShop(AC_NormalPlanetPawn* targetStar)
+{
+	targetStar->bIfCanReflesh = true;
+	if (StarInfor)
+	{
+		StarInfor->Roll_Shop->ClearChildren();
+	}
+}
+
 #pragma endregion

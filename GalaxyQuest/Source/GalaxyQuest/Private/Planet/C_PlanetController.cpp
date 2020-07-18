@@ -3,11 +3,16 @@
 #include "../Public/Planet/C_NormalPlanetPawn.h"
 #include "../Public/Widget/C_StarLocation_UI.h"
 
+#include "../Public/Character/C_SystemCharacter.h"
+
 #include "Components/StaticMeshComponent.h"
 #include "Components/SphereComponent.h"
 #include "Components/TextBlock.h"
 
+#include "TimerManager.h"
+
 #include "Kismet/GameplayStatics.h"
+#include "Kismet/KismetMathLibrary.h"
 #include "Kismet/KismetInputLibrary.h"
 
 void AC_PlanetController::BeginPlay()
@@ -25,6 +30,7 @@ void AC_PlanetController::BeginPlay()
 		InitializeOrbit();
 		InitializePlanet();
 		InitializeLocation();
+		InitializeShopList();
 	}
 }
 
@@ -175,3 +181,71 @@ void AC_PlanetController::UpdateLocationUI()
 }
 
 
+void AC_PlanetController::InitializeShopList()
+{
+	AC_SystemCharacter* player = Cast<AC_SystemCharacter>(UGameplayStatics::GetPlayerPawn(this, 0));
+	if (player)
+	{
+		for (int i = 0; i < player->BulletList.Num(); i++)
+		{
+			FBulletBagItem tempBullet;
+			tempBullet.BulletClass = player->BulletList[i];
+			Planet->BulletList.Add(tempBullet);
+		}
+		for (int i = 0; i < player->ShieldList.Num(); i++)
+		{
+			FSheildBagItem tempBullet;
+			tempBullet.ShieldClass = player->ShieldList[i];
+			tempBullet.bIfShowOnShop = false;
+			Planet->ShieldList.Add(tempBullet);
+		}
+	}
+
+	Planet->bIfCanReflesh = true;
+	UpdateHandle();
+}
+
+void AC_PlanetController::ShopUpdate()
+{
+	for (int i = 0; i < Planet->BulletList.Num(); i++)
+	{
+		float bIfAppear = UKismetMathLibrary::RandomFloatInRange(0.0f, 1.0f);
+		if (bIfAppear > Planet->BulletList[i].BulletClass.GetDefaultObject()->DisappearPercent)
+		{
+			Planet->BulletList[i].TotalAccout =
+				UKismetMathLibrary::RandomIntegerInRange(0, Planet->BulletList[i].BulletClass.GetDefaultObject()->RandomCount);
+		}
+		else
+		{
+			Planet->BulletList[i].TotalAccout = 0;
+		}
+	}
+	for (int i = 0; i < Planet->ShieldList.Num(); i++)
+	{
+		float bIfAppear = UKismetMathLibrary::RandomFloatInRange(0.0f, 1.0f);
+		if (bIfAppear > Planet->ShieldList[i].ShieldClass.GetDefaultObject()->DisappearPercent)
+		{
+			Planet->ShieldList[i].bIfShowOnShop = true;
+		}
+		else
+		{
+			Planet->ShieldList[i].bIfShowOnShop = false;
+		}
+	}
+
+}
+
+void AC_PlanetController::UpdateHandle()
+{
+	if (Planet->bIfCanReflesh )
+	{
+		ShopUpdate();
+		GetWorld()->GetTimerManager().SetTimer(TH_UpdateShop, this, &AC_PlanetController::UpdateHandle, 1, false, 1.0f);
+	}
+	else
+	{
+		UE_LOG(LogTemp, Warning, TEXT("DelayRefleshShop"));
+		float refleshTime = UKismetMathLibrary::RandomFloatInRange(5.0f, 10.0f);
+		GetWorld()->GetTimerManager().SetTimer(TH_UpdateShop, this, &AC_PlanetController::UpdateHandle, 1, false, refleshTime);
+	}
+}

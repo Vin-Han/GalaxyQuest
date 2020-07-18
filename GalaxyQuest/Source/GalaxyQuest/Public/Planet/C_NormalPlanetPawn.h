@@ -4,6 +4,8 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Pawn.h"
+#include "../Public/Bag/C_BulletItemBase.h"
+#include "../Public/Bag/C_ShieldItemBase.h"
 #include "Engine/Texture2D.h"
 #include "C_NormalPlanetPawn.generated.h"
 
@@ -69,4 +71,10 @@ public:
 		FString StarMap;
 	UPROPERTY(EditAnyWhere, CateGory = "Star_Infor")
 		UTexture2D* StarPicture;
+
+public:
+	TArray<FBulletBagItem> BulletList;
+	TArray<FSheildBagItem> ShieldList;
+
+	bool bIfCanReflesh;
 };
