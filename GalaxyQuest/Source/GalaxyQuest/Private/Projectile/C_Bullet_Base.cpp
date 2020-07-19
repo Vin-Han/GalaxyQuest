@@ -30,6 +30,9 @@ AC_Bullet_Base::AC_Bullet_Base()
 	DisappearPercent = 0.2f;
 	OccurPercent = 0.5f;
 	RandomCount = 99;
+
+	MinPrice = 5;
+	MaxPrice = 10;
 }
 
 void AC_Bullet_Base::BeginPlay()

@@ -13,6 +13,8 @@ struct FSheildBagItem : public FBagItemBase
 
     bool bIfShowOnShop;
 
+    int CurPrice;
+
     UPROPERTY(EditAnyWhere)
         TSubclassOf<AC_Shield_Base> ShieldClass;
 

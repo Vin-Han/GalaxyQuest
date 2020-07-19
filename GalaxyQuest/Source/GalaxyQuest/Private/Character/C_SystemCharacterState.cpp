@@ -5,21 +5,40 @@
 #include "../Public/Bag/C_BulletItemBase.h"
 #include "../Public/Bag/C_ShieldItemBase.h"
 
-void AC_SystemCharacterState::AddItem(FBulletBagItem& newItem)
+bool AC_SystemCharacterState::AddItem(FBulletBagItem* newItem)
 {
-	for (FBulletBagItem tempItem : BulletList)
+	for (FBulletBagItem& tempItem : BulletList)
 	{
 		if (tempItem.BulletClass.GetDefaultObject()->BulletName 
-			== newItem.BulletClass.GetDefaultObject()->BulletName)
+			== newItem->BulletClass.GetDefaultObject()->BulletName)
 		{
-			tempItem.CurrentAccout += newItem.CurrentAccout;
-			return;
+			tempItem.CurrentAccout += newItem->CurrentAccout;
+			return true;
 		}
 	}
-	BulletList.Add(newItem);
+
+	FBulletBagItem creatItem;
+	creatItem.BulletClass = newItem->BulletClass;
+	creatItem.CurrentAccout = newItem->CurrentAccout;
+	creatItem.TotalAccout = newItem->CurrentAccout;
+	creatItem.CurrentLoadingTime = 0;
+
+	BulletList.Add(creatItem);
+	return true;
 }
 
-void AC_SystemCharacterState::AddItem(FSheildBagItem& newItem)
+bool AC_SystemCharacterState::AddItem(FSheildBagItem* newItem)
 {
-	ShieldList.Add(newItem);
+	for (FSheildBagItem& tempItem : ShieldList)
+	{
+		if (tempItem.ShieldClass.GetDefaultObject()->ShieldName
+			== newItem->ShieldClass.GetDefaultObject()->ShieldName)
+		{
+			return false;
+		}
+	}
+	FSheildBagItem creatItem;
+	creatItem.ShieldClass = newItem->ShieldClass;
+	ShieldList.Add(creatItem);
+	return true;
 }

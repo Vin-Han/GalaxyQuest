@@ -39,6 +39,10 @@ public:
 		float OccurPercent;
 	UPROPERTY(EditAnyWhere, Category = "Trade Attributes")
 		int RandomCount;
+	UPROPERTY(EditAnyWhere, Category = "Trade Attributes")
+		int MinPrice;
+	UPROPERTY(EditAnyWhere, Category = "Trade Attributes")
+		int MaxPrice;
 
 protected:
 	float BaseDamage = 0;

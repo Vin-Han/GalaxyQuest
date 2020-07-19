@@ -25,6 +25,9 @@ public:
 
 	void UpdateTotalCount(int newCount);
 
+	UFUNCTION()
+		void BuyItemBtn();
+
 public:
 	UPROPERTY()
 		UButton*		Button_BuyBtn;
@@ -40,10 +43,14 @@ public:
 		UTextBlock*		Text_TotalCount;
 	UPROPERTY()
 		USlider*		Slider_Buy;
-
+	UPROPERTY()
+		UTextBlock*		Text_CurPrice;
+	UPROPERTY()
+		UTextBlock*		Text_TotalPrice;
 public:
 	int TotalCount;
 	int CurCount;
 	FBulletBagItem* BulletInfor;
 	FSheildBagItem* ShieldInfor;
+	APlayerController* tempController;
 };

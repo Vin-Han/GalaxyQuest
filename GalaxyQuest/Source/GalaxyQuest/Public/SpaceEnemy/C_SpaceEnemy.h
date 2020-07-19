@@ -38,6 +38,7 @@ public:
 public:
 	AC_SpaceEnemySpawner* ParentSpawner;
 	FVector SpawnerLocation;
+	int Bounty;
 public:
 	UPROPERTY(EditAnyWhere, Category = "AIEnemy")
 		UBehaviorTree* BehaviorTree;
@@ -60,7 +61,11 @@ public:
 		float TrackSpeed;
 	UPROPERTY(EditAnyWhere, Category = "TrackState")
 		float AllowDistance;
-
+public:
+	UPROPERTY(EditAnyWhere, Category = "Attribute")
+		int MinBounty;
+	UPROPERTY(EditAnyWhere, Category = "Attribute")
+		int MaxBounty;
 public:
 	void InitializeBloodUI();
 

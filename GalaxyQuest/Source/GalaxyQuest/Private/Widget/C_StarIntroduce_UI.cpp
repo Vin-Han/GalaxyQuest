@@ -23,6 +23,9 @@ bool UC_StarIntroduce_UI::Initialize() {
 	Button_ShopBtn = Cast<UButton>(GetWidgetFromName(TEXT("Button_Shop")));
 	Text_ShopBtn = Cast<UTextBlock>(GetWidgetFromName(TEXT("TextBlock_Shop")));
 
+	Text_Money = Cast<UTextBlock>(GetWidgetFromName(TEXT("TextBlock_Money")));
+	Text_Curmoney = Cast<UTextBlock>(GetWidgetFromName(TEXT("TextBlock_Curmoney")));
+
 	CloseShop();
 
 	return true;
@@ -33,6 +36,9 @@ void UC_StarIntroduce_UI::OpenShop()
 	Image_Shop->SetVisibility(ESlateVisibility::Visible);
 	Text_ShopName->SetVisibility(ESlateVisibility::Visible);
 	Roll_Shop->SetVisibility(ESlateVisibility::Visible);
+	Text_Money->SetVisibility(ESlateVisibility::Visible);
+	Text_Curmoney->SetVisibility(ESlateVisibility::Visible);
+
 	Button_ShopBtn->OnClicked.RemoveAll(this);
 	Button_ShopBtn->OnClicked.AddDynamic(this, &UC_StarIntroduce_UI::CloseShop);
 	Text_ShopBtn->SetText(FText::FromString("CloseShop"));
@@ -43,6 +49,9 @@ void UC_StarIntroduce_UI::CloseShop()
 	Image_Shop->SetVisibility(ESlateVisibility::Hidden);
 	Text_ShopName->SetVisibility(ESlateVisibility::Hidden);
 	Roll_Shop->SetVisibility(ESlateVisibility::Hidden);
+	Text_Money->SetVisibility(ESlateVisibility::Hidden);
+	Text_Curmoney->SetVisibility(ESlateVisibility::Hidden);
+
 	Button_ShopBtn->OnClicked.RemoveAll(this);
 	Button_ShopBtn->OnClicked.AddDynamic(this, &UC_StarIntroduce_UI::OpenShop);
 	Text_ShopBtn->SetText(FText::FromString("OpenShop"));

@@ -173,7 +173,7 @@ void AC_PlanetController::UpdateLocationUI()
 	}
 	else
 	{
-		if (LocationUI->IsInViewport() == true)
+		if (LocationUI && LocationUI->IsInViewport() == true)
 		{
 			LocationUI->RemoveFromViewport();
 		}
@@ -214,6 +214,9 @@ void AC_PlanetController::ShopUpdate()
 		{
 			Planet->BulletList[i].TotalAccout =
 				UKismetMathLibrary::RandomIntegerInRange(0, Planet->BulletList[i].BulletClass.GetDefaultObject()->RandomCount);
+			Planet->BulletList[i].CurPrice = 
+				UKismetMathLibrary::RandomIntegerInRange(Planet->BulletList[i].BulletClass.GetDefaultObject()->MinPrice, 
+					Planet->BulletList[i].BulletClass.GetDefaultObject()->MaxPrice);
 		}
 		else
 		{
@@ -223,8 +226,11 @@ void AC_PlanetController::ShopUpdate()
 	for (int i = 0; i < Planet->ShieldList.Num(); i++)
 	{
 		float bIfAppear = UKismetMathLibrary::RandomFloatInRange(0.0f, 1.0f);
-		if (bIfAppear > Planet->ShieldList[i].ShieldClass.GetDefaultObject()->DisappearPercent)
+		if (bIfAppear < Planet->ShieldList[i].ShieldClass.GetDefaultObject()->DisappearPercent)
 		{
+			Planet->ShieldList[i].CurPrice =
+				UKismetMathLibrary::RandomIntegerInRange(Planet->ShieldList[i].ShieldClass.GetDefaultObject()->MinPrice,
+					Planet->ShieldList[i].ShieldClass.GetDefaultObject()->MaxPrice);;
 			Planet->ShieldList[i].bIfShowOnShop = true;
 		}
 		else

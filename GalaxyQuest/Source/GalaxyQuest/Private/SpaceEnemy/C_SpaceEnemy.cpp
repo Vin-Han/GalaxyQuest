@@ -11,7 +11,11 @@
 #include "Components/WidgetComponent.h"
 #include "Components/ProgressBar.h"
 
+#include "../Public/Character/C_SystemCharacterController.h"
+
 #include "GameFramework/FloatingPawnMovement.h"
+
+#include "Kismet/KismetMathLibrary.h"
 
 AC_SpaceEnemy::AC_SpaceEnemy()
 {
@@ -40,6 +44,11 @@ AC_SpaceEnemy::AC_SpaceEnemy()
 
 	EnemyTolHP = 100;
 	EnemyCurHP = EnemyTolHP;
+
+	MinBounty = 15;
+	MaxBounty = 20;
+
+	Bounty = UKismetMathLibrary::RandomIntegerInRange(MinBounty,MaxBounty);
 }
 
 void AC_SpaceEnemy::BeginPlay()
@@ -67,7 +76,10 @@ void AC_SpaceEnemy::InitializeBloodUI()
 
 float AC_SpaceEnemy::TakeDamage(float Damage, FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser)
 {
-	//UE_LOG(LogTemp, Warning, TEXT("TakeDamage"));
 	EnemyCurHP = FMath::Max(0.f, EnemyCurHP - Damage);
+	if (EnemyCurHP == 0 && Cast<AC_SystemCharacterController>(EventInstigator))
+	{
+		Cast<AC_SystemCharacterController>(EventInstigator)->GetMoney(Bounty);
+	}
 	return 0.0f;
 }

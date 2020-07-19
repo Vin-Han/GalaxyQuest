@@ -27,6 +27,9 @@ AC_Shield_Base::AC_Shield_Base()
 	ShieldName = "BaseShield";
 
 	DisappearPercent = 0.1;
+
+	MinPrice = 80;
+	MaxPrice = 100;
 }
 
 void AC_Shield_Base::BeginPlay()

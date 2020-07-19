@@ -209,6 +209,11 @@ private:
 	void GenerateShopList(AC_NormalPlanetPawn* targetStar);
 
 	void ResetStarShop(AC_NormalPlanetPawn* targetStar);
+
+public:
+	bool BuySomeItem(FSheildBagItem* shieldItem);
+	bool BuySomeItem(FBulletBagItem* bulletItem);
+	bool GetMoney(int moneyCount, bool addOrSub = true);
 #pragma endregion
 
 };

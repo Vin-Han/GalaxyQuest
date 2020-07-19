@@ -20,12 +20,13 @@ public:
 	float PlayerCurrentHp;
 	float CurrentShield;
 	AC_Shield_Base* CurrentEqipedShield;
+	float Money;
 
 public:
 	TArray<FBulletBagItem> BulletList;
 	TArray<FSheildBagItem> ShieldList;
 
 public:
-	void AddItem(FBulletBagItem& newItem);
-	void AddItem(FSheildBagItem& newItem);
+	bool AddItem(FBulletBagItem* newItem);
+	bool AddItem(FSheildBagItem* newItem);
 };

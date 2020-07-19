@@ -35,5 +35,7 @@ bool UC_UserBag::Initialize() {
 
 	Load_Image = Cast<UImage>(GetWidgetFromName(TEXT("Image_Main")));
 
+	Money_Text = Cast<UTextBlock>(GetWidgetFromName(TEXT("TextBlock_CurMoney")));
+
 	return true;
 }

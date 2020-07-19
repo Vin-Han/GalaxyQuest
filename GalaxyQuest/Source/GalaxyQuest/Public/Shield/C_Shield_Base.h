@@ -34,6 +34,11 @@ public:
 		FString ShieldName;
 	UPROPERTY(EditAnyWhere, Category = "ItemInformation")
 		UTexture2D* ShieldPicture;
+	UPROPERTY(EditAnyWhere, Category = "ItemInformation")
+		int MinPrice;
+	UPROPERTY(EditAnyWhere, Category = "ItemInformation")
+		int MaxPrice;
+
 public:
 	FTimerHandle TH_BeginRecoveryShield;
 	float CurrentShield;

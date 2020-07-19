@@ -125,9 +125,10 @@ void AC_SystemCharacterController::InitializeShipState()
 	ShipState = Cast<AC_SystemCharacterState>(this->PlayerState);
 	if (ShipState)
 	{
-		GenerateBulletList();
-		GenerateShieldList();
+		//GenerateBulletList();
+		//GenerateShieldList();
 		ShipState->PlayerCurrentHp = ShipCharacter->TotalHP;
+		ShipState->Money = 999;
 	}
 }
 
@@ -797,6 +798,9 @@ void AC_SystemCharacterController::CreatBulletList()
 		newItem->Item_BtnName->SetText(FText::FromString(FString::FromInt(ShipState->BulletList[i].CurrentAccout)));
 		newItem->Item_Btn->SetVisibility(ESlateVisibility::Hidden);
 
+		int temp = ShipState->BulletList[i].CurrentAccout;
+		UE_LOG(LogTemp, Warning, TEXT("%d"), temp);
+
 		newItem->BulletInfor = &ShipState->BulletList[i];
 		newItem->CurrentContoller = this;
 
@@ -808,8 +812,6 @@ void AC_SystemCharacterController::CreatBulletList()
 }
 void AC_SystemCharacterController::CreatShieldList()
 {
-	int b = ShipState->ShieldList.Num();
-	UE_LOG(LogTemp, Warning, TEXT("%d"), b);
 	for (int i = 0; i < ShipState->ShieldList.Num(); i++)
 	{
 		UC_SingleItem* newItem = CreateWidget<UC_SingleItem>(GetGameInstance(), LoadClass<UC_SingleItem>
@@ -833,17 +835,23 @@ void AC_SystemCharacterController::CreatShieldList()
 
 void AC_SystemCharacterController::LoadPlayerBagState()
 {
-	ShipBag->HP_Bar->SetPercent(
-		ShipState->PlayerCurrentHp / ShipCharacter->TotalHP);
+	if (ShipState)
+	{
+		ShipBag->HP_Bar->SetPercent(
+			ShipState->PlayerCurrentHp / ShipCharacter->TotalHP);
+		ShipBag->Money_Text->SetText(FText::FromString(FString::FromInt(
+			ShipState->Money)));
 
-	if (ShipState->CurrentEqipedShield && ShipState->CurrentEqipedShield->bIsEqiped == true)
-	{
-		ShipBag->Shield_Bar->SetPercent(
-			ShipState->CurrentEqipedShield->CurrentShield / ShipState->CurrentEqipedShield->TotalShield);
-	}
-	else
-	{
-		ShipBag->Shield_Bar->SetPercent(0);
+
+		if (ShipState->CurrentEqipedShield && ShipState->CurrentEqipedShield->bIsEqiped == true)
+		{
+			ShipBag->Shield_Bar->SetPercent(
+				ShipState->CurrentEqipedShield->CurrentShield / ShipState->CurrentEqipedShield->TotalShield);
+		}
+		else
+		{
+			ShipBag->Shield_Bar->SetPercent(0);
+		}
 	}
 }
 
@@ -937,8 +945,8 @@ bool AC_SystemCharacterController::GenerateBulletList()
 	for (int i = 0; i < ShipCharacter->BulletList.Num(); i++)
 	{
 		FBulletBagItem tempBulletItem;
-		tempBulletItem.TotalAccout = 999;
-		tempBulletItem.CurrentAccout = 999;
+		tempBulletItem.TotalAccout = 99;
+		tempBulletItem.CurrentAccout = 99;
 		tempBulletItem.CurrentLoadingTime = 0;
 		tempBulletItem.BulletClass = ShipCharacter->BulletList[i];
 		ShipState->BulletList.Add(tempBulletItem);
@@ -971,6 +979,7 @@ void AC_SystemCharacterController::GenerateShopList(AC_NormalPlanetPawn* targetS
 	if (StarInfor)
 	{
 		StarInfor->Roll_Shop->ClearChildren();
+		StarInfor->Text_Curmoney->SetText(FText::FromString(FString::FromInt(ShipState->Money)));
 
 		for (int i = 0; i < targetStar->BulletList.Num(); i++)
 		{
@@ -983,9 +992,11 @@ void AC_SystemCharacterController::GenerateShopList(AC_NormalPlanetPawn* targetS
 					tempPage->Image_Item->SetBrushFromTexture(targetStar->BulletList[i].BulletClass.GetDefaultObject()->BulletPicture);
 					tempPage->Text_Name->SetText(FText::FromString(targetStar->BulletList[i].BulletClass.GetDefaultObject()->BulletName));
 					tempPage->Text_Intro->SetText(FText::FromString(targetStar->BulletList[i].BulletClass.GetDefaultObject()->BulletName));
+					tempPage->Text_CurPrice->SetText(FText::FromString(FString::FromInt(targetStar->BulletList[i].CurPrice)));
 					tempPage->UpdateTotalCount(targetStar->BulletList[i].TotalAccout);
 
 					tempPage->BulletInfor = &targetStar->BulletList[i];
+					tempPage->tempController = this;
 					StarInfor->Roll_Shop->AddChild(tempPage);
 				}
 			}
@@ -1001,9 +1012,11 @@ void AC_SystemCharacterController::GenerateShopList(AC_NormalPlanetPawn* targetS
 					tempPage->Image_Item->SetBrushFromTexture(targetStar->ShieldList[i].ShieldClass.GetDefaultObject()->ShieldPicture);
 					tempPage->Text_Name->SetText(FText::FromString(targetStar->ShieldList[i].ShieldClass.GetDefaultObject()->ShieldName));
 					tempPage->Text_Intro->SetText(FText::FromString(targetStar->ShieldList[i].ShieldClass.GetDefaultObject()->ShieldName));
+					tempPage->Text_CurPrice->SetText(FText::FromString(FString::FromInt(targetStar->ShieldList[i].CurPrice)));
 					tempPage->UpdateTotalCount(1);
 
 					tempPage->ShieldInfor = &targetStar->ShieldList[i];
+					tempPage->tempController = this;
 					StarInfor->Roll_Shop->AddChild(tempPage);
 				}
 			}
@@ -1018,6 +1031,69 @@ void AC_SystemCharacterController::ResetStarShop(AC_NormalPlanetPawn* targetStar
 	{
 		StarInfor->Roll_Shop->ClearChildren();
 	}
+}
+
+bool AC_SystemCharacterController::BuySomeItem(FSheildBagItem* shieldItem)
+{
+	if (ShipState)
+	{
+		if (ShipState->Money < shieldItem->CurPrice)
+		{
+			return false;
+		}
+		else if (ShipState->AddItem(shieldItem))
+		{
+			ShipState->Money -= shieldItem->CurPrice;
+			StarInfor->Text_Curmoney->SetText(FText::FromString(FString::FromInt(ShipState->Money)));
+
+			return true;
+		}
+	}
+	return false;
+}
+
+bool AC_SystemCharacterController::BuySomeItem(FBulletBagItem* bulletItem)
+{
+	if (ShipState)
+	{
+		if (ShipState->Money < bulletItem->CurPrice * bulletItem->CurrentAccout)
+		{
+			return false;
+		}
+		else if (ShipState->AddItem(bulletItem))
+		{
+			ShipState->Money -= bulletItem->CurPrice * bulletItem->CurrentAccout;
+			StarInfor->Text_Curmoney->SetText(FText::FromString(FString::FromInt(ShipState->Money)));
+
+			return true;
+		}
+	}
+	return false;
+}
+
+bool AC_SystemCharacterController::GetMoney(int moneyCount, bool addOrSub)
+{
+	if (ShipState)
+	{
+		if (addOrSub)
+		{
+			ShipState->Money += moneyCount;
+			return true;
+		}
+		else
+		{
+			if (ShipState->Money < moneyCount)
+			{
+				return false;
+			}
+			else
+			{
+				ShipState->Money -= moneyCount;
+				return true;
+			}
+		}
+	}
+	return false;
 }
 
 #pragma endregion

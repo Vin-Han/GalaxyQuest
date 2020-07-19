@@ -42,5 +42,7 @@ public:
 		UTextBlock*		LeftBtn_Text;
 	UPROPERTY()
 		UTextBlock*		RightBtn_Text;
+	UPROPERTY()
+		UTextBlock*		Money_Text;
 
 };

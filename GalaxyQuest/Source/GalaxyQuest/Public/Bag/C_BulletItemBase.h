@@ -20,6 +20,8 @@ struct FBulletBagItem : public FBagItemBase
     UPROPERTY(EditAnyWhere)
         float CurrentLoadingTime;
 
+    int CurPrice;
+
     UPROPERTY(EditAnyWhere)
         TSubclassOf<AC_Bullet_Base> BulletClass;
 

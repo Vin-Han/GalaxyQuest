@@ -46,4 +46,8 @@ public:
 		UButton* Button_ShopBtn;
 	UPROPERTY()
 		UTextBlock* Text_ShopBtn;
+	UPROPERTY()
+		UTextBlock* Text_Money;
+	UPROPERTY()
+		UTextBlock* Text_Curmoney;
 };
