@@ -26,9 +26,9 @@ public:
 		USphereComponent* ShipMid;
 
 public:
-	UPROPERTY(VisibleAnyWhere, Category = "ArmLimit")
+	UPROPERTY(EditAnyWhere, Category = "ArmLimit")
 		float minArmSize;
-	UPROPERTY(VisibleAnyWhere, Category = "ArmLimit")
+	UPROPERTY(EditAnyWhere, Category = "ArmLimit")
 		float maxArmSize;
 
 public:

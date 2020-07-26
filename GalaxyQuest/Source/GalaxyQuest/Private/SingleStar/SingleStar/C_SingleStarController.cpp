@@ -15,10 +15,11 @@ void AC_SingleStarController::BeginPlay() {
 
 void AC_SingleStarController::Tick(float DetlaTime) {
 	Super::Tick(DetlaTime);
-
+	/*
 	if (Star)
 	{
 		Star->AddActorWorldRotation(
 			FRotator(0, Star->RotationTime/ DetlaTime, 0));
 	}
+	*/
 }
