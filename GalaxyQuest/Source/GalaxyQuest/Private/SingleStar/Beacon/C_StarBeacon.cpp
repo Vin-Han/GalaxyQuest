@@ -3,7 +3,9 @@
 
 #include "../Public/SingleStar/Beacon/C_StarBeacon.h"
 #include "../Public/SingleStar/Beacon/C_Beacon_UI.h"
-#
+#include "../Public/SingleStar/Beacon/C_Source_Item.h"
+#include "../Public/SingleStar/Form/C_Source_List.h"
+#include "../Public/SingleStar/Form/C_Source_Form.h"
 
 #include "Components/BoxComponent.h"
 #include "Components/StaticMeshComponent.h"
@@ -11,6 +13,8 @@
 #include "Components/TextBlock.h"
 
 #include "Kismet/KismetMathLibrary.h"
+#include "TimerManager.h"
+
 
 
 AC_StarBeacon::AC_StarBeacon()
@@ -28,12 +32,14 @@ AC_StarBeacon::AC_StarBeacon()
 	Point_Name = "NoName";
 	Point_Infor_S = "NoInformation";
 	
+	UpdateTime = 3;
 }
 
 void AC_StarBeacon::BeginPlay()
 {
 	Super::BeginPlay();
 	InitializeShortWidget();
+	InitializeShopList();
 }
 
 
@@ -61,5 +67,32 @@ void AC_StarBeacon::InitializeShortWidget()
 		PointWidget->SetWorldRotation(
 				UKismetMathLibrary::FindLookAtRotation(FVector::ZeroVector, GetActorLocation()));
 	}
+}
+
+void AC_StarBeacon::InitializeShopList()
+{
+	UC_Source_List* tempList = UC_Source_List::GetList();
+	if (tempList)
+	{
+		TArray<FSourceData*> outItems;
+		tempList->GetAllItem(outItems);
+		for (FSourceData* tempItem : outItems)
+		{
+			FSourceBase newItem;
+			newItem.targetItem = tempItem;
+			ShopList.Add(newItem);
+		}
+		UpdateShopList();
+	}
+}
+
+void AC_StarBeacon::UpdateShopList()
+{
+	for (FSourceBase& tempItem : ShopList)
+	{
+		tempItem.UpdateState();
+	}
+	UE_LOG(LogTemp, Warning, TEXT("UpdateShopListNow"));
+	GetWorld()->GetTimerManager().SetTimer(TH_UpdateShop, this, &AC_StarBeacon::UpdateShopList, 1, false, UpdateTime);
 }
 

@@ -10,6 +10,7 @@ class UBoxComponent;
 class UStaticMeshComponent;
 class UWidgetComponent;
 class UTextBlock;
+struct FSourceBase;
 
 UCLASS()
 class GALAXYQUEST_API AC_StarBeacon : public AActor
@@ -22,7 +23,7 @@ public:
 	virtual void BeginPlay() override;
 
 	virtual void Tick(float DeltaTime) override;
-
+#pragma region Base Structure
 public:
 	UPROPERTY(VisibleAnyWhere, Category = "StaticMesh")
 		UStaticMeshComponent* PointMesh;
@@ -31,17 +32,40 @@ public:
 	UPROPERTY(VisibleAnyWhere, Category = "WidgetCom")
 		UWidgetComponent* PointWidget;
 
+private:
+	void InitializeShortWidget();
+
+#pragma endregion
+
+#pragma region Base Information
+public:
 	UPROPERTY()
 		UTextBlock* Text_Name;
 	UPROPERTY()
 		UTextBlock* Text_Information;
 
-public:
 	UPROPERTY(EditAnyWhere, Category = "PointInformation")
 		FString Point_Name;
 	UPROPERTY(EditAnyWhere, Category = "PointInformation")
 		FString Point_Infor_S;
 
+#pragma endregion
+
+#pragma region Shop Item
 private:
-	void InitializeShortWidget();
+	void InitializeShopList();
+
+public:
+	UFUNCTION()
+		void UpdateShopList();
+
+public:
+	UPROPERTY(EditAnyWhere, Category = "Shop")
+		int UpdateTime;
+
+	TArray<FSourceBase> ShopList;
+	FTimerHandle TH_UpdateShop;
+#pragma endregion
+
+
 };

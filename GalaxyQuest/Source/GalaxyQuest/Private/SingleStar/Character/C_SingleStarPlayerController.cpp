@@ -15,6 +15,8 @@
 #include "Kismet/KismetSystemLibrary.h"
 
 #include "DrawDebugHelpers.h"
+#include "../Public/SingleStar/Form/C_Source_List.h"
+#include "../Public/SingleStar/Form/C_Source_Form.h"
 
 void AC_SingleStarPlayerController::BeginPlay()
 {
@@ -25,6 +27,7 @@ void AC_SingleStarPlayerController::BeginPlay()
 
 	AniRotationRocord[0] = 0.0f;
 	AniRotationRocord[1] = 0.0f;
+
 }
 
 void AC_SingleStarPlayerController::Tick(float DeltaSeconds)
@@ -52,6 +55,26 @@ void AC_SingleStarPlayerController::SetupInputComponent()
 
 	InputComponent->BindAction("MouseTrackPoint", EInputEvent::IE_Pressed, this, &AC_SingleStarPlayerController::MouseTrackPoint);
 }
+
+/*
+void AC_SingleStarPlayerController::ShowData()
+{
+	UC_Source_List* List = UC_Source_List::GetList();
+	if (List)
+	{
+		TArray<FSourceData*> outItems;
+		List->GetAllItem(outItems);
+		if (outItems.Num() > 0)
+		{
+			for (FSourceData* temp : outItems)
+			{
+				UE_LOG(LogTemp, Warning, TEXT("Name : %s"), *temp->Name);
+			}
+			
+		}
+	}
+}
+*/
 
 #pragma region Movement
 void AC_SingleStarPlayerController::SingleUD(float value)
