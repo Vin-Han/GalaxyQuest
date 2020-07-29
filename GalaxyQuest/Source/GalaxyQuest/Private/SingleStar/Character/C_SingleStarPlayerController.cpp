@@ -2,17 +2,28 @@
 
 
 #include "../Public/SingleStar/Character/C_SingleStarPlayerController.h"
+#include "../Public/SingleStar/Character/C_Beacon_Player.h"
 #include "../Public/SingleStar/Character/C_SingleStarPlayer.h"
+#include "../Public/SingleStar/Beacon/C_Source_Item.h"
+
+#include "../Public/Character/C_SystemCharacterState.h"
+
 #include "../Public/SingleStar/Beacon/C_StarBeacon.h"
+#include "../Public/SingleStar/Beacon/C_Beacon_Item.h"
 
 #include "Components/StaticMeshComponent.h"
 #include "Components/TextBlock.h"
+#include "Components/Image.h"
+#include "Components/ScrollBox.h"
+#include "Components/Button.h"
+#include "Components/Slider.h"
 
 #include "Camera/CameraComponent.h"
 #include "GameFramework/SpringArmComponent.h"
 
 #include "Kismet/KismetMathLibrary.h"
 #include "Kismet/KismetSystemLibrary.h"
+#include "Kismet/GameplayStatics.h"
 
 #include "DrawDebugHelpers.h"
 #include "../Public/SingleStar/Form/C_Source_List.h"
@@ -23,11 +34,12 @@ void AC_SingleStarPlayerController::BeginPlay()
 	Super::BeginPlay();
 
 	ShipPlayer = Cast<AC_SingleStarPlayer>(GetPawn());
-	bShowMouseCursor = true;
-
-	AniRotationRocord[0] = 0.0f;
-	AniRotationRocord[1] = 0.0f;
-
+	if (ShipPlayer)
+	{
+		InitializeData();
+		InitializeBeaconWidget();
+		InitializeState();
+	}
 }
 
 void AC_SingleStarPlayerController::Tick(float DeltaSeconds)
@@ -56,25 +68,23 @@ void AC_SingleStarPlayerController::SetupInputComponent()
 	InputComponent->BindAction("MouseTrackPoint", EInputEvent::IE_Pressed, this, &AC_SingleStarPlayerController::MouseTrackPoint);
 }
 
-/*
-void AC_SingleStarPlayerController::ShowData()
+void AC_SingleStarPlayerController::InitializeData()
 {
-	UC_Source_List* List = UC_Source_List::GetList();
-	if (List)
+	bShowMouseCursor = true;
+
+	AniRotationRocord[0] = 0.0f;
+	AniRotationRocord[1] = 0.0f;
+}
+
+void AC_SingleStarPlayerController::InitializeState()
+{
+	ShipState = Cast<AC_SystemCharacterState>(this->PlayerState);
+	//PlayerState = GetPlayerState<AC_SystemCharacterState>();
+	if (ShipState)
 	{
-		TArray<FSourceData*> outItems;
-		List->GetAllItem(outItems);
-		if (outItems.Num() > 0)
-		{
-			for (FSourceData* temp : outItems)
-			{
-				UE_LOG(LogTemp, Warning, TEXT("Name : %s"), *temp->Name);
-			}
-			
-		}
+		UE_LOG(LogTemp, Warning, TEXT("Got PlayerState"));
 	}
 }
-*/
 
 #pragma region Movement
 void AC_SingleStarPlayerController::SingleUD(float value)
@@ -141,20 +151,77 @@ void AC_SingleStarPlayerController::MouseTrackPoint()
 	FHitResult mouseHit;
 
 	DrawDebugLine(GetWorld(), mouseLocation, mouseLocation + mouseDirection * SHIPTRADE_DISTANCE, FColor::Red, false, 5.0f);
+
 	if ( GetWorld()->LineTraceSingleByChannel(
 		mouseHit, mouseLocation, mouseLocation + mouseDirection * SHIPTRADE_DISTANCE, 
 		ECollisionChannel::ECC_Visibility) )
 	{
-
 		AC_StarBeacon* tempBeacon = Cast<AC_StarBeacon> (mouseHit.GetActor());
 		if (tempBeacon)
 		{
-			FString name = tempBeacon->Point_Name;
-			UE_LOG(LogTemp, Warning, TEXT("%s"), *name);
+			LoadBeaconInfor(tempBeacon);
+			LoadBeaconList(tempBeacon);
 		}
 	}
 
 }
 
+void AC_SingleStarPlayerController::LoadBeaconInfor(AC_StarBeacon* tempBeacon)
+{
+	if (BeaconWidget && BeaconWidget->IsInViewport() == false)
+	{
+		if (UGameplayStatics::IsGamePaused(GetWorld()) == false)
+		{
+			UGameplayStatics::SetGamePaused(GetWorld(), true);
+		}
+		BeaconWidget->Beacon_Name->SetText(FText::FromString(tempBeacon->Point_Name));
+		BeaconWidget->Beacon_Intro->SetText(FText::FromString(tempBeacon->Point_Infor_S));
+
+
+		if (ShipState)
+		{
+			BeaconWidget->Money_Text->SetText(FText::FromString(FString::FromInt(ShipState->Money)));
+		}
+
+		BeaconWidget->AddToViewport();
+	}
+}
+
+void AC_SingleStarPlayerController::LoadBeaconList(AC_StarBeacon* tempBeacon)
+{
+	if (BeaconWidget)
+	{
+		BeaconWidget->Roll_Up->ClearChildren();
+		for (FSourceBase& tempItem : tempBeacon->ShopList)
+		{
+			if (tempItem.totalCount != 0)
+			{
+				UC_Beacon_Item* newWidget = CreateWidget<UC_Beacon_Item>(GetGameInstance(),
+					LoadClass<UC_Beacon_Item>(nullptr, TEXT("WidgetBlueprint'/Game/UI/SingleStar/BP_Beacon_Item.BP_Beacon_Item_c'")));
+				newWidget->targetItem = &tempItem;
+
+				newWidget->Text_Name->SetText(FText::FromString(tempItem.targetItem->Name));
+				newWidget->Text_Count->SetText(FText::FromString(FString::FromInt(tempItem.totalCount)));
+				newWidget->Text_Price->SetText(FText::FromString(FString::FromInt(tempItem.singlePrice)));
+				newWidget->Bar_Buy->SetValue(0.0f);
+				newWidget->UpdateSlider(0.0f);
+
+				BeaconWidget->Roll_Up->AddChild(newWidget);
+			}
+		}
+	}
+}
+
+
 #pragma endregion
 
+#pragma region Beacon Widget
+void AC_SingleStarPlayerController::InitializeBeaconWidget()
+{
+	
+	BeaconWidget = CreateWidget<UC_Beacon_Player>(GetGameInstance(),
+		LoadClass<UC_Beacon_Player>(nullptr,TEXT("WidgetBlueprint'/Game/UI/SingleStar/BP_Beacon_Player.BP_Beacon_Player_c'")));
+	
+}
+
+#pragma endregion

@@ -64,12 +64,14 @@ Global
 		{2FF2FF8E-01AA-4C2E-B2B5-988D5589D6F9}.DebugGame Editor|Android.ActiveCfg = BuiltWithUnrealBuildTool|Win32
 		{2FF2FF8E-01AA-4C2E-B2B5-988D5589D6F9}.DebugGame Editor|Win32.ActiveCfg = BuiltWithUnrealBuildTool|Win32
 		{2FF2FF8E-01AA-4C2E-B2B5-988D5589D6F9}.DebugGame Editor|Win64.ActiveCfg = BuiltWithUnrealBuildTool|Win32
+		{2FF2FF8E-01AA-4C2E-B2B5-988D5589D6F9}.DebugGame Editor|Win64.Build.0 = BuiltWithUnrealBuildTool|Win32
 		{2FF2FF8E-01AA-4C2E-B2B5-988D5589D6F9}.DebugGame|Android.ActiveCfg = BuiltWithUnrealBuildTool|Win32
 		{2FF2FF8E-01AA-4C2E-B2B5-988D5589D6F9}.DebugGame|Win32.ActiveCfg = BuiltWithUnrealBuildTool|Win32
 		{2FF2FF8E-01AA-4C2E-B2B5-988D5589D6F9}.DebugGame|Win64.ActiveCfg = BuiltWithUnrealBuildTool|Win32
 		{2FF2FF8E-01AA-4C2E-B2B5-988D5589D6F9}.Development Editor|Android.ActiveCfg = BuiltWithUnrealBuildTool|Win32
 		{2FF2FF8E-01AA-4C2E-B2B5-988D5589D6F9}.Development Editor|Win32.ActiveCfg = BuiltWithUnrealBuildTool|Win32
 		{2FF2FF8E-01AA-4C2E-B2B5-988D5589D6F9}.Development Editor|Win64.ActiveCfg = BuiltWithUnrealBuildTool|Win32
+		{2FF2FF8E-01AA-4C2E-B2B5-988D5589D6F9}.Development Editor|Win64.Build.0 = BuiltWithUnrealBuildTool|Win32
 		{2FF2FF8E-01AA-4C2E-B2B5-988D5589D6F9}.Development|Android.ActiveCfg = BuiltWithUnrealBuildTool|Win32
 		{2FF2FF8E-01AA-4C2E-B2B5-988D5589D6F9}.Development|Win32.ActiveCfg = BuiltWithUnrealBuildTool|Win32
 		{2FF2FF8E-01AA-4C2E-B2B5-988D5589D6F9}.Development|Win64.ActiveCfg = BuiltWithUnrealBuildTool|Win32
@@ -81,7 +83,10 @@ Global
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
-		{2FF2FF8E-01AA-4C2E-B2B5-988D5589D6F9} = {D524FC01-9BFF-421C-B3D7-F85E44823A72}
 		{307ED824-EFE5-4A57-93C8-B6E3E35EC1A1} = {D09E5550-EA91-4589-9DA9-69B82CE8253B}
+		{2FF2FF8E-01AA-4C2E-B2B5-988D5589D6F9} = {D524FC01-9BFF-421C-B3D7-F85E44823A72}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {293593D5-129F-445E-8AB2-ACC367C671A6}
 	EndGlobalSection
 EndGlobal

@@ -29,4 +29,5 @@ public:
 public:
 	bool AddItem(FBulletBagItem* newItem);
 	bool AddItem(FSheildBagItem* newItem);
+
 };

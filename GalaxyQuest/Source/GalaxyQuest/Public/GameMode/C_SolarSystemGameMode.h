@@ -13,4 +13,5 @@ UCLASS()
 class GALAXYQUEST_API AC_SolarSystemGameMode : public AGameModeBase
 {
 	GENERATED_BODY()
+
 };

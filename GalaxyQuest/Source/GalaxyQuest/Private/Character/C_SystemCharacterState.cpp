@@ -42,3 +42,5 @@ bool AC_SystemCharacterState::AddItem(FSheildBagItem* newItem)
 	ShieldList.Add(creatItem);
 	return true;
 }
+
+

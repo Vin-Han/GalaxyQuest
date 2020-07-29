@@ -6,6 +6,7 @@
 #include "C_Source_List.generated.h"
 
 struct FSourceData;
+struct FSourceBase;
 
 UCLASS()
 class GALAXYQUEST_API UC_Source_List : public UObject
@@ -19,7 +20,11 @@ public:
 
 	void GetAllItem(TArray<FSourceData*>& outItems);
 
+	void UpdateBeaconList(TArray<FSourceBase>& itemList);
+
 public:
 	UPROPERTY()
 		UDataTable* sourceData;
+
+	TArray<FSourceData*> selfItemList;
 };

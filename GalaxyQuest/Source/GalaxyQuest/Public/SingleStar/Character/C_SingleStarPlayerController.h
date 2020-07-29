@@ -10,6 +10,8 @@
 #define SHIPTRADE_DISTANCE 300
 
 class AC_SingleStarPlayer;
+class AC_StarBeacon;
+class AC_SystemCharacterState;
 
 UCLASS()
 class GALAXYQUEST_API AC_SingleStarPlayerController : public APlayerController
@@ -24,8 +26,14 @@ public:
 
 	virtual void SetupInputComponent() override;
 
+	void InitializeData();
+
+	void InitializeState();
+
 public:
 	AC_SingleStarPlayer* ShipPlayer;
+
+	AC_SystemCharacterState* ShipState;
 
 #pragma region MoveMent
 public:
@@ -46,6 +54,19 @@ public:
 public:
 	UFUNCTION()
 		void MouseTrackPoint();
+
+	void LoadBeaconInfor(AC_StarBeacon* tempBeacon);
+
+	void LoadBeaconList(AC_StarBeacon* tempBeacon);
+
+#pragma endregion
+
+#pragma region Beacon Widget
+public:
+	class UC_Beacon_Player* BeaconWidget;
+
+public:
+	void InitializeBeaconWidget();
 #pragma endregion
 
 };
