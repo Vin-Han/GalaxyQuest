@@ -46,7 +46,7 @@ void UC_Beacon_Item::UpdateSlider(float value)
 	if (targetItem)
 	{
 		targetItem->curCount = targetItem->totalCount * value;
-		targetItem->curPrice = targetItem->singlePrice * value * targetItem->curCount;
+		targetItem->curPrice = targetItem->singlePrice * targetItem->curCount;
 		Text_BuyCount->SetText(FText::FromString(FString::FromInt(targetItem->curCount)));
 		Text_BuyPrice->SetText(FText::FromString(FString::FromInt(targetItem->curPrice)));
 	}

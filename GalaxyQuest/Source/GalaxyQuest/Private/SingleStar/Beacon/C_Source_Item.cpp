@@ -10,12 +10,11 @@ void FSourceBase::UpdateState()
 	{
 		totalCount = UKismetMathLibrary::RandomIntegerInRange(
 			targetItem->MinCount, targetItem->MaxCount);
-		singlePrice = UKismetMathLibrary::RandomIntegerInRange(
-			targetItem->MinPrice, targetItem->MaxPrice);
 	}
 	else
 	{
 		totalCount = 0;
-		singlePrice = 0;
 	}
+	singlePrice = UKismetMathLibrary::RandomIntegerInRange(
+		targetItem->MinPrice, targetItem->MaxPrice);
 }

@@ -253,10 +253,15 @@ void AC_SingleStarPlayerController::LoadBagList(AC_StarBeacon* tempBeacon)
 		{
 			if (tempItem.totalCount != 0)
 			{
+
 				UC_Beacon_Item* newWidget = CreateWidget<UC_Beacon_Item>(GetGameInstance(),
 					LoadClass<UC_Beacon_Item>(nullptr, TEXT("WidgetBlueprint'/Game/UI/SingleStar/BP_Beacon_Item.BP_Beacon_Item_c'")));
 				newWidget->targetItem = &tempItem;
 				newWidget->playerController = this;
+
+				tempItem.singlePrice = UKismetMathLibrary::RandomIntegerInRange(
+					tempItem.targetItem->MinPrice, tempItem.targetItem->MaxPrice);
+
 
 				newWidget->Text_Name->SetText(FText::FromString(tempItem.targetItem->Name));
 				newWidget->Text_Count->SetText(FText::FromString(FString::FromInt(tempItem.totalCount)));
