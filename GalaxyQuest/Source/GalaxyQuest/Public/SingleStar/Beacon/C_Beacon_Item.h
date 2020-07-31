@@ -35,11 +35,19 @@ public:
 	UPROPERTY()
 		UTextBlock* Text_BuyPrice;
 	UPROPERTY()
+		UTextBlock* Text_CurCount;
+	UPROPERTY()
+		UTextBlock* Text_CurPrice;
+	UPROPERTY()
 		USlider*	Bar_Buy;
 public:
 	FSourceBase* targetItem;
-
+	APlayerController* playerController;
 public:
 	UFUNCTION()
 		void UpdateSlider(float value);
+	UFUNCTION()
+		void BuyItems();
+	UFUNCTION()
+		void SellItems();
 };

@@ -6,6 +6,7 @@
 #include "GameFramework/PlayerState.h"
 #include "../Public/Bag/C_BulletItemBase.h"
 #include "../Public/Bag/C_ShieldItemBase.h"
+#include "../Public/SingleStar/Beacon/C_Source_Item.h"
 #include "C_SystemCharacterState.generated.h"
 
 /**
@@ -25,9 +26,10 @@ public:
 public:
 	TArray<FBulletBagItem> BulletList;
 	TArray<FSheildBagItem> ShieldList;
-
+	TArray<FSourceBase> SourceList;
 public:
 	bool AddItem(FBulletBagItem* newItem);
 	bool AddItem(FSheildBagItem* newItem);
-
+	bool AddItem(FSourceBase* newItem);
+	bool SubItem(FSourceBase* newItem);
 };

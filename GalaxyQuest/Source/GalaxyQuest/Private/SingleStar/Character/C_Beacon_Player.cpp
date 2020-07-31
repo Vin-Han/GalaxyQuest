@@ -41,7 +41,9 @@ bool UC_Beacon_Player::Initialize()
 
 	Roll_Down = Cast<UScrollBox>(GetWidgetFromName(TEXT("ScrollBox_Down")));
 	
+	ClosePage_Btn = Cast<UButton>(GetWidgetFromName(TEXT("Button_ClosePage")));
 
+	ClosePage_Text = Cast<UTextBlock>(GetWidgetFromName(TEXT("TextBlock_ClosePage")));
 	
 	Open_Btn->OnClicked.AddDynamic(this, &UC_Beacon_Player::OpenShop);
 

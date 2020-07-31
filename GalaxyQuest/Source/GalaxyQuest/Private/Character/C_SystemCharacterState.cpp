@@ -43,4 +43,45 @@ bool AC_SystemCharacterState::AddItem(FSheildBagItem* newItem)
 	return true;
 }
 
+bool AC_SystemCharacterState::AddItem(FSourceBase* newItem)
+{
+	for (FSourceBase& tempSource : SourceList)
+	{
+		if (tempSource.targetItem->ID == 
+			newItem->targetItem->ID)
+		{
+			tempSource.totalCount += newItem->curCount;
+			return true;
+		}
+	}
+
+	FSourceBase creatItem;
+	creatItem.totalCount = newItem->curCount;
+	creatItem.targetItem = newItem->targetItem;
+	SourceList.Add(creatItem);
+
+	return true;
+}
+
+bool AC_SystemCharacterState::SubItem(FSourceBase* newItem)
+{
+	for (FSourceBase& tempSource : SourceList)
+	{
+		if (tempSource.targetItem->ID == newItem->targetItem->ID )
+		{
+			if (tempSource.totalCount >= newItem->curCount)
+			{
+				tempSource.totalCount -= newItem->curCount;
+				return true;
+			}
+			else
+			{
+				return false;
+			}
+		}
+	}
+	return false;
+}
+
+
 

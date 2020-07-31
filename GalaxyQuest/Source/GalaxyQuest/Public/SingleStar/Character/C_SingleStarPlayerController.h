@@ -12,6 +12,7 @@
 class AC_SingleStarPlayer;
 class AC_StarBeacon;
 class AC_SystemCharacterState;
+struct FSourceBase;
 
 UCLASS()
 class GALAXYQUEST_API AC_SingleStarPlayerController : public APlayerController
@@ -55,16 +56,25 @@ public:
 	UFUNCTION()
 		void MouseTrackPoint();
 
+	UFUNCTION()
+		void ClosePoint();
+
 	void LoadBeaconInfor(AC_StarBeacon* tempBeacon);
 
 	void LoadBeaconList(AC_StarBeacon* tempBeacon);
+
+	void LoadBagList(AC_StarBeacon* tempBeacon);
+
+	bool BuySource(FSourceBase* newItem);
+
+	bool SellSource(FSourceBase* newItem);
 
 #pragma endregion
 
 #pragma region Beacon Widget
 public:
 	class UC_Beacon_Player* BeaconWidget;
-
+	AC_StarBeacon* tempStarPoint;
 public:
 	void InitializeBeaconWidget();
 #pragma endregion

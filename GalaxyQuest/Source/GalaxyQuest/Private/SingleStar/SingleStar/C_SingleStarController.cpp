@@ -9,7 +9,7 @@ void AC_SingleStarController::BeginPlay() {
 	Star = Cast<AC_SingleStar>(GetPawn());
 	if (Star)
 	{
-		UE_LOG(LogTemp, Warning, TEXT("StarLoadSuccessful"));
+		
 	}
 }
 

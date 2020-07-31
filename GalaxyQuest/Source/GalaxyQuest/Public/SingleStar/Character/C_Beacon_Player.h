@@ -54,4 +54,8 @@ public:
 		UScrollBox* Roll_Up;
 	UPROPERTY()
 		UScrollBox* Roll_Down;
+	UPROPERTY()
+		UButton*	ClosePage_Btn;
+	UPROPERTY()
+		UTextBlock* ClosePage_Text;
 };

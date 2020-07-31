@@ -33,6 +33,7 @@ AC_StarBeacon::AC_StarBeacon()
 	Point_Infor_S = "NoInformation";
 	
 	UpdateTime = 3;
+	bIfCanUpdateNow = true;
 }
 
 void AC_StarBeacon::BeginPlay()
@@ -92,11 +93,15 @@ void AC_StarBeacon::InitializeShopList()
 
 void AC_StarBeacon::UpdateShopList()
 {
-	for (FSourceBase& tempItem : ShopList)
+	if (bIfCanUpdateNow)
 	{
-		tempItem.UpdateState();
+		for (FSourceBase& tempItem : ShopList)
+		{
+			tempItem.UpdateState();
+		}
+		UE_LOG(LogTemp, Warning, TEXT("UpdateShopListNow"));
 	}
-	UE_LOG(LogTemp, Warning, TEXT("UpdateShopListNow"));
+
 	GetWorld()->GetTimerManager().SetTimer(TH_UpdateShop, this, &AC_StarBeacon::UpdateShopList, 1, false, UpdateTime);
 }
 

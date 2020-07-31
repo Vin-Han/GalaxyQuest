@@ -63,6 +63,7 @@ public:
 	UPROPERTY(EditAnyWhere, Category = "Shop")
 		int UpdateTime;
 
+	bool bIfCanUpdateNow;
 	TArray<FSourceBase> ShopList;
 	FTimerHandle TH_UpdateShop;
 #pragma endregion

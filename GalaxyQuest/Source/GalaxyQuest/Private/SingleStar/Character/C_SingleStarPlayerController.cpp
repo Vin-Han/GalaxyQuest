@@ -60,7 +60,6 @@ void AC_SingleStarPlayerController::Tick(float DeltaSeconds)
 void AC_SingleStarPlayerController::SetupInputComponent()
 {
 	Super::SetupInputComponent();
-	UE_LOG(LogTemp, Warning, TEXT("BindAxis"));
 	InputComponent->BindAxis("SingleUD", this, &AC_SingleStarPlayerController::SingleUD);
 	InputComponent->BindAxis("SingleLR", this, &AC_SingleStarPlayerController::SingleLR);
 	InputComponent->BindAxis("SingleFN", this, &AC_SingleStarPlayerController::SingleFN);
@@ -79,10 +78,9 @@ void AC_SingleStarPlayerController::InitializeData()
 void AC_SingleStarPlayerController::InitializeState()
 {
 	ShipState = Cast<AC_SystemCharacterState>(this->PlayerState);
-	//PlayerState = GetPlayerState<AC_SystemCharacterState>();
 	if (ShipState)
 	{
-		UE_LOG(LogTemp, Warning, TEXT("Got PlayerState"));
+		ShipState->Money = 999;
 	}
 }
 
@@ -159,11 +157,37 @@ void AC_SingleStarPlayerController::MouseTrackPoint()
 		AC_StarBeacon* tempBeacon = Cast<AC_StarBeacon> (mouseHit.GetActor());
 		if (tempBeacon)
 		{
+			tempStarPoint = tempBeacon;
+			tempStarPoint->bIfCanUpdateNow = false;
 			LoadBeaconInfor(tempBeacon);
 			LoadBeaconList(tempBeacon);
+			LoadBagList(tempBeacon);
 		}
 	}
 
+}
+
+void AC_SingleStarPlayerController::ClosePoint()
+{
+	if (BeaconWidget)
+	{
+		BeaconWidget->Roll_Up->ClearChildren();
+		BeaconWidget->Roll_Down->ClearChildren();
+		BeaconWidget->CloseShop();
+		if (BeaconWidget->IsInViewport() == true)
+		{
+			BeaconWidget->RemoveFromViewport();
+		}
+	}
+	if (tempStarPoint)
+	{
+		tempStarPoint->bIfCanUpdateNow = true;
+		tempStarPoint = nullptr;
+	}
+	if (UGameplayStatics::IsGamePaused(GetWorld()) == true)
+	{
+		UGameplayStatics::SetGamePaused(GetWorld(), false);
+	}
 }
 
 void AC_SingleStarPlayerController::LoadBeaconInfor(AC_StarBeacon* tempBeacon)
@@ -199,12 +223,20 @@ void AC_SingleStarPlayerController::LoadBeaconList(AC_StarBeacon* tempBeacon)
 				UC_Beacon_Item* newWidget = CreateWidget<UC_Beacon_Item>(GetGameInstance(),
 					LoadClass<UC_Beacon_Item>(nullptr, TEXT("WidgetBlueprint'/Game/UI/SingleStar/BP_Beacon_Item.BP_Beacon_Item_c'")));
 				newWidget->targetItem = &tempItem;
+				newWidget->playerController = this;
 
 				newWidget->Text_Name->SetText(FText::FromString(tempItem.targetItem->Name));
 				newWidget->Text_Count->SetText(FText::FromString(FString::FromInt(tempItem.totalCount)));
 				newWidget->Text_Price->SetText(FText::FromString(FString::FromInt(tempItem.singlePrice)));
+
+				newWidget->Text_CurCount->SetText(FText::FromString("Buy Count :"));
+				newWidget->Text_CurPrice->SetText(FText::FromString("Buy Price :"));
+				newWidget->Text_Buy->SetText(FText::FromString("Buy"));
+
 				newWidget->Bar_Buy->SetValue(0.0f);
 				newWidget->UpdateSlider(0.0f);
+
+				newWidget->Btn_Buy->OnClicked.AddDynamic(newWidget,&UC_Beacon_Item::BuyItems);
 
 				BeaconWidget->Roll_Up->AddChild(newWidget);
 			}
@@ -212,6 +244,71 @@ void AC_SingleStarPlayerController::LoadBeaconList(AC_StarBeacon* tempBeacon)
 	}
 }
 
+void AC_SingleStarPlayerController::LoadBagList(AC_StarBeacon* tempBeacon)
+{
+	if (BeaconWidget && ShipState)
+	{
+		BeaconWidget->Roll_Down->ClearChildren();
+		for (FSourceBase& tempItem : ShipState->SourceList)
+		{
+			if (tempItem.totalCount != 0)
+			{
+				UC_Beacon_Item* newWidget = CreateWidget<UC_Beacon_Item>(GetGameInstance(),
+					LoadClass<UC_Beacon_Item>(nullptr, TEXT("WidgetBlueprint'/Game/UI/SingleStar/BP_Beacon_Item.BP_Beacon_Item_c'")));
+				newWidget->targetItem = &tempItem;
+				newWidget->playerController = this;
+
+				newWidget->Text_Name->SetText(FText::FromString(tempItem.targetItem->Name));
+				newWidget->Text_Count->SetText(FText::FromString(FString::FromInt(tempItem.totalCount)));
+				newWidget->Text_Price->SetText(FText::FromString(FString::FromInt(tempItem.singlePrice)));
+
+				newWidget->Text_CurCount->SetText(FText::FromString("Sell Count :"));
+				newWidget->Text_CurPrice->SetText(FText::FromString("Sell Price :"));
+				newWidget->Text_Buy->SetText(FText::FromString("Sell"));
+
+				newWidget->Bar_Buy->SetValue(0.0f);
+				newWidget->UpdateSlider(0.0f);
+
+				newWidget->Btn_Buy->OnClicked.AddDynamic(newWidget, &UC_Beacon_Item::SellItems);
+
+				BeaconWidget->Roll_Down->AddChild(newWidget);
+			}
+		}
+	}
+}
+
+bool AC_SingleStarPlayerController::BuySource(FSourceBase* newItem)
+{
+	if (ShipState && 
+		ShipState->Money >= newItem->curPrice && 
+		ShipState->AddItem(newItem))
+	{
+		ShipState->Money -= newItem->curPrice;
+		BeaconWidget->Money_Text->SetText(FText::FromString(FString::FromInt(ShipState->Money)));
+		if (tempStarPoint)
+		{
+			LoadBagList(tempStarPoint);
+		}
+		return true;
+	}
+	return false;
+}
+
+bool AC_SingleStarPlayerController::SellSource(FSourceBase* newItem)
+{
+	if (ShipState && newItem &&
+		ShipState->SubItem(newItem) ) 
+	{
+		ShipState->Money += newItem->curPrice;
+		BeaconWidget->Money_Text->SetText(FText::FromString(FString::FromInt(ShipState->Money)));
+		if (tempStarPoint)
+		{
+			LoadBagList(tempStarPoint);
+		}
+		return true;
+	}
+	return false;
+}
 
 #pragma endregion
 
@@ -221,7 +318,10 @@ void AC_SingleStarPlayerController::InitializeBeaconWidget()
 	
 	BeaconWidget = CreateWidget<UC_Beacon_Player>(GetGameInstance(),
 		LoadClass<UC_Beacon_Player>(nullptr,TEXT("WidgetBlueprint'/Game/UI/SingleStar/BP_Beacon_Player.BP_Beacon_Player_c'")));
-	
+	if (BeaconWidget)
+	{
+		BeaconWidget->ClosePage_Btn->OnClicked.AddDynamic(this,&AC_SingleStarPlayerController::ClosePoint);
+	}
 }
 
 #pragma endregion

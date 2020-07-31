@@ -6,7 +6,6 @@
 bool UC_Source_List::Initialize() 
 {
 	sourceData = LoadObject<UDataTable>(nullptr, TEXT("/Game/Form/SourceForm.SourceForm"));
-	UE_LOG(LogTemp, Warning, TEXT("LoadingData"));
 	return sourceData != nullptr;
 }
 
