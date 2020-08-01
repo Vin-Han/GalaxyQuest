@@ -77,6 +77,8 @@ public:
 	AC_StarBeacon* tempStarPoint;
 public:
 	void InitializeBeaconWidget();
+
+	void InitializeItemList();
 #pragma endregion
 
 };

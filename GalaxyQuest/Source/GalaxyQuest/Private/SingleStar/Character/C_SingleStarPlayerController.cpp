@@ -81,6 +81,7 @@ void AC_SingleStarPlayerController::InitializeState()
 	if (ShipState)
 	{
 		ShipState->Money = 999;
+		InitializeItemList();
 	}
 }
 
@@ -249,6 +250,7 @@ void AC_SingleStarPlayerController::LoadBagList(AC_StarBeacon* tempBeacon)
 	if (BeaconWidget && ShipState)
 	{
 		BeaconWidget->Roll_Down->ClearChildren();
+		int tempIndex = 0;
 		for (FSourceBase& tempItem : ShipState->SourceList)
 		{
 			if (tempItem.totalCount != 0)
@@ -259,9 +261,11 @@ void AC_SingleStarPlayerController::LoadBagList(AC_StarBeacon* tempBeacon)
 				newWidget->targetItem = &tempItem;
 				newWidget->playerController = this;
 
-				tempItem.singlePrice = UKismetMathLibrary::RandomIntegerInRange(
-					tempItem.targetItem->MinPrice, tempItem.targetItem->MaxPrice);
-
+				if (tempStarPoint && tempIndex < tempStarPoint->ShopList.Num())
+				{
+					tempItem.singlePrice = tempStarPoint->ShopList[tempIndex].singlePrice;
+					tempIndex++;
+				}
 
 				newWidget->Text_Name->SetText(FText::FromString(tempItem.targetItem->Name));
 				newWidget->Text_Count->SetText(FText::FromString(FString::FromInt(tempItem.totalCount)));
@@ -326,6 +330,20 @@ void AC_SingleStarPlayerController::InitializeBeaconWidget()
 	if (BeaconWidget)
 	{
 		BeaconWidget->ClosePage_Btn->OnClicked.AddDynamic(this,&AC_SingleStarPlayerController::ClosePoint);
+	}
+}
+
+void AC_SingleStarPlayerController::InitializeItemList()
+{
+	UC_Source_List* tempList = UC_Source_List::GetList();
+	if (ShipState)
+	{
+		tempList->UpdateBeaconList(ShipState->SourceList);
+		for (FSourceBase& tempSource : ShipState->SourceList)
+		{
+			tempSource.totalCount = 0;
+			tempSource.singlePrice = 0;
+		}
 	}
 }
 
