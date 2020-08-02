@@ -127,8 +127,15 @@ void AC_SystemCharacterController::InitializeShipState()
 	{
 		//GenerateBulletList();
 		//GenerateShieldList();
-		ShipState->PlayerCurrentHp = ShipCharacter->TotalHP;
-		ShipState->Money = 999;
+		ShipState->LoadStateFromInstance();
+		if (ShipState->PlayerCurrentHp == -1)
+		{
+			ShipState->PlayerCurrentHp = ShipCharacter->TotalHP;
+		}
+		if (ShipState->Money == -1)
+		{
+			ShipState->Money = 999;
+		}
 	}
 }
 
@@ -233,6 +240,14 @@ void AC_SystemCharacterController::InitializeBulletWindow()
 void AC_SystemCharacterController::InitializeBaseSheild()
 {
 	ShipState->CurrentEqipedShield = nullptr;
+	for (FSheildBagItem& tempItem : ShipState->ShieldList)
+	{
+		if (tempItem.bIsInEquiped == true)
+		{
+			GenerateNewShield(&tempItem);
+			return;
+		}
+	}
 	GenerateNewShield();
 }
 
@@ -411,6 +426,10 @@ void AC_SystemCharacterController::StarExploreBtnOnClicked()
 	UGameplayStatics::SetGamePaused(this, false);
 	bShowMouseCursor = false;
 	StarInfor->RemoveFromViewport();
+	if (ShipState)
+	{
+		ShipState->StoreStateToInstance();
+	}
 	UGameplayStatics::OpenLevel(GetWorld(), *TargetMapName);
 }
 
@@ -616,6 +635,16 @@ float AC_SystemCharacterController::TakeDamage(float Damage, FDamageEvent const&
 #pragma region Shield Related
 void AC_SystemCharacterController::GenerateNewShield(FSheildBagItem* newShield)
 {
+
+	if (ShipState)
+	{
+		for (FSheildBagItem& tempShield : ShipState->ShieldList)
+		{
+			tempShield.bIsInEquiped = false;
+		}
+		newShield->bIsInEquiped = true;
+	}
+
 	if (newShield == nullptr)
 	{
 		if (ShipState->CurrentEqipedShield)

@@ -13,6 +13,8 @@ struct FSheildBagItem : public FBagItemBase
 
     bool bIfShowOnShop;
 
+    bool bIsInEquiped;
+
     int CurPrice;
 
     UPROPERTY(EditAnyWhere)

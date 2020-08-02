@@ -80,8 +80,16 @@ void AC_SingleStarPlayerController::InitializeState()
 	ShipState = Cast<AC_SystemCharacterState>(this->PlayerState);
 	if (ShipState)
 	{
-		ShipState->Money = 999;
-		InitializeItemList();
+		ShipState->LoadStateFromInstance();
+		if (ShipState->PlayerCurrentHp == -1)
+		{
+			ShipState->PlayerCurrentHp = 1;
+		}
+		if (ShipState->Money == -1)
+		{
+			ShipState->Money = 1;
+		}
+		//InitializeItemList();
 	}
 }
 
@@ -251,6 +259,7 @@ void AC_SingleStarPlayerController::LoadBagList(AC_StarBeacon* tempBeacon)
 	{
 		BeaconWidget->Roll_Down->ClearChildren();
 		int tempIndex = 0;
+		//UE_LOG(LogTemp, Warning, TEXT("LoadingSourceList,%d"), ShipState->SourceList.Num());
 		for (FSourceBase& tempItem : ShipState->SourceList)
 		{
 			if (tempItem.totalCount != 0)

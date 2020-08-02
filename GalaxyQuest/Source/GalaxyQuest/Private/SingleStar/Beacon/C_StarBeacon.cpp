@@ -76,7 +76,7 @@ void AC_StarBeacon::InitializeShopList()
 	if (tempList)
 	{
 		tempList->UpdateBeaconList(ShopList);
-		UE_LOG(LogTemp, Warning, TEXT("there is %d count in shoplist"),ShopList.Num());
+		//UE_LOG(LogTemp, Warning, TEXT("there is %d count in shoplist"),ShopList.Num());
 		/*
 		TArray<FSourceData*> outItems;
 		tempList->GetAllItem(outItems);

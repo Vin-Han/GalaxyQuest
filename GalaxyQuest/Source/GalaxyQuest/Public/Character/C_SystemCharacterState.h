@@ -32,4 +32,7 @@ public:
 	bool AddItem(FSheildBagItem* newItem);
 	bool AddItem(FSourceBase* newItem);
 	bool SubItem(FSourceBase* newItem);
+public:
+	bool LoadStateFromInstance();
+	bool StoreStateToInstance();
 };
