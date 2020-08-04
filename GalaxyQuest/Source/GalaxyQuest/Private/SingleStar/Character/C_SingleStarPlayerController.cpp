@@ -4,7 +4,10 @@
 #include "../Public/SingleStar/Character/C_SingleStarPlayerController.h"
 #include "../Public/SingleStar/Character/C_Beacon_Player.h"
 #include "../Public/SingleStar/Character/C_SingleStarPlayer.h"
+#include "../Public/SingleStar/Character/C_Single_Bag.h"
+
 #include "../Public/SingleStar/Beacon/C_Source_Item.h"
+#include "../Public/SingleStar/Character/C_Bag_Item_Simple.h"
 
 #include "../Public/Character/C_SystemCharacterState.h"
 
@@ -39,6 +42,7 @@ void AC_SingleStarPlayerController::BeginPlay()
 		InitializeData();
 		InitializeBeaconWidget();
 		InitializeState();
+		InitializeBagWidget();
 	}
 }
 
@@ -63,8 +67,9 @@ void AC_SingleStarPlayerController::SetupInputComponent()
 	InputComponent->BindAxis("SingleUD", this, &AC_SingleStarPlayerController::SingleUD);
 	InputComponent->BindAxis("SingleLR", this, &AC_SingleStarPlayerController::SingleLR);
 	InputComponent->BindAxis("SingleFN", this, &AC_SingleStarPlayerController::SingleFN);
-
+	
 	InputComponent->BindAction("MouseTrackPoint", EInputEvent::IE_Pressed, this, &AC_SingleStarPlayerController::MouseTrackPoint);
+	InputComponent->BindAction("SingleOpenBag", EInputEvent::IE_Pressed, this, &AC_SingleStarPlayerController::OpenBag);
 }
 
 void AC_SingleStarPlayerController::InitializeData()
@@ -87,9 +92,19 @@ void AC_SingleStarPlayerController::InitializeState()
 		}
 		if (ShipState->Money == -1)
 		{
-			ShipState->Money = 1;
+			ShipState->Money = 999;
 		}
 		//InitializeItemList();
+	}
+}
+
+void AC_SingleStarPlayerController::InitializeBagWidget()
+{
+	bagWidget = CreateWidget<UC_Single_Bag>(GetGameInstance(),
+		LoadClass<UC_Single_Bag>(nullptr, TEXT("WidgetBlueprint'/Game/UI/SingleStar/BP_Bag_SingleStar.BP_Bag_SingleStar_c'")));
+	if (bagWidget)
+	{
+		bagWidget->Btn_Close->OnClicked.AddDynamic(this,&AC_SingleStarPlayerController::CloseBag);
 	}
 }
 
@@ -355,5 +370,64 @@ void AC_SingleStarPlayerController::InitializeItemList()
 		}
 	}
 }
+
+#pragma endregion
+
+#pragma region Player Bag
+void AC_SingleStarPlayerController::OpenBag()
+{
+	if (BeaconWidget && BeaconWidget->IsInViewport() == false &&
+		bagWidget && bagWidget->IsInViewport() == false)
+	{
+		if (UGameplayStatics::IsGamePaused(this) == false)
+		{
+			UGameplayStatics::SetGamePaused(this, true);
+		}
+		LoadBagList();
+		bagWidget->AddToViewport();
+	}
+}
+
+void AC_SingleStarPlayerController::CloseBag()
+{
+	if (bagWidget && bagWidget->IsInViewport() == true)
+	{
+		if (UGameplayStatics::IsGamePaused(this) == true)
+		{
+			UGameplayStatics::SetGamePaused(this, false);
+		}
+		bagWidget->List_Roll->ClearChildren();
+		bagWidget->RemoveFromViewport();
+	}
+}
+
+void AC_SingleStarPlayerController::BackToSystem()
+{
+}
+
+void AC_SingleStarPlayerController::LoadBagList()
+{
+	if (bagWidget)
+	{
+		bagWidget->List_Roll->ClearChildren();
+
+		if (ShipState)
+		{
+			for (FSourceBase& tempItem : ShipState->SourceList)
+			{
+				if (tempItem.totalCount > 0)
+				{
+					UC_Bag_Item_Simple* newWidget = CreateWidget<UC_Bag_Item_Simple>(GetGameInstance(),
+						LoadClass<UC_Bag_Item_Simple>(nullptr, TEXT("WidgetBlueprint'/Game/UI/SingleStar/BP_Bag_Item_Simple.BP_Bag_Item_Simple_c'")));
+					newWidget->Item_Name->SetText(FText::FromString(tempItem.targetItem->Name));
+					newWidget->Item_Count->SetText(FText::FromString(FString::FromInt(tempItem.totalCount)));
+					bagWidget->List_Roll->AddChild(newWidget);
+				}
+			}
+
+		}
+	}
+}
+
 
 #pragma endregion

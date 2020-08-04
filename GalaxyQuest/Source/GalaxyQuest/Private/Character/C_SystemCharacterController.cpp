@@ -56,15 +56,17 @@ void AC_SystemCharacterController::BeginPlay()
 void AC_SystemCharacterController::Tick(float DeltaSeconds)
 {
 	Super::Tick(DeltaSeconds);
+	
 	UpdateSpeedState(DeltaSeconds);
 	UpdateBulletLoadingTime(DeltaSeconds);
 	UpdatePlayerState();
+	
 }
 
 void AC_SystemCharacterController::SetupInputComponent()
 {
 	Super::SetupInputComponent();
-
+	
 	InputComponent->BindAxis("UpDown", this, &AC_SystemCharacterController::MouseUpDown);
 	InputComponent->BindAxis("RightLeft", this, &AC_SystemCharacterController::MouseRightLeft);
 	InputComponent->BindAxis("MoveForward", this, &AC_SystemCharacterController::MoveForward);
@@ -80,6 +82,7 @@ void AC_SystemCharacterController::SetupInputComponent()
 
 	InputComponent->BindAction("OpenBag", EInputEvent::IE_Pressed, this, &AC_SystemCharacterController::BagOpen_Function);
 	InputComponent->BindAction("OpenStarPage", EInputEvent::IE_Pressed, this, &AC_SystemCharacterController::OpenStarWidget);
+	
 }
 
 #pragma region Initialize Controller
@@ -215,40 +218,47 @@ void AC_SystemCharacterController::InitializeShipMessage()
 
 void AC_SystemCharacterController::InitializeBulletWindow()
 {
-	for (int i = 0; i < BAG_SIZE; i++)
-	{
-		curBulletList[i] = nullptr;
-	}
-
-	CurrentIndex = 0;
-	if (ShipUI)
+	if (ShipState)
 	{
 		for (int i = 0; i < BAG_SIZE; i++)
 		{
-			ShipUI->BulletOut[i]->SetVisibility(ESlateVisibility::Hidden);
-			ShipUI->BulletPic[i]->SetOpacity(0.5f);
-			ShipUI->BulletPic[i]->SetVisibility(ESlateVisibility::Hidden);
-			ShipUI->BulletCD[i]->SetVisibility(ESlateVisibility::Hidden);
-			ShipUI->BulletNum[i]->SetVisibility(ESlateVisibility::Hidden);
-			ShipUI->BulletNum[i]->SetOpacity(0.8f);
-			ChangeBulletWindow(i, false);
+			curBulletList[i] = nullptr;
 		}
+
+		CurrentIndex = 0;
+		if (ShipUI)
+		{
+			for (int i = 0; i < BAG_SIZE; i++)
+			{
+				ShipUI->BulletOut[i]->SetVisibility(ESlateVisibility::Hidden);
+				ShipUI->BulletPic[i]->SetOpacity(0.5f);
+				ShipUI->BulletPic[i]->SetVisibility(ESlateVisibility::Hidden);
+				ShipUI->BulletCD[i]->SetVisibility(ESlateVisibility::Hidden);
+				ShipUI->BulletNum[i]->SetVisibility(ESlateVisibility::Hidden);
+				ShipUI->BulletNum[i]->SetOpacity(0.8f);
+				ChangeBulletWindow(i, false);
+			}
+		}
+		ChangeBulletWindow(CurrentIndex, true);
 	}
-	ChangeBulletWindow(CurrentIndex, true);
+
 }
 
 void AC_SystemCharacterController::InitializeBaseSheild()
 {
-	ShipState->CurrentEqipedShield = nullptr;
-	for (FSheildBagItem& tempItem : ShipState->ShieldList)
+	if (ShipState)
 	{
-		if (tempItem.bIsInEquiped == true)
+		ShipState->CurrentEqipedShield = nullptr;
+		for (FSheildBagItem& tempItem : ShipState->ShieldList)
 		{
-			GenerateNewShield(&tempItem);
-			return;
+			if (tempItem.bIsInEquiped == true)
+			{
+				GenerateNewShield(&tempItem);
+				return;
+			}
 		}
+		GenerateNewShield();
 	}
-	GenerateNewShield();
 }
 
 #pragma endregion
@@ -635,44 +645,50 @@ float AC_SystemCharacterController::TakeDamage(float Damage, FDamageEvent const&
 #pragma region Shield Related
 void AC_SystemCharacterController::GenerateNewShield(FSheildBagItem* newShield)
 {
-
-	if (ShipState)
-	{
-		for (FSheildBagItem& tempShield : ShipState->ShieldList)
-		{
-			tempShield.bIsInEquiped = false;
-		}
-		newShield->bIsInEquiped = true;
-	}
-
 	if (newShield == nullptr)
 	{
 		if (ShipState->CurrentEqipedShield)
 		{
 			ShipState->CurrentEqipedShield->SetEqipState(true);
 			ShipState->CurrentEqipedShield->ShieldMesh->SetVisibility(true);
+			for (FSheildBagItem& tempShield : ShipState->ShieldList)
+			{
+				tempShield.bIsInEquiped = false;
+			}
 		}
-		return;
 	}
-	if (ShipState->CurrentEqipedShield)
+	else
 	{
-		if (ShipState->CurrentEqipedShield->ShieldName == newShield->ShieldClass.GetDefaultObject()->ShieldName)
+		for (FSheildBagItem& tempShield : ShipState->ShieldList)
 		{
-			ShipState->CurrentEqipedShield->SetEqipState(true);
-			ShipState->CurrentEqipedShield->ShieldMesh->SetVisibility(true);
-			return;
+			tempShield.bIsInEquiped = false;
 		}
-		else
+		newShield->bIsInEquiped = true;
+
+		if (ShipState->CurrentEqipedShield)
 		{
-			ShipState->CurrentEqipedShield->Destroy();
-			ShipState->CurrentEqipedShield = nullptr;
+			if (ShipState->CurrentEqipedShield->ShieldName == 
+				newShield->ShieldClass.GetDefaultObject()->ShieldName)
+			{
+				ShipState->CurrentEqipedShield->SetEqipState(true);
+				ShipState->CurrentEqipedShield->ShieldMesh->SetVisibility(true);
+				return;
+			}
+			else
+			{
+				ShipState->CurrentEqipedShield->Destroy();
+				ShipState->CurrentEqipedShield = nullptr;
+			}
 		}
+		
+		ShipState->CurrentEqipedShield = Cast<AC_Shield_Base>(GetWorld()->SpawnActor(newShield->ShieldClass));
+		ShipState->CurrentEqipedShield->AttachToComponent(ShipCharacter->ShipMesh,
+			FAttachmentTransformRules::KeepRelativeTransform);
+		ShipState->CurrentEqipedShield->SetActorRelativeScale3D(FVector(1.05f, 1.05f, 1.05f));
+		ShipState->CurrentEqipedShield->SetEqipState(true);
+		
 	}
-	ShipState->CurrentEqipedShield = Cast<AC_Shield_Base>(GetWorld()->SpawnActor(newShield->ShieldClass));
-	ShipState->CurrentEqipedShield->AttachToComponent(ShipCharacter->ShipMesh,
-		FAttachmentTransformRules::KeepRelativeTransform);
-	ShipState->CurrentEqipedShield->SetActorRelativeScale3D(FVector(1.05f, 1.05f, 1.05f));
-	ShipState->CurrentEqipedShield->SetEqipState(true);
+
 }
 
 void AC_SystemCharacterController::CalculateDamage(float Damage, bool bIfCalculateExtraDamage)

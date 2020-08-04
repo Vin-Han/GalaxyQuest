@@ -21,5 +21,11 @@ void UC_Galaxy_Instance::OnStart()
 
 	UC_Source_List* tempList = UC_Source_List::GetList();
 	tempList->UpdateBeaconList(SourceList);
-
+	for (FSourceBase& tempItem : SourceList)
+	{
+		tempItem.totalCount = 0;
+		tempItem.curCount = 0;
+		tempItem.curPrice = 0;
+		tempItem.singlePrice = 0;
+	}
 }

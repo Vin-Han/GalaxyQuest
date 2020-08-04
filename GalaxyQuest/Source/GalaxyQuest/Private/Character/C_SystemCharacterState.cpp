@@ -96,7 +96,7 @@ bool AC_SystemCharacterState::LoadStateFromInstance()
 		Money = tempInstance->Money;
 
 		if (SourceList.Num() == 0)
-		{
+		{		
 			for (FSourceBase& loadSource : tempInstance->SourceList)
 			{
 				SourceList.Add(loadSource);

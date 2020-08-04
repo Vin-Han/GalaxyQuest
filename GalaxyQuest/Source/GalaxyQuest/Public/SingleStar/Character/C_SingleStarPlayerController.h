@@ -31,6 +31,8 @@ public:
 
 	void InitializeState();
 
+	void InitializeBagWidget();
+
 public:
 	AC_SingleStarPlayer* ShipPlayer;
 
@@ -79,6 +81,20 @@ public:
 	void InitializeBeaconWidget();
 
 	void InitializeItemList();
+#pragma endregion
+
+#pragma region Player Bag
+public:
+	class UC_Single_Bag* bagWidget;
+public:
+	UFUNCTION()
+		void OpenBag();
+	UFUNCTION()
+		void CloseBag();
+	UFUNCTION()
+		void BackToSystem();
+	void LoadBagList();
+
 #pragma endregion
 
 };

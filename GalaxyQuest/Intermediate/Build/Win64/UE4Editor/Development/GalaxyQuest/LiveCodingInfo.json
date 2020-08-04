@@ -26,7 +26,9 @@
 			"C_Beacon_UI.cpp.obj",
 			"C_Source_Item.cpp.obj",
 			"C_StarBeacon.cpp.obj",
+			"C_Bag_Item_Simple.cpp.obj",
 			"C_Beacon_Player.cpp.obj",
+			"C_Single_Bag.cpp.obj",
 			"C_SingleStarPlayer.cpp.obj",
 			"C_SingleStarPlayerController.cpp.obj",
 			"C_Source_Form.cpp.obj",
@@ -61,6 +63,7 @@
 			"C_UserBag.cpp.obj"
 		],
 		"Module.GalaxyQuest.gen.cpp.obj": [
+			"C_Bag_Item_Simple.gen.cpp.obj",
 			"C_BagItemBase.gen.cpp.obj",
 			"C_Beacon_Item.gen.cpp.obj",
 			"C_Beacon_Player.gen.cpp.obj",
@@ -94,6 +97,7 @@
 			"C_Shield_Normal.gen.cpp.obj",
 			"C_ShieldItemBase.gen.cpp.obj",
 			"C_ShopPage.gen.cpp.obj",
+			"C_Single_Bag.gen.cpp.obj",
 			"C_SingleItem.gen.cpp.obj",
 			"C_SingleStar.gen.cpp.obj",
 			"C_SingleStarController.gen.cpp.obj",
