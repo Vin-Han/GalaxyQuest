@@ -34,9 +34,10 @@ public:
 	void InitializeBagWidget();
 
 public:
-	AC_SingleStarPlayer* ShipPlayer;
-
-	AC_SystemCharacterState* ShipState;
+	UPROPERTY()
+		AC_SingleStarPlayer* ShipPlayer;
+	UPROPERTY()
+		AC_SystemCharacterState* ShipState;
 
 #pragma region MoveMent
 public:
@@ -75,7 +76,8 @@ public:
 
 #pragma region Beacon Widget
 public:
-	class UC_Beacon_Player* BeaconWidget;
+	UPROPERTY()
+		class UC_Beacon_Player* BeaconWidget;
 	AC_StarBeacon* tempStarPoint;
 public:
 	void InitializeBeaconWidget();
@@ -85,7 +87,8 @@ public:
 
 #pragma region Player Bag
 public:
-	class UC_Single_Bag* bagWidget;
+	UPROPERTY()
+		class UC_Single_Bag* bagWidget;
 public:
 	UFUNCTION()
 		void OpenBag();
