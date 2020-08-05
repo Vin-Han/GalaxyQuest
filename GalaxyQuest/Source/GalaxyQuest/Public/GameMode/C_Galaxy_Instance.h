@@ -20,7 +20,7 @@ public:
 	float CurrentShield;
 	TSubclassOf<AC_Shield_Base> CurrentEqipedShield;
 	float Money;
-
+	FString parentStarPath;
 public:
 	TArray<FBulletBagItem> BulletList;
 	TArray<FSheildBagItem> ShieldList;

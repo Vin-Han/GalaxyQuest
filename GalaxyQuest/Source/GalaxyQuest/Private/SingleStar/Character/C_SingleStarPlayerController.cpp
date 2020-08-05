@@ -6,6 +6,8 @@
 #include "../Public/SingleStar/Character/C_SingleStarPlayer.h"
 #include "../Public/SingleStar/Character/C_Single_Bag.h"
 
+#include "../Public/GameMode/C_Galaxy_Instance.h"
+
 #include "../Public/SingleStar/Beacon/C_Source_Item.h"
 #include "../Public/SingleStar/Character/C_Bag_Item_Simple.h"
 
@@ -105,6 +107,7 @@ void AC_SingleStarPlayerController::InitializeBagWidget()
 	if (bagWidget)
 	{
 		bagWidget->Btn_Close->OnClicked.AddDynamic(this,&AC_SingleStarPlayerController::CloseBag);
+		bagWidget->Btn_Quit->OnClicked.AddDynamic(this, &AC_SingleStarPlayerController::BackToSystem);
 	}
 }
 
@@ -277,6 +280,12 @@ void AC_SingleStarPlayerController::LoadBagList(AC_StarBeacon* tempBeacon)
 		//UE_LOG(LogTemp, Warning, TEXT("LoadingSourceList,%d"), ShipState->SourceList.Num());
 		for (FSourceBase& tempItem : ShipState->SourceList)
 		{
+			
+			if (tempStarPoint && tempIndex < tempStarPoint->ShopList.Num())
+			{
+				tempItem.singlePrice = tempStarPoint->ShopList[tempIndex].singlePrice;
+				tempIndex++;
+			}
 			if (tempItem.totalCount != 0)
 			{
 
@@ -284,13 +293,7 @@ void AC_SingleStarPlayerController::LoadBagList(AC_StarBeacon* tempBeacon)
 					LoadClass<UC_Beacon_Item>(nullptr, TEXT("WidgetBlueprint'/Game/UI/SingleStar/BP_Beacon_Item.BP_Beacon_Item_c'")));
 				newWidget->targetItem = &tempItem;
 				newWidget->playerController = this;
-
-				if (tempStarPoint && tempIndex < tempStarPoint->ShopList.Num())
-				{
-					tempItem.singlePrice = tempStarPoint->ShopList[tempIndex].singlePrice;
-					tempIndex++;
-				}
-
+				
 				newWidget->Text_Name->SetText(FText::FromString(tempItem.targetItem->Name));
 				newWidget->Text_Count->SetText(FText::FromString(FString::FromInt(tempItem.totalCount)));
 				newWidget->Text_Price->SetText(FText::FromString(FString::FromInt(tempItem.singlePrice)));
@@ -318,6 +321,7 @@ bool AC_SingleStarPlayerController::BuySource(FSourceBase* newItem)
 	{
 		ShipState->Money -= newItem->curPrice;
 		BeaconWidget->Money_Text->SetText(FText::FromString(FString::FromInt(ShipState->Money)));
+
 		if (tempStarPoint)
 		{
 			LoadBagList(tempStarPoint);
@@ -403,6 +407,16 @@ void AC_SingleStarPlayerController::CloseBag()
 
 void AC_SingleStarPlayerController::BackToSystem()
 {
+	UC_Galaxy_Instance* tempInstance = Cast<UC_Galaxy_Instance>(GetGameInstance());
+	if (tempInstance && 
+		tempInstance->parentStarPath != "")
+	{
+		if (ShipState)
+		{
+			ShipState->StoreStateToInstance(false);
+		}
+		UGameplayStatics::OpenLevel(this, *(tempInstance->parentStarPath));
+	}
 }
 
 void AC_SingleStarPlayerController::LoadBagList()
@@ -415,6 +429,7 @@ void AC_SingleStarPlayerController::LoadBagList()
 		{
 			for (FSourceBase& tempItem : ShipState->SourceList)
 			{
+				
 				if (tempItem.totalCount > 0)
 				{
 					UC_Bag_Item_Simple* newWidget = CreateWidget<UC_Bag_Item_Simple>(GetGameInstance(),
@@ -424,7 +439,6 @@ void AC_SingleStarPlayerController::LoadBagList()
 					bagWidget->List_Roll->AddChild(newWidget);
 				}
 			}
-
 		}
 	}
 }

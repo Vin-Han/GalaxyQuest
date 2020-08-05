@@ -18,7 +18,7 @@ void UC_Galaxy_Instance::OnStart()
 	CurrentShield = 0;
 	CurrentEqipedShield = nullptr;
 	Money = -1;
-
+	parentStarPath = "";
 	UC_Source_List* tempList = UC_Source_List::GetList();
 	tempList->UpdateBeaconList(SourceList);
 	for (FSourceBase& tempItem : SourceList)
@@ -27,5 +27,6 @@ void UC_Galaxy_Instance::OnStart()
 		tempItem.curCount = 0;
 		tempItem.curPrice = 0;
 		tempItem.singlePrice = 0;
+		tempItem.instanceID = tempItem.targetItem->ID;
 	}
 }

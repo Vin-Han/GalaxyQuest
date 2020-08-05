@@ -6,7 +6,11 @@
 #include "../Public/Bag/C_ShieldItemBase.h"
 
 #include "../Public/GameMode/C_Galaxy_Instance.h"
+#include "../Public/SingleStar/Form/C_Source_List.h"
 
+#include "../Public/SingleStar/Form/C_Source_Form.h"
+
+#include "Kismet/GameplayStatics.h"
 bool AC_SystemCharacterState::AddItem(FBulletBagItem* newItem)
 {
 	for (FBulletBagItem& tempItem : BulletList)
@@ -57,30 +61,18 @@ bool AC_SystemCharacterState::AddItem(FSourceBase* newItem)
 			return true;
 		}
 	}
-
-	FSourceBase creatItem;
-	creatItem.totalCount = newItem->curCount;
-	creatItem.targetItem = newItem->targetItem;
-	SourceList.Add(creatItem);
-
-	return true;
+	return false;
 }
 
 bool AC_SystemCharacterState::SubItem(FSourceBase* newItem)
 {
 	for (FSourceBase& tempSource : SourceList)
 	{
-		if (tempSource.targetItem->ID == newItem->targetItem->ID )
+		if (tempSource.targetItem->ID == newItem->targetItem->ID && 
+			tempSource.totalCount >= newItem->curCount)
 		{
-			if (tempSource.totalCount >= newItem->curCount)
-			{
-				tempSource.totalCount -= newItem->curCount;
-				return true;
-			}
-			else
-			{
-				return false;
-			}
+			tempSource.totalCount -= newItem->curCount;
+			return true;
 		}
 	}
 	return false;
@@ -88,6 +80,7 @@ bool AC_SystemCharacterState::SubItem(FSourceBase* newItem)
 
 bool AC_SystemCharacterState::LoadStateFromInstance()
 {
+	UE_LOG(LogTemp, Warning, TEXT("Loading Data"));
 	UC_Galaxy_Instance* tempInstance = Cast<UC_Galaxy_Instance>(GetGameInstance());
 	if (tempInstance)
 	{
@@ -95,32 +88,29 @@ bool AC_SystemCharacterState::LoadStateFromInstance()
 		CurrentShield = tempInstance->CurrentShield;
 		Money = tempInstance->Money;
 
-		if (SourceList.Num() == 0)
-		{		
-			for (FSourceBase& loadSource : tempInstance->SourceList)
-			{
-				SourceList.Add(loadSource);
-			}	
-			//UE_LOG(LogTemp, Warning, TEXT("FirstLoadSourceInstance,%d"), SourceList.Num());
-		}
-		else
+		SourceList.RemoveAll([](FSourceBase& val) {return true; });
+
+		UC_Source_List::GetList()->UpdateBeaconList(SourceList);
+		int tempIndex = 0;
+		for (FSourceBase& tempItem : SourceList)
 		{
-			int tempIndex = 0;
-			for (FSourceBase& loadSource : tempInstance->SourceList)
+			if (tempIndex < tempInstance->SourceList.Num() && 
+				tempItem.targetItem->ID == tempInstance->SourceList[tempIndex].instanceID)
 			{
-				if (SourceList.Num() > tempIndex)
-				{
-					SourceList[tempIndex].totalCount = loadSource.totalCount;
-					tempIndex++;
-				}
+				tempItem.totalCount = tempInstance->SourceList[tempIndex].totalCount;
+				tempItem.curCount = tempInstance->SourceList[tempIndex].curCount;
+				tempItem.curPrice = tempInstance->SourceList[tempIndex].curPrice;
+				tempItem.singlePrice = tempInstance->SourceList[tempIndex].singlePrice;
+				tempIndex++;
 			}
-			//UE_LOG(LogTemp, Warning, TEXT("SecondLoadSourceInstance,%d"), SourceList.Num());
 		}
+		UE_LOG(LogTemp, Warning, TEXT("SourceNum,%d"), SourceList.Num());
 
 		for (FBulletBagItem& tempBullet : tempInstance->BulletList)
 		{
 			FBulletBagItem newBulletItem;
 			newBulletItem.BulletClass = tempBullet.BulletClass;
+			newBulletItem.CurrentAccout = tempBullet.CurrentAccout;
 			newBulletItem.TotalAccout = tempBullet.TotalAccout;
 			newBulletItem.CurrentLoadingTime = tempBullet.CurrentLoadingTime;
 			BulletList.Add(newBulletItem);
@@ -140,23 +130,31 @@ bool AC_SystemCharacterState::LoadStateFromInstance()
 	return false;
 }
 
-bool AC_SystemCharacterState::StoreStateToInstance()
+bool AC_SystemCharacterState::StoreStateToInstance(bool bIfStoreStarPath)
 {
+	UE_LOG(LogTemp, Warning, TEXT("Storing Data"));
 	UC_Galaxy_Instance* tempInstance = Cast<UC_Galaxy_Instance>(GetGameInstance());
 	if (tempInstance)
 	{
 		tempInstance->PlayerCurrentHp = PlayerCurrentHp;
 		tempInstance->CurrentShield = CurrentShield;
 		tempInstance->Money = Money;
-
+		if (bIfStoreStarPath)
+		{
+			tempInstance->parentStarPath = UGameplayStatics::GetCurrentLevelName(this);
+		}
 		int tempIndex = 0;
+
+		tempInstance->SourceList.RemoveAll([](FSourceBase& val) {return true; });
 		for (FSourceBase& storeSource : SourceList)
 		{
-			if (tempInstance->SourceList.Num() > tempIndex)
-			{
-				tempInstance->SourceList[tempIndex].totalCount = storeSource.totalCount;
-				tempIndex++;
-			}
+			FSourceBase newSource;
+			newSource.curCount = storeSource.curCount;
+			newSource.curPrice = storeSource.curPrice;
+			newSource.singlePrice = storeSource.singlePrice;
+			newSource.instanceID = storeSource.targetItem->ID;
+			newSource.totalCount = storeSource.totalCount;
+			tempInstance->SourceList.Add(newSource);
 		}
 		
 		tempInstance->BulletList.RemoveAll([](FBulletBagItem& val) {return true; });
@@ -165,6 +163,7 @@ bool AC_SystemCharacterState::StoreStateToInstance()
 			FBulletBagItem newBulletItem;
 			newBulletItem.BulletClass = tempBullet.BulletClass;
 			newBulletItem.TotalAccout = tempBullet.TotalAccout;
+			newBulletItem.CurrentAccout = tempBullet.CurrentAccout;
 			newBulletItem.CurrentLoadingTime = tempBullet.CurrentLoadingTime;
 			tempInstance->BulletList.Add(newBulletItem);
 		}

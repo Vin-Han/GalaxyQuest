@@ -195,6 +195,7 @@ private:
 	void CreatItemList();
 	void CreatBulletList();
 	void CreatShieldList();
+	void CreatSourceList();
 
 	void LoadPlayerBagState();
 

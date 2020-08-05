@@ -34,5 +34,5 @@ public:
 	bool SubItem(FSourceBase* newItem);
 public:
 	bool LoadStateFromInstance();
-	bool StoreStateToInstance();
+	bool StoreStateToInstance(bool bIfStoreStarPath);
 };

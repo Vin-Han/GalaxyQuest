@@ -11,6 +11,8 @@
 #include "../Public/Widget/C_StarLocation_UI.h"
 #include "../Public/Widget/C_ShopPage.h"
 
+#include "../Public/SingleStar/Character/C_Bag_Item_Simple.h"
+
 #include "../Public/GameMode/C_SolarSystemGameMode.h"
 #include "../Public/Projectile/C_Bullet_Base.h"
 #include "../Public/Projectile/C_Bullet_EnemyNormal.h"
@@ -438,7 +440,7 @@ void AC_SystemCharacterController::StarExploreBtnOnClicked()
 	StarInfor->RemoveFromViewport();
 	if (ShipState)
 	{
-		ShipState->StoreStateToInstance();
+		ShipState->StoreStateToInstance(true);
 	}
 	UGameplayStatics::OpenLevel(GetWorld(), *TargetMapName);
 }
@@ -773,6 +775,7 @@ void AC_SystemCharacterController::BagBtn_CloseWindow()
 	curSheildPtr = nullptr;
 	curBulletPtr = nullptr;
 	ShipBag->Left_Roll->ClearChildren();
+	ShipBag->Right_Roll->ClearChildren();
 	ShipBag->Left_Btn->OnClicked.RemoveAll(this);
 	ShipBag->Right_Btn->OnClicked.RemoveAll(this);
 	bShowMouseCursor = false;
@@ -830,6 +833,7 @@ void AC_SystemCharacterController::CreatItemList()
 	ShipBag->Left_Roll->ClearChildren();
 	CreatBulletList();
 	CreatShieldList();
+	CreatSourceList();
 }
 
 void AC_SystemCharacterController::CreatBulletList()
@@ -875,6 +879,29 @@ void AC_SystemCharacterController::CreatShieldList()
 		newItem->Item_WholeBtn->SetVisibility(ESlateVisibility::Visible);
 		newItem->Item_WholeBtn->OnClicked.AddDynamic(newItem, &UC_SingleItem::BindControllerItem);
 		
+	}
+}
+void AC_SystemCharacterController::CreatSourceList()
+{
+	if (ShipBag)
+	{
+		ShipBag->Right_Roll->ClearChildren();
+
+		if (ShipState)
+		{
+			for (FSourceBase& tempItem : ShipState->SourceList)
+			{
+				if (tempItem.totalCount > 0)
+				{
+					UC_Bag_Item_Simple* newWidget = CreateWidget<UC_Bag_Item_Simple>(GetGameInstance(),
+						LoadClass<UC_Bag_Item_Simple>(nullptr, TEXT("WidgetBlueprint'/Game/UI/SingleStar/BP_Bag_Item_Simple.BP_Bag_Item_Simple_c'")));
+					newWidget->Item_Name->SetText(FText::FromString(tempItem.targetItem->Name));
+					newWidget->Item_Count->SetText(FText::FromString(FString::FromInt(tempItem.totalCount)));
+					ShipBag->Right_Roll->AddChild(newWidget);
+				}
+			}
+
+		}
 	}
 }
 

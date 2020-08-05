@@ -16,6 +16,8 @@ public:
     int curCount;
     int curPrice;
 public:
+    int instanceID;
+public:
     FSourceData* targetItem;
 public:
     void UpdateState();

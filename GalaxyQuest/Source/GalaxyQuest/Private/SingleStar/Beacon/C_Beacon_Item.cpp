@@ -74,7 +74,7 @@ void UC_Beacon_Item::SellItems()
 		AC_SingleStarPlayerController* tempCon = Cast<AC_SingleStarPlayerController>(playerController);
 		if (tempCon && tempCon->SellSource(targetItem))
 		{
-			targetItem->totalCount -= targetItem->curCount;
+			//targetItem->totalCount -= targetItem->curCount;
 			Text_Count->SetText(FText::FromString(FString::FromInt(targetItem->totalCount)));
 			UpdateSlider(0.0f);
 			Bar_Buy->SetValue(0.0f);
