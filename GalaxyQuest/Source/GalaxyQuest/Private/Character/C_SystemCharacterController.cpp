@@ -1,5 +1,7 @@
 #include "../Public/Character/C_SystemCharacterController.h"
 
+#include "../Public/GameMode/C_Galaxy_Instance.h"
+
 #include "../Public/Character/C_SystemCharacter.h"
 #include "../Public/Character/C_SystemCharacterState.h"
 #include "../Public/Planet/C_NormalPlanetPawn.h"
@@ -51,7 +53,7 @@ void AC_SystemCharacterController::BeginPlay()
 	InitializeBaseSheild();
 
 	WarTimeDelaySecond = 3.0;
-	TargetMapName = "/Game/Blueprint/BP_Map/BP_Test_Map";
+	TargetMapName = "";
 	GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Red, TEXT("Hello,StartGameMode"));
 }
 
@@ -442,7 +444,17 @@ void AC_SystemCharacterController::StarExploreBtnOnClicked()
 	{
 		ShipState->StoreStateToInstance(true);
 	}
-	UGameplayStatics::OpenLevel(GetWorld(), *TargetMapName);
+	if (TargetMapName != "")
+	{
+		UGameplayStatics::OpenLevel(GetWorld(), *TargetMapName);
+	}
+	else
+	{
+		if (Cast<UC_Galaxy_Instance>(GetGameInstance()))
+		{
+			Cast<UC_Galaxy_Instance>(GetGameInstance())->SendMessageToPlayer(FString("This map is not finished, wait for update !"));
+		}
+	}
 }
 
 void AC_SystemCharacterController::RefleshStarIntro(AC_NormalPlanetPawn* tempStar)

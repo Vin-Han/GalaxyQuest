@@ -64,7 +64,8 @@
 			"C_StarIntroduce_UI.cpp.obj",
 			"C_StarLocation_UI.cpp.obj",
 			"C_Start_UI.cpp.obj",
-			"C_UserBag.cpp.obj"
+			"C_UserBag.cpp.obj",
+			"C_WarningInformation_UI.cpp.obj"
 		],
 		"Module.GalaxyQuest.gen.cpp.obj": [
 			"C_Bag_Item_Simple.gen.cpp.obj",
@@ -129,6 +130,7 @@
 			"C_SystemCharacterState.gen.cpp.obj",
 			"C_TBS_StateUpdate.gen.cpp.obj",
 			"C_UserBag.gen.cpp.obj",
+			"C_WarningInformation_UI.gen.cpp.obj",
 			"GalaxyQuest.init.gen.cpp.obj"
 		]
 	}

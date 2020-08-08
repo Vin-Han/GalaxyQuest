@@ -32,6 +32,6 @@ void UC_Galaxy_Point::SetGameModeInfor()
 	AC_StartGameModeBase* tempGameMode = Cast<AC_StartGameModeBase>(UGameplayStatics::GetGameMode(this));
 	if (tempGameMode)
 	{
-		tempGameMode->SetWidgetInfor(SystemPath, SystemPath, SystemIntro);
+		tempGameMode->SetWidgetInfor(SystemPath, SystemName, SystemIntro);
 	}
 }

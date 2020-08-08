@@ -28,4 +28,9 @@ public:
 
 protected:
 	virtual void OnStart() override;
+
+	UPROPERTY()
+		class UC_WarningInformation_UI* Infor_Widget;
+public:
+	void SendMessageToPlayer(FString message, float occorTime = 3.0f, FColor messageColor = FColor::Red);
 };

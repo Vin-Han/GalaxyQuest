@@ -9,6 +9,8 @@
 #include "../Public/SingleStar/Beacon/C_Source_Item.h"
 #include "../Public/Shield/C_Shield_Base.h"
 
+#include "../Public/Widget/C_WarningInformation_UI.h"
+
 void UC_Galaxy_Instance::OnStart()
 {
 	Super::OnStart();
@@ -28,5 +30,21 @@ void UC_Galaxy_Instance::OnStart()
 		tempItem.curPrice = 0;
 		tempItem.singlePrice = 0;
 		tempItem.instanceID = tempItem.targetItem->ID;
+	}
+
+	Infor_Widget = CreateWidget<UC_WarningInformation_UI>(this, LoadClass<UC_WarningInformation_UI>(nullptr,
+		TEXT("WidgetBlueprint'/Game/UI/Start/BP_Warning_Information.BP_Warning_Information_c'")));
+}
+
+void UC_Galaxy_Instance::SendMessageToPlayer(FString message, float occorTime, FColor messageColor)
+{
+	if (Infor_Widget)
+	{
+		if (Infor_Widget->IsInViewport() == true)
+		{
+			Infor_Widget->RemoveFromViewport();
+		}
+		Infor_Widget->AddToViewport();
+		Infor_Widget->SetWarningInformation(message, occorTime, messageColor);
 	}
 }

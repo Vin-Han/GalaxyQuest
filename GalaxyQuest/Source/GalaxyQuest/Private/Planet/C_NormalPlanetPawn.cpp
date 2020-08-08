@@ -21,7 +21,7 @@ AC_NormalPlanetPawn::AC_NormalPlanetPawn()
 	OrbitMesh->SetupAttachment(SceneCom);
 	BlockCom->SetupAttachment(SceneCom);
 	
-	StarMap = "/Game/Blueprint/BP_Map/BP_Test_Map";
+	StarMap = "";
 	StarName = "NoNameNow";
 	StarIntrodoce = "NoIntroduceNow";
 	

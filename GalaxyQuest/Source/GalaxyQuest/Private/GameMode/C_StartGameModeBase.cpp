@@ -4,6 +4,8 @@
 #include "../Public/GameMode/C_StartGameModeBase.h"
 #include "../Public/Widget/C_Start_UI.h"
 
+#include "../Public/GameMode/C_Galaxy_Instance.h"
+
 #include "Components/Button.h"
 #include "Components/TextBlock.h"
 
@@ -31,7 +33,7 @@ void AC_StartGameModeBase::StartPlay()
 
 void AC_StartGameModeBase::QuitCurGame()
 {
-	UKismetSystemLibrary::QuitGame(this, nullptr, EQuitPreference::Quit,true);
+	UKismetSystemLibrary::QuitGame(this, nullptr, EQuitPreference::Quit, true);
 }
 
 void AC_StartGameModeBase::OpenTargetLevel()
@@ -42,7 +44,10 @@ void AC_StartGameModeBase::OpenTargetLevel()
 	}
 	else
 	{
-		UE_LOG(LogTemp,Warning,TEXT("can not find level"));
+		if (Cast<UC_Galaxy_Instance>(GetGameInstance())) 
+		{
+			Cast<UC_Galaxy_Instance>(GetGameInstance())->SendMessageToPlayer(FString("This map is not finished, wait for update !"));
+		}
 	}
 }
 
