@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
+#include "Engine/Texture2D.h"
 #include "C_StarBeacon.generated.h"
 
 class UBoxComponent;
@@ -48,6 +49,10 @@ public:
 		FString Point_Name;
 	UPROPERTY(EditAnyWhere, Category = "PointInformation")
 		FString Point_Infor_S;
+	UPROPERTY(EditAnyWhere, Category = "PointInformation")
+		FString Point_Infor_L;
+	UPROPERTY(EditAnyWhere, Category = "PointInformation")
+		UTexture2D* Point_Pic;
 
 #pragma endregion
 

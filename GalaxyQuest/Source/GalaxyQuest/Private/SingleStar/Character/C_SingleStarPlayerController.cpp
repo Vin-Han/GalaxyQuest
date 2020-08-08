@@ -226,8 +226,11 @@ void AC_SingleStarPlayerController::LoadBeaconInfor(AC_StarBeacon* tempBeacon)
 			UGameplayStatics::SetGamePaused(GetWorld(), true);
 		}
 		BeaconWidget->Beacon_Name->SetText(FText::FromString(tempBeacon->Point_Name));
-		BeaconWidget->Beacon_Intro->SetText(FText::FromString(tempBeacon->Point_Infor_S));
-
+		BeaconWidget->Beacon_Intro->SetText(FText::FromString(tempBeacon->Point_Infor_L));
+		if (tempBeacon->Point_Pic)
+		{
+			BeaconWidget->Beacon_Pic->SetBrushFromTexture(tempBeacon->Point_Pic);
+		}
 
 		if (ShipState)
 		{

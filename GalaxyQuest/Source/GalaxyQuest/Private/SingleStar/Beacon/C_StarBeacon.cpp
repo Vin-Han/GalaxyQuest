@@ -30,8 +30,8 @@ AC_StarBeacon::AC_StarBeacon()
 	PointCollision->SetupAttachment(PointWidget);
 
 	Point_Name = "NoName";
-	Point_Infor_S = "NoInformation";
-	
+	Point_Infor_S = "";
+	Point_Infor_L = "";
 	UpdateTime = 3;
 	bIfCanUpdateNow = true;
 }
@@ -65,7 +65,7 @@ void AC_StarBeacon::InitializeShortWidget()
 		{
 			Text_Information->SetText(FText::FromString(Point_Infor_S));
 		}
-		PointWidget->SetWorldRotation(
+		PointMesh->SetWorldRotation(
 				UKismetMathLibrary::FindLookAtRotation(FVector::ZeroVector, GetActorLocation()));
 	}
 }
