@@ -5,6 +5,8 @@
 #include "../public/SpaceEnemy/C_SpaceEnemySpawner.h"
 #include "../Public/Projectile/C_Bullet_Base.h"
 
+#include "../Public/GameMode/C_Galaxy_Instance.h"
+
 #include "Components/BoxComponent.h"
 #include "Components/SphereComponent.h"
 #include "Components/StaticMeshComponent.h"
@@ -80,6 +82,11 @@ float AC_SpaceEnemy::TakeDamage(float Damage, FDamageEvent const& DamageEvent, A
 	if (EnemyCurHP == 0 && Cast<AC_SystemCharacterController>(EventInstigator))
 	{
 		Cast<AC_SystemCharacterController>(EventInstigator)->GetMoney(Bounty);
+		if (Cast<UC_Galaxy_Instance>(GetGameInstance()))
+		{
+			FString tempMessage = FString("Get ") + FString::FromInt(Bounty) + FString(" bounty");
+			Cast<UC_Galaxy_Instance>(GetGameInstance())->SendMessageToPlayer(tempMessage,1.0,FColor::Green);
+		}
 	}
 	return 0.0f;
 }

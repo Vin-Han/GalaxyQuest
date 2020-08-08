@@ -141,7 +141,7 @@ void AC_SystemCharacterController::InitializeShipState()
 		}
 		if (ShipState->Money == -1)
 		{
-			ShipState->Money = 999;
+			ShipState->Money = 500;
 		}
 	}
 }
