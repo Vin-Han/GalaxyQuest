@@ -558,7 +558,7 @@ bool AC_SystemCharacterController::BulletStateCheck()
 	{
 		return true;
 	}
-	UE_LOG(LogTemp, Warning, TEXT("FireNotAllow"));
+	//UE_LOG(LogTemp, Warning, TEXT("FireNotAllow"));
 	return false;
 }
 
@@ -630,7 +630,7 @@ void AC_SystemCharacterController::ChangeWarMode()
 	if (ShipCharacter)
 	{
 		ShipCharacter->bIsInWarMode = true;
-		UE_LOG(LogTemp, Warning, TEXT("BeginWar"));
+		//UE_LOG(LogTemp, Warning, TEXT("BeginWar"));
 		GetWorld()->GetTimerManager().SetTimer(TH_ChangeWarMode,this,&AC_SystemCharacterController::DelayModeChange,1,false, WarTimeDelaySecond);
 	}
 }
@@ -731,7 +731,7 @@ void AC_SystemCharacterController::CalculateDamage(float Damage, bool bIfCalcula
 
 	if (ShipState->PlayerCurrentHp < 0)
 	{
-		UE_LOG(LogTemp, Warning, TEXT("Player Should Die"));
+		//UE_LOG(LogTemp, Warning, TEXT("Player Should Die"));
 	}
 }
 
@@ -860,7 +860,7 @@ void AC_SystemCharacterController::CreatBulletList()
 		newItem->Item_Btn->SetVisibility(ESlateVisibility::Hidden);
 
 		int temp = ShipState->BulletList[i].CurrentAccout;
-		UE_LOG(LogTemp, Warning, TEXT("%d"), temp);
+		//UE_LOG(LogTemp, Warning, TEXT("%d"), temp);
 
 		newItem->BulletInfor = &ShipState->BulletList[i];
 		newItem->CurrentContoller = this;
@@ -1123,6 +1123,10 @@ bool AC_SystemCharacterController::BuySomeItem(FSheildBagItem* shieldItem)
 	{
 		if (ShipState->Money < shieldItem->CurPrice)
 		{
+			if (Cast<UC_Galaxy_Instance>(GetGameInstance()))
+			{
+				Cast<UC_Galaxy_Instance>(GetGameInstance())->SendMessageToPlayer(FString("Do not have enough money !"));
+			}
 			return false;
 		}
 		else if (ShipState->AddItem(shieldItem))
@@ -1142,6 +1146,10 @@ bool AC_SystemCharacterController::BuySomeItem(FBulletBagItem* bulletItem)
 	{
 		if (ShipState->Money < bulletItem->CurPrice * bulletItem->CurrentAccout)
 		{
+			if (Cast<UC_Galaxy_Instance>(GetGameInstance()))
+			{
+				Cast<UC_Galaxy_Instance>(GetGameInstance())->SendMessageToPlayer(FString("Do not have enough money !"));
+			}
 			return false;
 		}
 		else if (ShipState->AddItem(bulletItem))

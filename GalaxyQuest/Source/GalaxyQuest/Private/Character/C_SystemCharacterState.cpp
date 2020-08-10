@@ -104,7 +104,7 @@ bool AC_SystemCharacterState::LoadStateFromInstance()
 				tempIndex++;
 			}
 		}
-		UE_LOG(LogTemp, Warning, TEXT("SourceNum,%d"), SourceList.Num());
+		//UE_LOG(LogTemp, Warning, TEXT("SourceNum,%d"), SourceList.Num());
 
 		for (FBulletBagItem& tempBullet : tempInstance->BulletList)
 		{

@@ -78,7 +78,7 @@ FTransform AC_SpaceEnemySpawner::FindLocationInBox()
 
 bool AC_SpaceEnemySpawner::ReduceCount()
 {
-	UE_LOG(LogTemp, Warning, TEXT("ChildDead"));
+	//UE_LOG(LogTemp, Warning, TEXT("ChildDead"));
 	if (CurrentEnemy >0)
 	{
 		CurrentEnemy--;

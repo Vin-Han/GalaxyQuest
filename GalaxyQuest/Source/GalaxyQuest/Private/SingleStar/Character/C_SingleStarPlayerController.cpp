@@ -331,6 +331,10 @@ bool AC_SingleStarPlayerController::BuySource(FSourceBase* newItem)
 		}
 		return true;
 	}
+	if (Cast<UC_Galaxy_Instance>(GetGameInstance()))
+	{
+		Cast<UC_Galaxy_Instance>(GetGameInstance())->SendMessageToPlayer(FString("Do not have enough money !"));
+	}
 	return false;
 }
 

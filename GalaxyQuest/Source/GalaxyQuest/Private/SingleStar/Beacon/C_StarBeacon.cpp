@@ -99,7 +99,7 @@ void AC_StarBeacon::UpdateShopList()
 		{
 			tempItem.UpdateState();
 		}
-		UE_LOG(LogTemp, Warning, TEXT("UpdateShopListNow"));
+		//UE_LOG(LogTemp, Warning, TEXT("UpdateShopListNow"));
 	}
 
 	GetWorld()->GetTimerManager().SetTimer(TH_UpdateShop, this, &AC_StarBeacon::UpdateShopList, 1, false, UpdateTime);

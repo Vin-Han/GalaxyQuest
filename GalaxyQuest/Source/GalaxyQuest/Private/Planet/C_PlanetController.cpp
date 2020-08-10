@@ -250,7 +250,7 @@ void AC_PlanetController::UpdateHandle()
 	}
 	else
 	{
-		UE_LOG(LogTemp, Warning, TEXT("DelayRefleshShop"));
+		//UE_LOG(LogTemp, Warning, TEXT("DelayRefleshShop"));
 		float refleshTime = UKismetMathLibrary::RandomFloatInRange(5.0f, 10.0f);
 		GetWorld()->GetTimerManager().SetTimer(TH_UpdateShop, this, &AC_PlanetController::UpdateHandle, 1, false, refleshTime);
 	}
